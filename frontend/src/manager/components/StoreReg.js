@@ -47,7 +47,8 @@ class StoreReg extends Component{
                 name="storename"
                 value={this.state.storename}
                 required
-                autocomplete="off"/>
+                autocomplete="off"
+                onChange={this.handleChange.bind(this)}/>
               <InputStatus />
             </InputContainer>
             <InputContainer>
