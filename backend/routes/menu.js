@@ -91,6 +91,8 @@ app.post('/add-product', (req,res)=> {
                 (err, result) => {
                     if(!err)
                         return res.status(200).send(result);
+                    else
+                        console.log(err)
                 });
         }
         
@@ -140,25 +142,37 @@ app.delete('/delete-product/:id', (req,res)=> {
     })
 });
 
-app.get('/edit-menu/:id', function(req, res, next) {
-    var id = req.params.id;
-    var sql = `SELECT * FROM menu_info WHERE id= ${id}`;
-    database.query(sql, function (err, data) {
-      if (err) throw err;
-        res.send(result)
-    });
-});
+// app.get('/edit-menu/:id', function(req, res, next) {
+//     var id = req.params.id;
+//     var sql = `SELECT * FROM menu_info WHERE id= ${id}`;
+//     database.query(sql, function (err, data) {
+//       if (err) throw err;
+//         res.send(result)
+//     });
+// });
 
-app.post('/edit-menu/:id', function(req, res, next) {
+app.post('/edit-menu/:id', (req, res) => {
     var id= req.params.id;
-    var updateData=req.body;
-    var sql = "UPDATE menu_info SET ? WHERE id= ?";
+    var post  = req.body;
+    var product= post.product;
+    var price= post.price;
+    var availability= post.availability;
+    var category = post.category;
 
-    database.query(sql, [updateData, id], function (err, data) {
-     if (err) throw err;
-        console.log(data.affectedRows + " record(s) updated");
-        res.status(200).send(result)
-    });
+    console.log(id)
+    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=? WHERE id = ? ", [product, price, category, availability,id],
+        (err,result) => {
+            if(result){
+                console.log("hello")
+                res.send(result)
+            }
+            else{
+                console.log(err)
+                res.send(err)
+            }
+        }
+    )
 });
+        
 
 module.exports = app;

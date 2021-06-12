@@ -21,9 +21,7 @@ class Categ extends Component {
         this.deleteCateg = this.deleteCateg.bind(this);
         this.changeColor = this.changeColor.bind(this);
     }
-    // componentDidMount(){
-    //     this.setState({curr_categ: this.props.curr })
-    // }
+
     // async componentDidMount(){
     //     let categ
     // }

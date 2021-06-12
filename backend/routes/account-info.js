@@ -16,7 +16,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 60*60*24
+        expires: false,
+        maxAge: 60*60*24
     }
 }))
 
@@ -80,10 +81,9 @@ app.post('/user-registration', [
                 if(err){
                     console.log(err)
                     res.status(400)
-                     
                 }
                 else{
-                    //console.log(result.insertId)
+                    console.log(result)
                     res.status(201).send(result)  
             }
                 
@@ -167,6 +167,7 @@ app.post('/user-login', (req,res)=> {
             if (result.length > 0) {
                 bcrypt.compare(password, result[0].password, (error,response) => {
                     if(response){
+                        console.log(result)
                         req.session.user = result
                         console.log(req.session.user)
                         res.send(result)

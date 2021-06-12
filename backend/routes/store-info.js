@@ -87,8 +87,10 @@ app.post('/store-registration/:id', [
     if (!req.file){
         database.query("UPDATE account_info SET store_name=?, manager_name=?, location=? WHERE id = ? ", [store_name, manager_name, location, id],
             (err, result) => {
-                if(!err)
+                if(result){
+                    // console.log(result.data)
                     return res.status(200).send(result);
+                }
                 else
                     console.log(err)
                 });

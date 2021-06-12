@@ -7,6 +7,7 @@ class ProdDesc extends Component {
         super(props);
         this.state = {
             all_categs: [],
+            prod_id: null,
             prod_name: '',
             prod_price: '',
             prod_categ: '',
@@ -21,18 +22,25 @@ class ProdDesc extends Component {
         })
     }
     edit = e =>{
+        e.preventDefault();
+        const id = this.props["id"]
         const data = {
-            product: this.state.prod_name,
-            // price:
+            product: !this.state.prod_name ? this.props["product"] : this.state.prod_name,
+            price: !this.state.prod_price ? this.props["price"] : this.state.prod_price,
+            category: this.state.prod_categ,
+            availability: this.state.prod_availability
         }
+        Axios.post(`http://localhost:3005/edit-menu/${id}`, data).then((response) => {
+            console.log(response)
+            this.props.test(this.state.prod_categ)
+        })
     }
     async componentDidMount(){
         let categs = await Axios.get('http://localhost:3005/display-category');
         this.setState({
             all_categs: categs.data,
-            prod_categ: this.props["category_id"]
+            prod_categ: this.props["category_id"],
         }) 
-        console.log(`${this.props["product"]}: ${this.props["availability"]}`)
         if(this.props["availability"]===1){
             this.setState({prod_availability: "1"})
         }
@@ -43,7 +51,7 @@ class ProdDesc extends Component {
     render() { 
         if (this.props.mode==="edit") {
             return (
-                <Form>
+                <Form onSubmit={this.edit}>
                     <img src={this.props["photo"]}/>
                     <Upload
                         type="file"
@@ -55,7 +63,6 @@ class ProdDesc extends Component {
                         type="text"
                         name="prod_name" 
                         autoComplete="off"
-                        required
                         value={this.state.prod_name}
                         onChange={this.handleChange.bind(this)}
                     />
@@ -64,7 +71,6 @@ class ProdDesc extends Component {
                         type="text"
                         name="prod_price"
                         autoComplete="off"
-                        required
                         value={this.state.prod_price}
                         onChange={this.handleChange.bind(this)}
                     />

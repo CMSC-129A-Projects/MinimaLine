@@ -5,7 +5,6 @@ import logo from "../../assets/logo.svg";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
 
-
 class SignIn extends Component {
   constructor(props) {
     super(props);

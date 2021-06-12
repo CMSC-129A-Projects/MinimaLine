@@ -273,7 +273,7 @@ class EditMenu extends Component {
                                                     </div>
                                                 )
                                             })}
-                                    {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"}/> : null }
+                                    {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts}/> : null }
                                     <AddButton size="100px" onClick={this.toggleAddProd}/>
                                 </section>
                         </ProdGrid>
