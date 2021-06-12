@@ -83,6 +83,7 @@ const Container = styled.div`
   position: absolute;
   overflow: hidden;
   background-color: #faf0e0;
+  /* background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%); */
   height: 100%;
   width: 100%;
 `;
@@ -176,7 +177,7 @@ const StyledLink = styled(Link)`
   width: 270px;
   background-color: white;
   box-shadow: 3px 6px 5px 3px #d6d6d6;
-  border-radius: 8px;
+  border-radius: 50px;
   margin: 60px 70px;
   display: flex;
   flex-direction: column;
@@ -237,7 +238,7 @@ const Option = styled.div`
   width: 270px;
   background-color: white;
   box-shadow: 3px 6px 5px 3px #d6d6d6;
-  border-radius: 8px;
+  border-radius: 50px;
   margin: 60px 70px;
   display: flex;
   flex-direction: column;

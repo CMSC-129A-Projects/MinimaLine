@@ -571,9 +571,7 @@ const ProdGrid = styled.div`
         padding-bottom: 10px;
         display: grid;
         gap: 2rem;
-        /* z-index: 0; */
-        /* grid-template-columns: repeat(auto-fit, minmax(177px, 1fr)); */
-        grid-template-columns: repeat(4, 220px);
+        grid-template-columns: repeat(auto-fit, minmax(177px, 1fr));
 
         @media screen and (max-width: 1024px) {
             gap: 1.5rem;

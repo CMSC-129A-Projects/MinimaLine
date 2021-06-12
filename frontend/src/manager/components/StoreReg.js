@@ -3,6 +3,7 @@ import Axios from "axios"
 import styled from "styled-components";
 import {Link, Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
+import { FiUpload } from "react-icons/fi";
 // import UploadPhoto from "./UploadPhoto";
 // import Input from "./Input";
 
@@ -65,6 +66,12 @@ class StoreReg extends Component{
             <BiArrowBack size="40px" color="#676666"/>
           </Link>
         </ArrowWrapper>
+        <LogoWrapper>
+        {/* <img src={logo} alt="" /> */}
+        <h3>
+          Minima<span>Line</span>
+        </h3>
+      </LogoWrapper>
         <Form onSubmit={this.registerStore}>
             <h2>Store Registration</h2>
             <InputContainer>
@@ -110,7 +117,8 @@ class StoreReg extends Component{
                 placeholder="Logo"
                 name="logo"
                 // value={this.state.logo}
-                onChange={this.handleUpload.bind(this)}/>
+                onChange={this.handleUpload.bind(this)}
+                />
             </InputContainer>
             <button type="submit"> Submit </button>
         </Form>
@@ -129,26 +137,28 @@ const Form = styled.form`
     margin-right: 50px;
 
     h2{
-        color: #666666;
-        margin-bottom: 1rem;
-        /* margin-left: 90px; */
+      color: #666666;
+      margin-bottom: 2rem;
+      font-size: 40px;
+      align-items: left;
+      margin-left: -20px;
     }
 
     button{
-        /* margin-left: 50px; */
-        margin-top: 30px;
-        width: 75%;
-        max-width: 350px;
-        min-width: 250px;
-        height: 40px;
-        border: none;
-        box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
-        border-radius: 8px;
-        background-color: #568d33;
-        color: #fff;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease-in;
+      margin-top: 25px;
+      width: 75%;
+      max-width: 350px;
+      margin-left: -20px;
+      min-width: 250px;
+      height: 50px;
+      border: none;
+      box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
+      border-radius: 17px;
+      background-color: #568d33;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease-in;
         
         &:hover{
             transform: translateY(-3px);
@@ -157,7 +167,6 @@ const Form = styled.form`
 
     .header{
       margin-top: 5px;
-      /* margin-left: 160px; */
       color: #757575;
       font-weight: bold; 
       font-size: 20px;
@@ -177,7 +186,7 @@ const ArrowWrapper = styled.div`
 `;
 
 const Container = styled.div`
-  min-width: 600px;
+  min-width: 665px;
   backdrop-filter: blur(35px);
   background-color: rgba(255, 255, 255, 0.5);
   height: 100%;
@@ -194,12 +203,12 @@ const StyledInput = styled.input`
   width: 80%;
   max-width: 450px;
   min-width: 350px;
-  height: 40px;
+  height: 50px;
   border: none;
-  margin: 0.7rem 0;
-  background-color: #f5f5f5;
+  margin: 0.5rem 0;
+  background-color: white;
   box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
-  border-radius: 8px;
+  border-radius: 17px;
   padding: 0 1rem;
   transition: all 0.2s ease-in;
 
@@ -207,9 +216,18 @@ const StyledInput = styled.input`
       transform: translateY(-3px);
   }
 `;
+
 const StyledUpload = styled.input`
-  /* display: none; */
+  ::file-selector-button{
+    border: none;
+    padding: 1.5em 1em;
+    border-radius: 17px;
+    background-color: white;
+    transition: 1s;
+    color: #666666;
+  }
 `;
+
 const InputContainer  = styled.div`
     display: flex;
     justify-content: center;
@@ -231,6 +249,27 @@ const InputStatus = styled.div`
   }
   ${StyledInput}:valid + & {
     background: #568d33;
+  }
+`;
+
+const LogoWrapper = styled.div`
+  position: fixed;
+  margin-top: 80px;
+  img{
+      height: 6rem;
+      margin-bottom: -20px;
+  }
+
+  h3{
+      text-align:center;
+      color: #ec9736;
+      font-size: 22px;
+  }
+
+  span{
+      color: #568d33;
+      font-weight: 300;
+      font-size: 18px;
   }
 `;
 

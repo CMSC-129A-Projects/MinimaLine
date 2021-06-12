@@ -56,9 +56,8 @@ class SignUp extends Component{
       <Container>
         <LogoWrapper>
           {/* <img src={logo} alt="" /> */}
-          <h3>
-            Minima<span>Line</span>
-          </h3>
+          <h3>Minima</h3>
+          <h2>Line</h2>
         </LogoWrapper>
         <Form onSubmit={this.register}>
           <h3>Sign Up</h3>
@@ -135,22 +134,22 @@ const Form = styled.form`
 
     h3{
       color: #666666;
-      // color: black;
       margin-bottom: 2rem;
       font-size: 40px;
       align-items: left;
+      margin-left: -10px;
     }
 
     button{
-        /* margin-left: 45px; */
         margin-top: 10px;
         width: 75%;
         max-width: 350px;
+        margin-left: -20px;
         min-width: 250px;
-        height: 40px;
+        height: 50px;
         border: none;
         box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
-        border-radius: 8px;
+        border-radius: 17px;
         background-color: #568d33;
         color: #fff;
         font-weight: 600;
@@ -164,6 +163,8 @@ const Form = styled.form`
 `;
 
 const LogoWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
     img{
         height: 6rem;
         margin-bottom: -20px;
@@ -174,17 +175,18 @@ const LogoWrapper = styled.div`
         color: #ec9736;
         font-size: 22px;
     }
-
-    span{
+    
+    h2{
         color: #568d33;
         font-weight: 300;
         font-size: 18px;
+        margin-top: 25px;
     }
 
 `;
 
 const Container = styled.div` 
-  min-width: 400px;
+  min-width: 600px;
   backdrop-filter: blur(9px);
   background-color: rgba(255, 255, 255, 0.5);
   height: 100%;
@@ -212,6 +214,11 @@ const Container = styled.div`
         cursor: pointer;
       }
   }
+
+  span:hover{
+    transform: translateY(-3px);
+    color: #ec9736;
+  }
 `;
 const InputContainer  = styled.div`
     display: flex;
@@ -223,12 +230,12 @@ const StyledInput = styled.input`
     width: 80%;
     max-width: 450px;
     min-width: 350px;
-    height: 40px;
+    height: 50px;
     border: none;
     margin: 0.5rem 0;
-    background-color: #f5f5f5;
+    background-color: white;
     box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
-    border-radius: 8px;
+    border-radius: 17px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
 
