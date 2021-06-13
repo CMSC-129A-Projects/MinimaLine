@@ -260,6 +260,13 @@ class EditMenu extends Component {
                         (!this.state.prods.length ? 
                             <div className="empty-grid">
                                 <AddButton size="100px" onClick={this.toggleAddProd}/> 
+                                <InstructWrapper>
+                                    <Instruction>
+                                        <div className="prod-instruct">
+                                            <h2>Click to add product</h2>
+                                        </div>
+                                    </Instruction>
+                                </InstructWrapper>
                             </div> :
                             <ProdGrid>
                                     <section className='productlist'> 
@@ -649,16 +656,18 @@ const Wrapper = styled.div`
   }
 `;
 
+const InstructWrapper = styled.div`
+    margin-left: 180px;
+`
+
 const Instruction = styled.div`
     position: relative;
     max-width: 30em;
     background-color: #F9C91E;
     padding: 0.7em 1.5em;
-    font-size: 1.25em;
     border-radius: 1rem;
     box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
     margin-left: 14px;
-
     animation: MoveUpDown 1s linear infinite;
 
     @keyframes MoveUpDown {
@@ -669,7 +678,6 @@ const Instruction = styled.div`
             transform: translateY(-7px);
         }
     }
-
     h1{
         font-size: 20px;
     }
