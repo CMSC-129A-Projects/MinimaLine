@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-import Auth from "../../Auth";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
 

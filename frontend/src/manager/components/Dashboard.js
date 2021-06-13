@@ -19,6 +19,7 @@ class App extends Component {
   async componentDidMount(){
     document.title = "MinimaLine | Dashboard"
     let username = await Axios.get(`http://localhost:3005/account-info/${this.props.location.state.userId}`);
+    console.log(username)
       this.setState({
         username: username.data[0]["username"]
       })

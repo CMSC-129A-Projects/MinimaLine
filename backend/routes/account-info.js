@@ -6,7 +6,6 @@ const saltRounds = 10;
 const {check, validationResult} = require('express-validator');
 var app = express();
 var database = require('../config/database');
-var {createToken} = require("../jwt.js");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -17,7 +16,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 60*60*24
+        maxAge: 60*60*24*1000
     }
 }))
 
@@ -25,7 +24,7 @@ app.use(session({
 app.get('/account-info/:id', (req,res) => {
     const id = req.params.id
 
-    database.query("SELECT username FROM account_info WHERE id = ?", id,
+    database.query("SELECT * FROM account_info WHERE id = ?", id,
     (err, result) => {
         if (err) {
             res.status(400).send(err);
@@ -33,6 +32,7 @@ app.get('/account-info/:id', (req,res) => {
         }
 
         if (result.length) {
+            console.log(result)
             res.status(200).send(result);
         }
         else res.status(200).json({});
@@ -41,35 +41,34 @@ app.get('/account-info/:id', (req,res) => {
 
 //to register user info in account_info table 
 app.post('/user-registration', [
-    check('username')
-        .notEmpty()
-        .withMessage('Username cannot be empty')
-        .isLength({min: 4}) 
-        .withMessage('Username should be at least 4 characters long')
-        .isLength({max: 20})
-        .withMessage('Username cannot be more than 20 characters long')
+    check('username') //OK alphanumeric, underscore, period, hyphen; NO spaces and special chars
+        // .notEmpty()
+        // .isLength({min: 4}) 
+        // .withMessage('Username should be at least 4 characters long')
+        // .isLength({max: 20})
+        // .withMessage('Username cannot be more than 20 characters long')
         .custom(async username => {
             const value = await isUsernameUsed(username);
             if (value) {
                 throw new Error('Username is already in use!');
             }
         }),
-    check('email')
+    check('email') //check for special chars before @ (OK alphanumeric, underscore, period, hyphen)
         .notEmpty()
-        .withMessage('Email cannot be empty')
-        .isEmail()
-        .withMessage('Email should be valid')
+        // .withMessage('Email cannot be empty')
+        // .isEmail()
+        // .withMessage('Email should be valid')
         .custom(async email => {
             const value = await isEmailUsed(email);
             if (value) {
                 throw new Error('Email is already in use!');
             }
         }),
-    check('password')
+    check('password') // 
         .notEmpty()
         .withMessage('Password cannot be empty')
-        .isLength({min: 4, max: 20})
-        .withMessage('Password should be between 4-20 characters!'),
+        .isLength({min: 6, max: 20})
+        .withMessage('Password should be between 6-20 characters!'),
     ], (req,res)=> {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -179,6 +178,45 @@ app.post('/user-login', (req,res)=> {
             }
         });
     });
+app.post('/edit-username/:id', [
+    check('username') //OK alphanumeric, underscore, period, hyphen; NO spaces and special chars
+        // .notEmpty()
+        // .isLength({min: 4}) 
+        // .withMessage('Username should be at least 4 characters long')
+        // .isLength({max: 20})
+        // .withMessage('Username cannot be more than 20 characters long')
+        .custom(async username => {
+            const value = await isUsernameUsed(username);
+            if (value) {
+                throw new Error('Username is already in use!');
+            }
+        })
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            console.log(errors)
+            return res.send({errors: errors.array()});
+        }
+        var id= req.params.id;
+        var username = req.body.username;
+
+        console.log(id)
+        database.query("UPDATE account_info SET username=? WHERE id = ? ", [username,id],
+            (err,result) => {
+                if(result){
+                    console.log("hello")
+                    console.log(result)
+                    res.send(result)
+                }
+                else{
+                    console.log(err)
+                    res.send(err)
+                }
+            }
+        )
+    
+});
 
 // custom validator functions
 function isEmailUsed(email){

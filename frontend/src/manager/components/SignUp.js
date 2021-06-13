@@ -109,7 +109,7 @@ class SignUp extends Component{
                 name="password"
                 value={this.state.password} 
                 required
-                minLength="4"
+                minLength="6"
                 maxLength="20"
                 autoComplete="off"
                 onChange={this.handleChange.bind(this)}/>
