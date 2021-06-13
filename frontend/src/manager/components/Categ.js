@@ -5,25 +5,44 @@ import Modal from 'react-modal';
 import Axios from 'axios';
 
 class Categ extends Component {
-    constructor(){
-        super();
-        this.state = { // initial/default state is the first category on the list
-            clicked: false,
-            current: 0,
-            default: true,
+    constructor(props){
+        super(props);
+        this.state = { 
+            categs: [],
+            isClicked: false,   // a category is selected
+            current: 0,         // index of selected category; default state is the first category on the list
+            curr_categ: null,
+            default: true,      
             openModal: false,
-            categ: [],
             delete_this: null
         }
-        this.changeColor = this.changeColor.bind(this);
+        this.handleClick = this.handleClick.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.deleteCateg = this.deleteCateg.bind(this);
+        this.changeColor = this.changeColor.bind(this);
+    }
+
+    // async componentDidMount(){
+    //     let categ
+    // }
+    handleClick(index,categ_id){
+        // change color
+        // if(this.state.current !== index) // different category is clicked
+            // this.setState({
+            //     current: index,
+            //     isClicked: true,
+            //     // curr_categ: categ_id,
+            //     default: false
+            // })
+        this.changeColor(index)
+        this.props.onClick(categ_id)
     }
     changeColor(index){
         if(this.state.current !== index) // different category is clicked
             this.setState({
                 current: index,
-                clicked: true,
+                isClicked: true,
+                // curr_categ: categ_id,
                 default: false
             })
     }
@@ -39,30 +58,26 @@ class Categ extends Component {
             console.log(response)
             this.toggleModal()
         })
-    }
-    async componentDidMount(){
-        let results = await Axios.get('http://localhost:3005/display-category');
-        this.setState({ categ: results.data })
+        this.props.onClick("deleted")
     }
 
     render() { 
         var modalStyle={overlay: {zIndex: 2}}
         return ( 
             <>
-            {!this.state.categ.length ? 
-                <div></div>
-            :
+            {!this.props.categs.length ? 
+                <div></div>:
                 <Container>
-                        {this.state.categ.map((categ,index)=>{
+                        {this.props.categs.map((categ,index)=>{
                         return(
                             <div
-                                className={((this.state.clicked || this.state.default) && (this.state.current===index)) ? 'clicked' : 'unclicked'}
-                                onClick={()=>this.changeColor(index)}>
+                                className={((this.state.isClicked || this.state.default) && (this.state.current===index)) ? 'clicked' : 'unclicked'}
+                                onClick={()=>this.handleClick(index,categ["id"])}>
                                 <div className="word">
                                     <h1>{categ["name"]}</h1>
                                 </div>
                                 {this.props.mode==="edit" ? 
-                                    <DeleteButton size="25px"onClick={() => this.toggleModal(categ["id"])}/>
+                                    <DeleteButton size="25px" onClick={() => this.toggleModal(categ["id"])}/>
                                 : null}
                             </div>
                         )
@@ -110,7 +125,7 @@ const Container = styled.div`
         background: #FFFFFF;
         margin-right: 10px;
         border-radius: 1rem;
-        transition: all 0.1s ease-in;
+        /* transition: all 0.1s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
@@ -129,7 +144,7 @@ const Container = styled.div`
         background: #F9C91E;
         margin-right: 10px;
         border-radius: 1rem;
-        transition: all 0.1s ease-in;
+        /* transition: all 0.1s ease-in; */
         /* box-shadow: 0px 0px 10px 2px #858585; */
 
         &:hover {

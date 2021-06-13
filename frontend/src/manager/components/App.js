@@ -10,28 +10,37 @@ import Terms from "./Terms";
 import ViewMenu from "./ViewMenu";
 import EditMenu from "./EditMenu";
 import Dashboard from "./Dashboard";
+import ManageAccount from "./ManageAccount";
 import * as Customer from '../../customer/components';
 import * as Cashier from '../../cashier/components';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-
+const ProtectedRoute = ({component:Component, ...rest}) => {
+  return(
+    <Route
+      {...rest}
+      render={()=>(
+        <Component/>
+      )}
+    />
+  )
+}
 const App = () => {
   return (
     <Router>
       <Container>
       <Wrapper>
         <Switch>
-          <Route path="/" exact component={SignIn} />
-          <Route path="/sign-up" exact component={SignUp} />
-          {/* <Redirect from="/sign-up" to ="/store-reg"/> */}
-          <Route path="/terms" exact component={Terms} />
-          <Route path="/store-reg" exact component={StoreReg} />
-          <Route path="/view-menu" exact component={ViewMenu} />
-          <Route path="/edit-menu" exact component={EditMenu} />
-          <Route path="/dashboard" exact component={Dashboard} />
-          <Route path="/dashboard" exact component={Dashboard} />
-          <Route path="/customer" exact component={Customer.App} />
-          <Route path="/cashier" exact component={Cashier.App} />
+          <Route exact path="/" component={SignIn} />
+          <Route exact path="/sign-up" component={SignUp} />
+          <Route exact path="/terms" component={Terms} />
+          <Route exact path="/store-reg" component={StoreReg} />
+          <Route exact path="/view-menu" component={ViewMenu} />
+          <Route exact path="/edit-menu" component={EditMenu} />
+          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/account" component={ManageAccount} />
+          <Route exact path="/customer" component={Customer.App} />
+          <Route exact path="/cashier" component={Cashier.App} />
         </Switch>
         <Main />
       </Wrapper>

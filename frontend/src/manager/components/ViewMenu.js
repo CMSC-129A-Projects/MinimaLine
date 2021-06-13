@@ -4,21 +4,23 @@ import {Link} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import Categ from "./Categ";
 import ProdDesc from "./ProdDesc";
-import Products from "./Products";
+import Axios from 'axios';
 
 class ViewMenu extends Component {
     constructor(){
         super();
         this.state = {
             clicked: false,
-            current: null
+            current: null,
+            prods: [],
+            all_categs: [],
+            curr_categ: null,
+            // userId: null
         }
         this.changeColor = this.changeColor.bind(this);
+        this.showProducts = this.showProducts.bind(this);
+     
     }
-    componentDidMount(){
-        document.title = "MinimaLine | View Menu"
-    }
-    
     changeColor(index){
         if(this.state.current !== index)
             this.setState({
@@ -26,52 +28,77 @@ class ViewMenu extends Component {
                 clicked: true
             })
     }
+    async showProducts(categ_id){
+        if(categ_id!=="empty"){
+            let categProds = await Axios.get(`http://localhost:3005/${this.props.location.state.userId}/menu-info/${categ_id}`);
+            this.setState({
+                prods: categProds.data,
+                clicked: false,
+                current: null
+            })
+        }
+    }
+    async componentDidMount(){
+        document.title = "MinimaLine | View Menu"
+        // this.setState({})
+        let categs = await Axios.get(`http://localhost:3005/display-category/${this.props.location.state.userId}`);
+        if(JSON.stringify(categs.data)==='{}'){
+            this.showProducts("empty")
+        }
+        else{
+            this.setState({
+                all_categs: categs.data
+            })
+            this.showProducts(this.state.all_categs[0]["id"])
+        }
+    }
 
-    render() { 
-        const Product = (props) => {
-            const {product_img, product_name, product_price, product_availability} = props.product;
-            return (
-                <article>
-                    <h3><img className='image' src={product_img} alt="" /></h3>
-                    <h1>{product_name}</h1>
-                    <h2>{product_price}</h2>
-                    <h2>{product_availability ? "Available" : "Not Available"}</h2>
-                </article> 
-            );
-        };
-        
+    render() {
         return ( 
             <Container>
                 <Wrapper>
                     <Arrow>
                         <ArrowWrapper>
-                            <Link to="/dashboard">
+                            <Link to={{ pathname: "/dashboard", state: {userId: this.props.location.state.userId} }}>
                                 <BiArrowBack size="40px" color="#676666"/>
                             </Link>
                         </ArrowWrapper>
                     </Arrow>
                     <EditButton>
-                        <Link to='/edit-menu'>
+                        <Link to={{ pathname: "/edit-menu", state: {userId: this.props.location.state.userId} }}>
                             <button>Edit Menu</button>
                         </Link>
                     </EditButton>
                     <Nav>
-                        <Categ mode={"view"}/> 
+                        <Categ mode={"view"} categs={this.state.all_categs} onClick={this.showProducts}/> 
                     </Nav>
-                    <ProdGrid>
-                        <section className='productlist'> 
-                        {Products.map((product,index)=>{
-                                return (
-                                    <div
-                                        onClick={()=>this.changeColor(index)}
-                                        className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
-                                        <Product key={index} product={product}></Product>
-                                    </div>
-                                )
-                            })}
-                            {this.state.clicked ? <ProdDesc {...Products[this.state.current]} mode={"view"}/> : null }
-                        </section>
-                    </ProdGrid>
+                    {!this.state.prods.length ?
+                        <ProdGrid>
+                            <div className="productlist">
+                                <h3> No products in this category.</h3>
+                            </div>
+                        </ProdGrid>
+                        : <ProdGrid>
+                            <section className='productlist'> 
+                            {this.state.prods.map((prod,index)=>{
+                                    return (
+                                        <div
+                                            onClick={()=>this.changeColor(index)}
+                                            className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
+                                            <article>
+                                                <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
+                                                <h1>{prod["product"]}</h1>
+                                                <h2>Php {prod["price"]}</h2>
+                                                <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
+                                            </article> 
+                                        </div>
+                                    )
+                                })}
+                                {this.state.clicked ? <ProdDesc {...this.state.prods[this.state.current]} mode={"view"}/> : null }
+                            </section>
+                         </ProdGrid>
+                    }
+
                 </Wrapper>
             </Container>
          );
@@ -158,10 +185,12 @@ const ProdGrid = styled.div`
         margin-top: 160px;
         display: flex;
         margin-left: 50px;
+        padding-bottom: 10px;
         display: grid;
         gap: 2rem;
         z-index: 0;
-        grid-template-columns: repeat(auto-fit, minmax(177px, 1fr));
+        /* grid-template-columns: repeat(auto-fit, minmax(177px, 1fr)); */
+        grid-template-columns: repeat(4, 220px);
 
         @media screen and (max-width: 1024px) {
             gap: 1.5rem;

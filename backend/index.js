@@ -1,8 +1,7 @@
 var express = require('express');
 var app = express();
 var bcrypt = require('bcrypt');
-//var moment = require('moment');
-var upload = require('express-fileupload');
+//var upload = require('express-fileupload');
 var cors = require("cors");
 var database = require('./config/database');
 var port = process.env.PORT || 3005;
@@ -13,17 +12,21 @@ database.connect((err) => {
 });
 
 //allow access of rest api for cross-origin resource sharing
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["POST", "GET", "DELETE"],
+    credentials: true,
+}));
 
 //to upload file
-app.use(upload());
+//app.use(upload());
 
 //allow api for parsing json
 app.use(express.json());
 
 //allow api to receive data from client app
 app.use(express.urlencoded ({
-    extended: true
+    extended: false
 }));
 
 //Register routes in main index.js

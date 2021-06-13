@@ -41,7 +41,7 @@ const Background = styled.div`
 
 const Container = styled.div`
     background-color: white;
-    box-shadow: 3px 6px 5px 3px #d6d6d6;
+    box-shadow: 0px 5px 10px -2px #858585;
     border-radius: 70px;
     height: 80vh;
     width: 80vh;
@@ -74,6 +74,7 @@ const Container = styled.div`
     }
 
     button{
+        outline: none;
         margin-top: 2vh;
         font-family: "Work Sans";
         width: 20vh;

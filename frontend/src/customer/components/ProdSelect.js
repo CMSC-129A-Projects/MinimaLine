@@ -4,9 +4,10 @@ import {Link} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import Categ from "../../manager/components/Categ";
 import OrderSum from "./OrderSum";
-import Products from "../../manager/components/Products";
+// import Products from "../../manager/components/Products";
 import Modal from 'react-modal';
 import ProdModal from './ProdModal';
+import Axios from 'axios';
 
 class ProdSelect extends Component {
     constructor(){
@@ -14,10 +15,13 @@ class ProdSelect extends Component {
         this.state = {
             clicked: false,
             current: null,
+            all_categs: [],
+            prods: [],
             openProdModal: false
         }
         this.changeColor = this.changeColor.bind(this);
         this.showModal = this.showModal.bind(this);
+        this.showProducts = this.showProducts.bind(this);
     }
 
     showModal(index){
@@ -27,11 +31,29 @@ class ProdSelect extends Component {
             clicked: true
         })
     }
-
-    componentDidMount(){
+    async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
+        let categs = await Axios.get('http://localhost:3005/display-category');
+        if(JSON.stringify(categs.data)==='{}'){
+            this.showProducts("empty")
+        }
+        else{
+            this.setState({
+                all_categs: categs.data
+            })
+            this.showProducts(this.state.all_categs[0]["id"])
+        }
     }
-    
+    async showProducts(categ_id){
+        if(categ_id!=="empty"){
+            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+            this.setState({
+                prods: categProds.data,
+                clicked: false,
+                current: null
+            })
+        }
+    }
     changeColor(index){
         if(this.state.current !== index)
             this.setState({
@@ -41,20 +63,8 @@ class ProdSelect extends Component {
     }
 
     render() { 
-        const Product = (props) => {
-            const {product_img, product_name, product_price, product_availability} = props.product;
-            return (
-                <article>
-                    <h3><img className='image' src={product_img} alt="" /></h3>
-                    <h1>{product_name}</h1>
-                    <h2>{product_price}</h2>
-                    <h2>{product_availability ? "Available" : "Not Available"}</h2>
-                </article> 
-            );
-        };
         var modalStyle={overlay: {zIndex: 2}}
-        
-        return ( 
+        return( 
             <Container>
 
                 <Wrapper>
@@ -66,31 +76,44 @@ class ProdSelect extends Component {
                         </ArrowWrapper>
                     </Arrow>
                     <Nav>
-                        <Categ mode={"view"}/> 
+                        {/* <Categ mode={"view"}/>  */}
+                        <Categ mode={"view"} categs={this.state.all_categs} onClick={this.showProducts}/> 
                     </Nav>
-                    <ProdGrid>
-                        <section className='productlist'> 
-                        {Products.map((product,index)=>{
-                                return (
-                                    <div
-                                        onClick={()=>this.changeColor(index)}
-                                        onClick={()=>this.showModal(index)}
-                                        className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
-                                        <Product key={index} product={product}></Product>
-                                    </div>
-                                )
-                            })}
-                            {this.state.openProdModal ? <ProdModal {...Products[this.state.current]} mode={this.showModal}/> : null }
-                            <RightContainer>
-                                <OrderSum />
-                                <CheckoutButton>
-                                    <Link to='/checkout'>
-                                        <button>Checkout</button>
-                                    </Link>         
-                                </CheckoutButton>
-                            </RightContainer>
-                        </section>
-                    </ProdGrid>
+                    {!this.state.prods.length ?
+                        <ProdGrid>
+                            <div className="productlist">
+                                <h3> No products in this category.</h3>
+                            </div>
+                        </ProdGrid>
+                        : <ProdGrid>
+                            <section className='productlist'> 
+                            {this.state.prods.map((prod,index)=>{
+                                    return (
+                                        <div
+                                            onClick={()=>this.showModal(index)}
+                                            onClick={()=>this.changeColor(index)}
+                                            className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
+                                            <article>
+                                                <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
+                                                <h1>{prod["product"]}</h1>
+                                                <h2>Php {prod["price"]}</h2>
+                                                <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
+                                            </article> 
+                                        </div>
+                                    )
+                                })}
+                                {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} mode={this.showModal}/> : null }
+                                <RightContainer>
+                                    <OrderSum />
+                                    <CheckoutButton>
+                                        <Link to='/checkout'>
+                                            <button>Checkout</button>
+                                        </Link>         
+                                    </CheckoutButton>
+                                </RightContainer>
+                            </section>
+                         </ProdGrid>
+                    }
                 </Wrapper>
             </Container>
          );
@@ -143,6 +166,7 @@ const CheckoutButton = styled.div`
 
         &:hover {
             transform: translateY(-4px);
+            cursor: pointer;
         }
     }
 `
@@ -196,6 +220,7 @@ const CategModal = styled(Modal)`
     flex-direction: row;
     
     button{
+        outline: none;
         font-family: "Work Sans";
         margin: 30px 20px 0px;
         width: 150px;
@@ -272,7 +297,8 @@ const ProdGrid = styled.div`
         display: grid;
         gap: 2rem;
         z-index: 0;
-        grid-template-columns: repeat(auto-fit, minmax(177px, 1fr));
+        /* grid-template-columns: repeat(auto-fit, minmax(177px, 1fr)); */
+        grid-template-columns: repeat(4, 220px);
 
         @media screen and (max-width: 1024px) {
             gap: 1.5rem;
@@ -283,10 +309,11 @@ const ProdGrid = styled.div`
         background: #F9C91E;
         border-radius: 1rem;
         padding: 1rem 2rem;
-        transition: all 0.2s ease-in;
+        /* transition: all 0.2s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
+            cursor: pointer;
         }
 
         h1{
@@ -306,11 +333,12 @@ const ProdGrid = styled.div`
         background: #fff;
         border-radius: 1rem;
         padding: 1rem 2rem;
-        transition: all 0.2s ease-in;
+        /* transition: all 0.2s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
             background: #F3D9A4;
+            cursor: pointer;
         }
         h1{
             margin-top: 0.5rem;

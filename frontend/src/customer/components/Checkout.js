@@ -199,9 +199,9 @@ const Container = styled.div`
     box-shadow: 3px 6px 5px 3px #d6d6d6;
     border-radius: 30px;
     height: 86vh;
-    width: 180vh;
+    width: 177vh;
     margin-top: -43vh;
-    margin-left: -90vh;
+    margin-left: -89vh;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -238,6 +238,7 @@ const Container = styled.div`
         font-size: 2vh;
 
         button{
+            outline: none;
             position: absolute;
             font-family: "Work Sans";
             margin-top: 2vh;

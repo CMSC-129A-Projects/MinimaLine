@@ -1,58 +1,141 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import EditMenuInput from "./EditMenuInput";
+import Axios from 'axios';
 
 class ProdDesc extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            all_categs: [],
+            prod_id: null,
+            prod_name: '',
+            prod_price: '',
+            prod_categ: '',
+            prod_availability: null
+        }
+        // this.showAvailability = this.showAvailability.bind(this)
+    }
 
+    handleChange(e){
+        this.setState({
+          [e.target.name]: e.target.value
+        })
+    }
+    edit = e => {
+        e.preventDefault();
+        const id = this.props["id"]
+        const data = {
+            product: !this.state.prod_name ? this.props["product"] : this.state.prod_name,
+            price: !this.state.prod_price ? this.props["price"] : this.state.prod_price,
+            category: this.state.prod_categ,
+            availability: this.state.prod_availability
+        }
+        Axios.post(`http://localhost:3005/edit-menu/${id}`, data).then((response) => {
+            console.log(response)
+            this.props.test(this.state.prod_categ)
+        })
+    }
+    async componentDidMount(){
+        let categs = await Axios.get('http://localhost:3005/display-category');
+        this.setState({
+            all_categs: categs.data,
+            prod_categ: this.props["category_id"],
+        }) 
+        if(this.props["availability"]===1){
+            this.setState({prod_availability: "1"})
+        }
+        else if(this.props["availability"]===0){
+            this.setState({prod_availability: "0"})
+        }
+    }
     render() { 
         if (this.props.mode==="edit") {
             return (
-                <Container>
-                    <img src={this.props.product_img}/>
+                <Form onSubmit={this.edit}>
+                    <img src={this.props["photo"]}/>
                     <Upload
                         type="file"
                         name="photo"
                         autocomplete="off"
                     />
-                    <EditMenuInput placeholder={this.props.product_name} name="product name" />
-                    <EditMenuInput placeholder={this.props.product_price} name="product price" />
-                    <div>
-                        {(() => {
-                            if(this.props.product_availability==true){
-                                return(
-                                    <Select>
-                                        <option selected value={this.props.product_availability}>Available</option> 
-                                        <option value={!this.props.product_availability}>Not Available</option>
-                                    </Select>
-                                )
-                            } else {
-                                return(
-                                    <Select>
-                                        <option value={this.props.product_availability}>Available</option> 
-                                        <option selected value={!this.props.product_availability}>Not Available</option>
-                                    </Select>
-                                )
-                            } 
-                        })()}
-                    </div>
+                    <StyledInput
+                        placeholder={this.props["product"]}
+                        type="text"
+                        name="prod_name" 
+                        autoComplete="off"
+                        value={this.state.prod_name}
+                        onChange={this.handleChange.bind(this)}
+                    />
+                    <StyledInput
+                        placeholder={this.props["price"]}
+                        type="text"
+                        name="prod_price"
+                        autoComplete="off"
+                        value={this.state.prod_price}
+                        onChange={this.handleChange.bind(this)}
+                    />
+                    <Select
+                        name="prod_availability"
+                        value={this.state.prod_availability}
+                        onChange={this.handleChange.bind(this)}>
+                        <option value="1">Available</option> 
+                        <option value="0">Not Available</option>
+                    </Select>
+                    <Select
+                        name="prod_categ"
+                        value={this.state.prod_categ}
+                        onChange={this.handleChange.bind(this)}>
+                        {this.state.all_categs.map((categ,index)=>{
+                            return (
+                                <option value={categ["id"]}>{categ["name"]}</option>
+                            )
+                        })}
+                    </Select>
                     <Buttons>
                         <button className="save">Save Changes</button>
                         <button className="cancel">Cancel</button>
                     </Buttons>
-                </Container>
+                </Form>
             );
         } else {
             return (
                 <Container>
-                    <img src={this.props.product_img}/>
-                    <h1>{this.props.product_name}</h1>
-                    <h3>{this.props.product_price}</h3>
-                    <h3>{this.props.product_availability ? "Available" : "Not Available"}</h3>
+                    <img src={this.props["photo"]}/>
+                    <h1>{this.props["product"]}</h1>
+                    <h3>Php {this.props["price"]}</h3>
+                    <h3>{this.props["availability"] ? "Available" : "Not Available"}</h3>
                 </Container>
             );
         }
     }
 }
+const StyledInput = styled.input`
+    width: 40%;
+    max-width: 350px;
+    min-width: 250px;
+    height: 40px;
+    border: none;
+    color: black;
+    margin: 1rem 0 0;
+    background-color: #f5f5f5;
+    box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
+    border-radius: 8px;
+    padding: 0 1rem;
+    transition: all 0.2s ease-in;
+
+    &:hover {
+        transform: translateY(-3px);
+    }
+
+    ::placeholder {
+        color: black;
+    }
+
+    @media screen and (max-width: 1024px) {
+      min-width: 150px;
+      // padding: 0 0.5rem;
+    }
+`;
 
 const Buttons = styled.div`
     display: flex;
@@ -130,7 +213,34 @@ const Select = styled.select`
         padding: 0 0.5rem;
     }
 `
+const Form = styled.form`
+    height: 500px;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    background: #fff;
+    right: 0;
+    margin-top: 50px;
+    border-radius: 1rem;
+    margin-right: 30px;
+    box-shadow: 0px 5px 10px -2px #858585;
+    /* padding: 1rem; */
 
+    img{
+        height: 200px;
+        width: 200px;
+        margin-top: -60px;
+    }
+    @media screen and (max-width: 1024px) {
+        margin-right: 27px;
+        img{
+            height: 180px;
+            width: 180px;
+        }
+    }
+`;
 const Container = styled.div`
     height: 500px;
     width: 20%;

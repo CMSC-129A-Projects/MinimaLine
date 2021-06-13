@@ -15,11 +15,14 @@ class StoreReg extends Component{
       manager_name: '',
       location: '',
       logo: '',
-      redirect: false
+      redirect: false,
+      userId: null
     }
   }
   componentDidMount(){
     document.title = "MinimaLine | Store Registration"
+    console.log(this.props.location.state.userId)
+    this.setState({ userId: this.props.location.state.userId })
   }
 
   handleChange(e){
@@ -35,7 +38,7 @@ class StoreReg extends Component{
   }
   
   registerStore = e => {
-    console.log(this.state.logo)
+    console.log(this.state.storeId)
     const data = {
       store_name: this.state.store_name,
       manager_name: this.state.manager_name,
@@ -44,9 +47,9 @@ class StoreReg extends Component{
     };
     console.log('hello this is your input:',data)
     e.preventDefault();
-    Axios.post('http://localhost:3005/store-registration',data).then((response) => {
+    Axios.post(`http://localhost:3005/store-registration/${this.state.userId}`,data).then((response) => {
       console.log(response)
-      this.setState({redirect:true},()=>console.log(this.state.redirect))
+      this.setState({redirect:true})
     })
     .catch(error => {
       console.log(error.response)
@@ -55,7 +58,7 @@ class StoreReg extends Component{
 
   render(){
     if(this.state.redirect)
-      return <Redirect to="/dashboard"/>
+      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return (
       <Container>
         <ArrowWrapper>

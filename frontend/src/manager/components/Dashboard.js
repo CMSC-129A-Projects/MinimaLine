@@ -5,17 +5,24 @@ import {MdRestaurantMenu, MdAccountCircle} from 'react-icons/md';
 import {AiOutlineUserSwitch} from 'react-icons/ai';
 import {Link} from 'react-router-dom';
 import Modal from 'react-modal';
+import Axios from 'axios';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      clicked: false
+      clicked: false,
+      username: null
      }
      this.handleClick = this.handleClick.bind(this);
   }
-  componentDidMount(){
+  async componentDidMount(){
     document.title = "MinimaLine | Dashboard"
+    let username = await Axios.get(`http://localhost:3005/account-info/${this.props.location.state.userId}`);
+    console.log(username)
+      this.setState({
+        username: username.data[0]["username"]
+      })
   }
 
   handleClick(){
@@ -27,7 +34,8 @@ class App extends Component {
       <Container>
         <div className="header">
           <HeaderBar>
-            <h1>Welcome, &lt;username&gt;.</h1>
+            <h1>Welcome, {this.state.username}.</h1>
+            <button>logout</button>
           </HeaderBar>
           <HeaderCircle>
             <img src={logo}/>
@@ -35,15 +43,17 @@ class App extends Component {
         </div>
 
         <Body>
-          <StyledLink to="/view-menu" style={{textDecoration:'none'}}>
+          <StyledLink to={{ pathname: "/view-menu", state: {userId: this.props.location.state.userId} }}
+                      style={{textDecoration:'none'}}>
               <MdRestaurantMenu className="icon" size="90px"/>
               <h2>View Menu</h2>
               <p>View and edit the restaurant menu.</p>
           </StyledLink>
-          <StyledLink to="/dashboard" style={{textDecoration:'none'}}>
+          <StyledLink to={{ pathname: "/account", state: {userId: this.props.location.state.userId} }}
+                      style={{textDecoration:'none'}}>
             <MdAccountCircle className="icon" size="90px"/>
             <h2>Account</h2>
-            <p>Manage your account and restaurant information.</p>
+            <p>Manage your account and store information.</p>
           </StyledLink>
           <Option onClick={this.handleClick}>
               <AiOutlineUserSwitch className="icon" size="90px"/>
@@ -157,6 +167,9 @@ const HeaderBar = styled.div`
     }
   }
 
+  button{
+    margin-left: 300px;
+  }
   
 `;
 

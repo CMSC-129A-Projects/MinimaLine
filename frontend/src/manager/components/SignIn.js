@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-// import Input from "./Input";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
-
 
 class SignIn extends Component {
   constructor(props) {
@@ -14,11 +12,25 @@ class SignIn extends Component {
       password: '',
       redirect: false,
       login_error: false,
-      error_msg: null
+      error_msg: null,
+      userId: null
      }
   }
-  componentDidMount(){
-    document.title = "MinimaLine | Sign In"
+  async componentDidMount(){
+    document.title = "MinimaLine | Sign In";
+    Axios.defaults.withCredentials = true;
+    await Axios.get("http://localhost:3005/user-login").then((response) => {
+      if(response.data.loggedIn==true){
+        console.log(response.data.user)
+        this.setState({
+          userId: response.data.user[0]["id"],
+          redirect: true
+        })
+        console.log(this.state.userId)
+      }
+      else 
+        console.log(response)
+    })
   }
   
   handleChange(e){
@@ -29,36 +41,38 @@ class SignIn extends Component {
   login = e => {
     e.preventDefault();
     const data = this.state;
-    Axios.post("http://localhost:3005/user-login", data).then((response) => {
-      if(response.status!==400){
-        console.log(response)
-        this.setState({redirect:true})
+    Axios.post("http://localhost:3005/user-login", data, {withCredentials: true}).then((response) => {
+      if(response.data.message){
+        this.setState({
+          error_msg: response.data.message,
+          login_error: true
+        })
       }
       else{
-        {throw new Error()}
+        console.log(response)
+        let userId = response.data[0]["id"]
+        this.setState({ 
+          userId: userId,
+          redirect:true
+        })
       }
-    })
-    .catch((err) => {
-      this.setState({login_error:true})
-      console.log(this.state.login_error)
     })
   };
 
   render() { 
     if(this.state.redirect)
-      return <Redirect to="/dashboard"/>
+      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return ( 
       <Container>
       <LogoWrapper>
         {/* <img src={logo} alt="" /> */}
-        <h3>
-          Minima<span>Line</span>
-        </h3>
+        <h3>Minima</h3>
+        <h2>Line</h2>
       </LogoWrapper>
 
       <Form onSubmit={this.login}>
         <h3>Sign In</h3>
-        {this.state.login_error ? <p>Incorrect username/password!</p> : null}
+        {this.state.login_error ? <p>{this.state.error_msg}</p> : null}
         <InputContainer>
           <StyledInput 
             type="text" 
@@ -139,6 +153,8 @@ const Form = styled.form`
 `;
 
 const LogoWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
     img{
         height: 6rem;
         margin-bottom: -20px;
@@ -150,12 +166,12 @@ const LogoWrapper = styled.div`
         font-size: 22px;
     }
 
-    span{
+    h2{
         color: #568d33;
         font-weight: 300;
         font-size: 18px;
+        margin-top: 25px;
     }
-
 `;
 
 const Container = styled.div`
@@ -185,6 +201,10 @@ const Container = styled.div`
           color: #568d33;
           cursor: pointer;
       }
+  }
+  span:hover{
+    transform: translateY(-3px);
+    color: #ec9736;
   }
 `;
 const StyledInput = styled.input`

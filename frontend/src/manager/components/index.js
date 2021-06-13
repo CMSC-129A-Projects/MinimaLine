@@ -11,3 +11,4 @@ export {default as UploadPhoto} from './UploadPhoto.js';
 export {default as ViewMenu} from './ViewMenu.js';
 export {default as EditMenu} from './EditMenu.js';
 export {default as Dashboard} from './Dashboard.js';
+export {default as ManageAccount} from './ManageAccount.js';
