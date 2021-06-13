@@ -6,6 +6,7 @@ const saltRounds = 10;
 const {check, validationResult} = require('express-validator');
 var app = express();
 var database = require('../config/database');
+var {createToken} = require("../jwt.js");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -16,7 +17,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: false,
         maxAge: 60*60*24
     }
 }))
@@ -42,34 +42,40 @@ app.get('/account-info/:id', (req,res) => {
 //to register user info in account_info table 
 app.post('/user-registration', [
     check('username')
-    .notEmpty()
-    .withMessage('Username cannot be empty')
-    .isLength({min: 4}) 
-    .withMessage('Username should be at least 4 characters long')
-    .isLength({max: 20})
-    .withMessage('Username cannot be more than 20 characters long')
-    .exists()
-    .withMessage('Username exists'),
+        .notEmpty()
+        .withMessage('Username cannot be empty')
+        .isLength({min: 4}) 
+        .withMessage('Username should be at least 4 characters long')
+        .isLength({max: 20})
+        .withMessage('Username cannot be more than 20 characters long')
+        .custom(async username => {
+            const value = await isUsernameUsed(username);
+            if (value) {
+                throw new Error('Username is already in use!');
+            }
+        }),
     check('email')
-    .notEmpty()
-    .withMessage('Email cannot be empty')
-    .isEmail()
-    .withMessage('Email should be valid')
-    .exists()
-    .withMessage('Email exists'),
+        .notEmpty()
+        .withMessage('Email cannot be empty')
+        .isEmail()
+        .withMessage('Email should be valid')
+        .custom(async email => {
+            const value = await isEmailUsed(email);
+            if (value) {
+                throw new Error('Email is already in use!');
+            }
+        }),
     check('password')
-    .notEmpty()
-    .withMessage('Password cannot be empty')
-    .isLength({min: 4, max: 20})
-    .withMessage('Password should be between 4 - 20 characters'),
+        .notEmpty()
+        .withMessage('Password cannot be empty')
+        .isLength({min: 4, max: 20})
+        .withMessage('Password should be between 4-20 characters!'),
     ], (req,res)=> {
-
     const errors = validationResult(req);
-    console.log(errors)
     if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()});
+        console.log(errors)
+        return res.send({errors: errors.array()});
     }
-    
     var role = "manager"
     const {username,email,password}=req.body
     
@@ -79,7 +85,7 @@ app.post('/user-registration', [
             [username, email, hash, role], 
             (err, result) => {
                 if(err){
-                    console.log(err)
+                    // console.log(err)
                     res.status(400)
                 }
                 else{
@@ -94,26 +100,23 @@ app.post('/user-registration', [
 //register a cashier
 app.post('/add-cashier', [
     check('username')
-    .notEmpty()
-    .withMessage('Username cannot be empty')
-    .isLength({min: 4}) 
-    .withMessage('Username should be at least 4 characters long')
-    .isLength({max: 20})
-    .withMessage('Username cannot be more than 20 characters long')
-    .exists()
-    .withMessage('Username exists'),
-    check('email')
-    .notEmpty()
-    .withMessage('Email cannot be empty')
-    .isEmail()
-    .withMessage('Email should be valid')
-    .exists()
-    .withMessage('Email exists'),
+        .notEmpty()
+        .withMessage('Username cannot be empty')
+        .isLength({min: 4}) 
+        .withMessage('Username should be at least 4 characters long')
+        .isLength({max: 20})
+        .withMessage('Username cannot be more than 20 characters long')
+        .custom(async username => {
+            const value = await isUsernameUsed(username);
+            if (value) {
+                throw new Error('Username is already in use!');
+            }
+        }),
     check('password')
-    .notEmpty()
-    .withMessage('Password cannot be empty')
-    .isLength({min: 4, max: 20})
-    .withMessage('Password should be between 4 - 20 characters'),
+        .notEmpty()
+        .withMessage('Password cannot be empty')
+        .isLength({min: 4, max: 20})
+        .withMessage('Password should be between 4 - 20 characters'),
     ], (req,res)=> {
 
     const errors = validationResult(req);
@@ -124,9 +127,6 @@ app.post('/add-cashier', [
     
     var role = "cashier"
     const {username,email,password}=req.body
-    //hashPass = await bcrypt.hash(password,10)
-    //console.log(password+'\n'+hashPass)
-    //console.log(username, password, email) 
 
     database.query("INSERT INTO account_info (username, email, password,role) VALUES (?,?,?,?)", 
     [username, email, password,role], 
@@ -162,17 +162,15 @@ app.post('/user-login', (req,res)=> {
             if(err){
                 res.send({err: err});
             }
-            //console.log(password)
-            //console.log(result[0].password)
             if (result.length > 0) {
                 bcrypt.compare(password, result[0].password, (error,response) => {
                     if(response){
                         console.log(result)
                         req.session.user = result
-                        console.log(req.session.user)
+                        console.log(req.session)
                         res.send(result)
                     } else {
-                        res.send({message: "Incorrect username and/or password!"});
+                        res.send({message: "Incorrect username and password combination!"});
                     }
                 }); 
             }
@@ -182,6 +180,30 @@ app.post('/user-login', (req,res)=> {
         });
     });
 
-
+// custom validator functions
+function isEmailUsed(email){
+    return new Promise((resolve, reject) => {
+        database.query('SELECT COUNT(*) AS total FROM account_info WHERE email = ?', [email], (error, results, fields) => {
+            if(!error){
+                return resolve(results[0].total > 0);
+            } else {
+                return reject(new Error('Database error'));
+            }
+          }
+        );
+    });   
+}
+function isUsernameUsed(username){
+    return new Promise((resolve, reject) => {
+        database.query('SELECT COUNT(*) AS total FROM account_info WHERE username = ?', [username], (error, results, fields) => {
+            if(!error){
+                return resolve(results[0].total > 0);
+            } else {
+                return reject(new Error('Database error'));
+            }
+          }
+        );
+    });   
+}
 
 module.exports = app;

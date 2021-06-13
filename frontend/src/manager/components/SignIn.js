@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-// import Input from "./Input";
+import Auth from "../../Auth";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
 
@@ -42,7 +42,7 @@ class SignIn extends Component {
   login = e => {
     e.preventDefault();
     const data = this.state;
-    Axios.post("http://localhost:3005/user-login", data).then((response) => {
+    Axios.post("http://localhost:3005/user-login", data, {withCredentials: true}).then((response) => {
       if(response.data.message){
         this.setState({
           error_msg: response.data.message,
@@ -50,7 +50,7 @@ class SignIn extends Component {
         })
       }
       else{
-        console.log(response.data[0]["id"])
+        console.log(response)
         let userId = response.data[0]["id"]
         this.setState({ 
           userId: userId,
@@ -61,7 +61,7 @@ class SignIn extends Component {
   };
 
   render() { 
-    if(this.state.redirect || this.state.userId)
+    if(this.state.redirect)
       return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return ( 
       <Container>
