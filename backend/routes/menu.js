@@ -57,7 +57,21 @@ app.get('/display-category', (req,res) => {
         else res.status(200).json({});
     });
 });
+//send category list to frontend for display to edit menu BY ID
+app.get('/display-category/:id', (req,res) => {
+    let id = req.params.id;
 
+    database.query('SELECT * FROM category where store_id=?', id, (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        if (result.length) {
+            res.status(200).json(result);
+        }
+        else res.status(200).json({});
+    });
+});
 //get products by category ID
 app.get('/menu-info/:id', (req,res) => {
     // let sql = 'SELECT * FROM menu_info';
@@ -76,7 +90,25 @@ app.get('/menu-info/:id', (req,res) => {
         else res.status(200).json({});
     });
 });
+//get products by category ID and store ID
+app.get('/:userID/menu-info/:categID', (req,res) => {
+    // let sql = 'SELECT * FROM menu_info';
+    const userID = req.params.userID;
+    const categID = req.params.categID;
 
+    database.query("SELECT * FROM menu_info WHERE category_id = ? AND store_id = ?", [categID,userID],
+    (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+
+        if (result.length) {
+            res.status(200).json(result);
+        }
+        else res.status(200).json({});
+    });
+});
 //to add products to menu (manager side)
 app.post('/add-product', (req,res)=> {
     if(req.method == "POST"){
@@ -84,17 +116,19 @@ app.post('/add-product', (req,res)=> {
         var product= post.product;
         var price= post.price;
         var availability= post.availability;
-
+        var category = post.category;
+        console.log(product, price, availability, category)
         if (!req.files){
-            database.query("INSERT INTO menu_info (product,price,availability) VALUES ('" + product + "','" + price + "','" + availability + "')",
-                            (err, result) => {
-                                if(!err)
-                                    res.status(201).send(result)
-                                }
-                            );
-            return res.status(500).send('Insert data into database, but no files were uploaded.');
+            database.query("INSERT INTO menu_info (product,price,category_id,availability) VALUES ('" + product + "','" + price + "','" + category + "','" + availability + "')",
+                (err, result) => {
+                    if(!err)
+                        return res.status(200).send(result);
+                    else
+                        console.log(err)
+                });
         }
-          
+        
+        else{
           var file = req.files.photo;
           var img_name = file.name;
           console.log("file uploaded:")
@@ -107,21 +141,20 @@ app.post('/add-product', (req,res)=> {
                     if (err)
                         // console.log(err)
                       return res.status(500).send(err);
-                            database.query("INSERT INTO menu_info (product,price,availability,photo) VALUES ('" + product + "','" + price + "','" + availability + "','" + img_name + "')",
+                            database.query("INSERT INTO menu_info (product,price,category_id,availability,photo) VALUES ('" + product + "','" + price + "','" + category + "','" + availability + "','" + img_name + "')",
                             (err, result) => {
                                 if(!err)
-                                    res.status(201).send(result)
+                                    return res.status(200).send(result)
                                 else
-                                    res.status(400).send("error")
-                            }
-                            );
-   
-                         });
+                                    return res.status(400).send("error")
+                            });
+                        });
             } else {
-              console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
+                console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
             }
-     }
-  });
+        }
+    }
+});
 
 //Delete products
 app.delete('/delete-product/:id', (req,res)=> {
@@ -141,25 +174,37 @@ app.delete('/delete-product/:id', (req,res)=> {
     })
 });
 
-app.get('/edit-menu/:id', function(req, res, next) {
-    var id = req.params.id;
-    var sql = `SELECT * FROM menu_info WHERE id= ${id}`;
-    database.query(sql, function (err, data) {
-      if (err) throw err;
-        res.send(result)
-    });
-});
+// app.get('/edit-menu/:id', function(req, res, next) {
+//     var id = req.params.id;
+//     var sql = `SELECT * FROM menu_info WHERE id= ${id}`;
+//     database.query(sql, function (err, data) {
+//       if (err) throw err;
+//         res.send(result)
+//     });
+// });
 
-app.post('/edit-menu/:id', function(req, res, next) {
+app.post('/edit-menu/:id', (req, res) => {
     var id= req.params.id;
-    var updateData=req.body;
-    var sql = "UPDATE menu_info SET ? WHERE id= ?";
+    var post  = req.body;
+    var product= post.product;
+    var price= post.price;
+    var availability= post.availability;
+    var category = post.category;
 
-    database.query(sql, [updateData, id], function (err, data) {
-     if (err) throw err;
-        console.log(data.affectedRows + " record(s) updated");
-        res.status(200).send(result)
-    });
+    console.log(id)
+    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=? WHERE id = ? ", [product, price, category, availability,id],
+        (err,result) => {
+            if(result){
+                console.log("hello")
+                res.send(result)
+            }
+            else{
+                console.log(err)
+                res.send(err)
+            }
+        }
+    )
 });
+        
 
 module.exports = app;

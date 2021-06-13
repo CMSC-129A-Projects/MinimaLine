@@ -7,34 +7,51 @@ class ProdDesc extends Component {
         super(props);
         this.state = {
             all_categs: [],
+            prod_id: null,
             prod_name: '',
             prod_price: '',
             prod_categ: '',
-            prod_availability: this.props["availability"]
+            prod_availability: null
         }
         // this.showAvailability = this.showAvailability.bind(this)
     }
+
     handleChange(e){
         this.setState({
           [e.target.name]: e.target.value
         })
     }
-    edit = e =>{
+    edit = e => {
+        e.preventDefault();
+        const id = this.props["id"]
         const data = {
-            product: this.state.prod_name,
-            // price:
+            product: !this.state.prod_name ? this.props["product"] : this.state.prod_name,
+            price: !this.state.prod_price ? this.props["price"] : this.state.prod_price,
+            category: this.state.prod_categ,
+            availability: this.state.prod_availability
         }
+        Axios.post(`http://localhost:3005/edit-menu/${id}`, data).then((response) => {
+            console.log(response)
+            this.props.test(this.state.prod_categ)
+        })
     }
     async componentDidMount(){
         let categs = await Axios.get('http://localhost:3005/display-category');
         this.setState({
-            all_categs: categs.data
+            all_categs: categs.data,
+            prod_categ: this.props["category_id"],
         }) 
+        if(this.props["availability"]===1){
+            this.setState({prod_availability: "1"})
+        }
+        else if(this.props["availability"]===0){
+            this.setState({prod_availability: "0"})
+        }
     }
     render() { 
         if (this.props.mode==="edit") {
             return (
-                <Form>
+                <Form onSubmit={this.edit}>
                     <img src={this.props["photo"]}/>
                     <Upload
                         type="file"
@@ -46,7 +63,6 @@ class ProdDesc extends Component {
                         type="text"
                         name="prod_name" 
                         autoComplete="off"
-                        required
                         value={this.state.prod_name}
                         onChange={this.handleChange.bind(this)}
                     />
@@ -55,30 +71,23 @@ class ProdDesc extends Component {
                         type="text"
                         name="prod_price"
                         autoComplete="off"
-                        required
                         value={this.state.prod_price}
                         onChange={this.handleChange.bind(this)}
                     />
-                    {this.props["availability"]===1 ?
-                        <Select
-                            name="prod_availability"
-                            value={this.state.prod_availability}
-                            onChange={this.handleChange.bind(this)}>
-                            <option selected value="1">Available</option> 
-                            <option value="0">Not Available</option>
-                        </Select> :
-                        <Select
-                            name="prod_availability"
-                            value={this.state.prod_availability}
-                            onChange={this.handleChange.bind(this)}>
-                            <option value="1">Available</option> 
-                            <option selected value="0">Not Available</option>
-                        </Select>
-                    }
-                    <Select>
+                    <Select
+                        name="prod_availability"
+                        value={this.state.prod_availability}
+                        onChange={this.handleChange.bind(this)}>
+                        <option value="1">Available</option> 
+                        <option value="0">Not Available</option>
+                    </Select>
+                    <Select
+                        name="prod_categ"
+                        value={this.state.prod_categ}
+                        onChange={this.handleChange.bind(this)}>
                         {this.state.all_categs.map((categ,index)=>{
                             return (
-                                <option>{categ["name"]}</option>
+                                <option value={categ["id"]}>{categ["name"]}</option>
                             )
                         })}
                     </Select>

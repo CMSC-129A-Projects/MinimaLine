@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as Manager from './manager/components';
 
-class SelectMode extends Component {
+class App extends Component {
   render() { 
     return ( 
         <Manager.App/>
@@ -9,4 +9,4 @@ class SelectMode extends Component {
   }
 }
  
-export default SelectMode;
+export default App;

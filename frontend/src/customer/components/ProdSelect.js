@@ -4,9 +4,10 @@ import {Link} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import Categ from "../../manager/components/Categ";
 import OrderSum from "./OrderSum";
-import Products from "../../manager/components/Products";
+// import Products from "../../manager/components/Products";
 import Modal from 'react-modal';
 import ProdModal from './ProdModal';
+import Axios from 'axios';
 
 class ProdSelect extends Component {
     constructor(){
@@ -14,10 +15,13 @@ class ProdSelect extends Component {
         this.state = {
             clicked: false,
             current: null,
+            all_categs: [],
+            prods: [],
             openProdModal: false
         }
         this.changeColor = this.changeColor.bind(this);
         this.showModal = this.showModal.bind(this);
+        this.showProducts = this.showProducts.bind(this);
     }
 
     showModal(index){
@@ -27,11 +31,29 @@ class ProdSelect extends Component {
             clicked: true
         })
     }
-
-    componentDidMount(){
+    async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
+        let categs = await Axios.get('http://localhost:3005/display-category');
+        if(JSON.stringify(categs.data)==='{}'){
+            this.showProducts("empty")
+        }
+        else{
+            this.setState({
+                all_categs: categs.data
+            })
+            this.showProducts(this.state.all_categs[0]["id"])
+        }
     }
-    
+    async showProducts(categ_id){
+        if(categ_id!=="empty"){
+            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+            this.setState({
+                prods: categProds.data,
+                clicked: false,
+                current: null
+            })
+        }
+    }
     changeColor(index){
         if(this.state.current !== index)
             this.setState({
@@ -41,20 +63,8 @@ class ProdSelect extends Component {
     }
 
     render() { 
-        const Product = (props) => {
-            const {product_img, product_name, product_price, product_availability} = props.product;
-            return (
-                <article>
-                    <h3><img className='image' src={product_img} alt="" /></h3>
-                    <h1>{product_name}</h1>
-                    <h2>{product_price}</h2>
-                    <h2>{product_availability ? "Available" : "Not Available"}</h2>
-                </article> 
-            );
-        };
         var modalStyle={overlay: {zIndex: 2}}
-        
-        return ( 
+        return( 
             <Container>
 
                 <Wrapper>
@@ -65,30 +75,45 @@ class ProdSelect extends Component {
                             </Link>
                         </ArrowWrapper>
                     </Arrow>
-                    <CheckoutButton>
-                        <Link to='/checkout'>
-                            <button>Checkout</button>
-                        </Link>
-                    </CheckoutButton>
                     <Nav>
-                        <Categ mode={"view"}/> 
+                        {/* <Categ mode={"view"}/>  */}
+                        <Categ mode={"view"} categs={this.state.all_categs} onClick={this.showProducts}/> 
                     </Nav>
-                    <ProdGrid>
-                        <section className='productlist'> 
-                        {Products.map((product,index)=>{
-                                return (
-                                    <div
-                                        onClick={()=>this.changeColor(index)}
-                                        onClick={()=>this.showModal(index)}
-                                        className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
-                                        <Product key={index} product={product}></Product>
-                                    </div>
-                                )
-                            })}
-                            {this.state.openProdModal ? <ProdModal {...Products[this.state.current]} mode={this.showModal}/> : null }
-                            <OrderSum />
-                        </section>
-                    </ProdGrid>
+                    {!this.state.prods.length ?
+                        <ProdGrid>
+                            <div className="productlist">
+                                <h3> No products in this category.</h3>
+                            </div>
+                        </ProdGrid>
+                        : <ProdGrid>
+                            <section className='productlist'> 
+                            {this.state.prods.map((prod,index)=>{
+                                    return (
+                                        <div
+                                            onClick={()=>this.showModal(index)}
+                                            onClick={()=>this.changeColor(index)}
+                                            className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
+                                            <article>
+                                                <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
+                                                <h1>{prod["product"]}</h1>
+                                                <h2>Php {prod["price"]}</h2>
+                                                <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
+                                            </article> 
+                                        </div>
+                                    )
+                                })}
+                                {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} mode={this.showModal}/> : null }
+                                <RightContainer>
+                                    <OrderSum />
+                                    <CheckoutButton>
+                                        <Link to='/checkout'>
+                                            <button>Checkout</button>
+                                        </Link>         
+                                    </CheckoutButton>
+                                </RightContainer>
+                            </section>
+                         </ProdGrid>
+                    }
                 </Wrapper>
             </Container>
          );
@@ -96,35 +121,52 @@ class ProdSelect extends Component {
 }
 
 const CheckoutButton = styled.div`
-    right: 0;
+    /* right: 80px; */
     display: flex;
     flex-direction: row;
-    height: 120px;
     position: fixed;
-    width: 12%;
+    /* right: 6vh; */
+    /* margin-top: 78vh; */
+    margin-top: 70vh;
+    /* right: -38vh; */
     align-items: center;
-    background: white;
     z-index: 1;
+    /* margin-top: 750px; */
+    width: 20%;
+    /* background-color: white; */
+    display: flex;
+    justify-content: center;
 
     button{ 
+        /* position: absolute; */
+        /* right: 0; */
+        /* margin-right: 11vh; */
+
+        /* width: 250px; */
+        width: 25vh;
+        /* height: 200px; */
+        height: 8vh;
         outline: none;
         border: none;
         color: black;
-        padding: 0rem 1rem;
-        margin: 0.1px 10px 0.1px 10px;
-        min-width: 110px;
-        height: 70px;
-        line-height: 70px;
+        /* padding: 0rem 1rem; */
+        padding: 0vh 1vh;
+        /* margin: 0.1px 10px 0.1px 10px; */
+        /* margin: 0.1vh 10vh 0.1vh 10vh; */
+        /* height: 70px; */
+        /* line-height: 70px; */
         text-align: center;
         background: #F9C91E;
         border-radius: 1rem;
         transition: all 0.1s ease-in;
         font-family: "Work Sans";
-        font-size: 90%;
+        /* font-size: 35px; */
+        font-size: 3vh;
         font-weight: bold;
 
         &:hover {
             transform: translateY(-4px);
+            cursor: pointer;
         }
     }
 `
@@ -178,6 +220,7 @@ const CategModal = styled(Modal)`
     flex-direction: row;
     
     button{
+        outline: none;
         font-family: "Work Sans";
         margin: 30px 20px 0px;
         width: 150px;
@@ -213,7 +256,7 @@ const Nav = styled.div`
   overflow-x: auto;
   position: fixed;
   margin-left: 5%;
-  width: 83%;
+  width: 95%;
   align-items: center;
   background: white;
   z-index: 1;
@@ -254,7 +297,8 @@ const ProdGrid = styled.div`
         display: grid;
         gap: 2rem;
         z-index: 0;
-        grid-template-columns: repeat(auto-fit, minmax(177px, 1fr));
+        /* grid-template-columns: repeat(auto-fit, minmax(177px, 1fr)); */
+        grid-template-columns: repeat(4, 220px);
 
         @media screen and (max-width: 1024px) {
             gap: 1.5rem;
@@ -265,10 +309,11 @@ const ProdGrid = styled.div`
         background: #F9C91E;
         border-radius: 1rem;
         padding: 1rem 2rem;
-        transition: all 0.2s ease-in;
+        /* transition: all 0.2s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
+            cursor: pointer;
         }
 
         h1{
@@ -282,18 +327,18 @@ const ProdGrid = styled.div`
 
         @media screen and (max-width: 1024px) {
             width: 70%;
-            /* padding: 1rem 2rem; */
         }
     }
     .unclicked{
         background: #fff;
         border-radius: 1rem;
         padding: 1rem 2rem;
-        transition: all 0.2s ease-in;
+        /* transition: all 0.2s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
             background: #F3D9A4;
+            cursor: pointer;
         }
         h1{
             margin-top: 0.5rem;
@@ -313,6 +358,21 @@ const ProdGrid = styled.div`
         width: 150px;
     }
 `;
+
+const RightContainer = styled.div`
+    width: 20%;
+    height: 50vh;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    margin-top: 4vh;
+    right: -38vh;
+    align-items: center;
+    z-index: 1;
+    width: 20%;
+    display: flex;
+    justify-content: center;
+`
 
 const Wrapper = styled.div`
   width: 100%;

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import {Link} from 'react-router-dom';
-// import img from '../../assets/Lunch_Break_Isometric.svg'
 import img from '../../assets/confirm.png';
 
 class Confirmation extends Component {
@@ -9,32 +8,45 @@ class Confirmation extends Component {
         super(props);
         this.state = {  }
     }
+
+    componentDidMount(){
+        document.title = "MinimaLine | Confirm Order"
+    }
+
     render() { 
         return ( 
-            <Container>
-                <div>
-                    <h1>Your order has been confirmed.</h1>
-                    <img src={img}/>
-                    <h2>Please claim your order ticket and proceed to the cashier for payment.</h2>
-                </div>
-                <Link to="/customer">
-                    <button>
-                        Okay
-                    </button>
-                </Link>
-            </Container>
+            <Background>
+                 <Container>
+                    <div>
+                        <h1>Your order has been confirmed.</h1>
+                        <img src={img}/>
+                        <h2>Please claim your order ticket and proceed to the cashier for payment.</h2>
+                    </div>
+                    <Link to="/customer">
+                        <button>
+                            Okay
+                        </button>
+                    </Link>
+                </Container>
+            </Background>
         );
     }
 }
+const Background = styled.div`
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    /* background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%); */
+`;
 
 const Container = styled.div`
     background-color: white;
-    box-shadow: 3px 6px 5px 3px #d6d6d6;
+    box-shadow: 0px 5px 10px -2px #858585;
     border-radius: 70px;
-    height: 800px;
-    width: 800px;
-    margin-top: -400px;
-    margin-left: -400px;
+    height: 80vh;
+    width: 80vh;
+    margin-top: -40vh;
+    margin-left: -40vh;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -43,28 +55,30 @@ const Container = styled.div`
     text-align: center;
 
     h1{
-        margin-top: 85px;
+        margin-top: 5vh;
         font-weight: bolder;
-        font-size: 45px;
+        font-size: 4vh;
+
     }
 
     h2{
-        margin-top: -40px;
-        padding: 0px 70px;
+        margin-top: -1vh;
+        padding: -20vh 70vh;
         font-weight: lighter;
     }
 
     img{
-        margin-top: -90px;
-        width: 500px;
-        height: 500px;
+        margin-top: -10vh;
+        width: 50vh;
+        height: 50vh;
     }
 
     button{
-        margin-top: 25px;
+        outline: none;
+        margin-top: 2vh;
         font-family: "Work Sans";
-        width: 200px;
-        height: 90px;
+        width: 20vh;
+        height: 10vh;
         border: none;
         box-shadow: 0px 10px 9px -15px rgba(0,0,0,0.25);
         border-radius: 20px;
@@ -73,9 +87,8 @@ const Container = styled.div`
         cursor: pointer;
         color: black;
         background-color: #f9c91e;
-        /* box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25); */
         :hover{
-            transform: translateY(2px)
+            transform: translateY(2px);
         }
     }
 `

@@ -25,14 +25,14 @@ class ProdModal extends Component {
     }
 
     render() { 
-        console.log(this.props.product_name)
+        console.log(this.props["product"])
         var modalStyle={overlay: {zIndex: 2}}
         return (  
             <ModalContainer>
                 <ProductModal isOpen={true} style={modalStyle}>
                     <div className="left">
-                        <h1>{this.props.product_name}</h1>
-                        <h2>{this.props.product_price}</h2>
+                        <h1>{this.props["product"]}</h1>
+                        <h2>{this.props["price"]}</h2>
                         <div className="counter">
                             <button onClick={this.decrement}>-</button>
                             <span> {this.state.count} </span>
@@ -43,7 +43,7 @@ class ProdModal extends Component {
                             <button className="cancel" onClick={this.props.mode}>Cancel</button>
                         </div>
                     </div>
-                    <img src={this.props.product_img}/>
+                    <img src={this.props["photo"]}/>
                 </ProductModal>
             </ModalContainer>
         );

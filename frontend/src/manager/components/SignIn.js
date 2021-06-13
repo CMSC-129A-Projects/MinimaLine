@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-// import Input from "./Input";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
-
 
 class SignIn extends Component {
   constructor(props) {
@@ -14,11 +12,25 @@ class SignIn extends Component {
       password: '',
       redirect: false,
       login_error: false,
-      error_msg: null
+      error_msg: null,
+      userId: null
      }
   }
-  componentDidMount(){
-    document.title = "MinimaLine | Sign In"
+  async componentDidMount(){
+    document.title = "MinimaLine | Sign In";
+    Axios.defaults.withCredentials = true;
+    await Axios.get("http://localhost:3005/user-login").then((response) => {
+      if(response.data.loggedIn==true){
+        console.log(response.data.user)
+        this.setState({
+          userId: response.data.user[0]["id"],
+          redirect: true
+        })
+        console.log(this.state.userId)
+      }
+      else 
+        console.log(response)
+    })
   }
   
   handleChange(e){
@@ -29,36 +41,38 @@ class SignIn extends Component {
   login = e => {
     e.preventDefault();
     const data = this.state;
-    Axios.post("http://localhost:3005/user-login", data).then((response) => {
-      if(response.status!==400){
-        console.log(response)
-        this.setState({redirect:true})
+    Axios.post("http://localhost:3005/user-login", data, {withCredentials: true}).then((response) => {
+      if(response.data.message){
+        this.setState({
+          error_msg: response.data.message,
+          login_error: true
+        })
       }
       else{
-        {throw new Error()}
+        console.log(response)
+        let userId = response.data[0]["id"]
+        this.setState({ 
+          userId: userId,
+          redirect:true
+        })
       }
-    })
-    .catch((err) => {
-      this.setState({login_error:true})
-      console.log(this.state.login_error)
     })
   };
 
   render() { 
     if(this.state.redirect)
-      return <Redirect to="/dashboard"/>
+      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return ( 
       <Container>
       <LogoWrapper>
         {/* <img src={logo} alt="" /> */}
-        <h3>
-          Minima<span>Line</span>
-        </h3>
+        <h3>Minima</h3>
+        <h2>Line</h2>
       </LogoWrapper>
 
       <Form onSubmit={this.login}>
         <h3>Sign In</h3>
-        {this.state.login_error ? <p>Incorrect username/password!</p> : null}
+        {this.state.login_error ? <p>{this.state.error_msg}</p> : null}
         <InputContainer>
           <StyledInput 
             type="text" 
@@ -106,25 +120,26 @@ const Form = styled.form`
 
     h3{
       color: #666666;
-      // color: black;
       margin-bottom: 2rem;
       font-size: 40px;
       align-items: left;
+      margin-left: -10px;
+      
     }
     p{
       color: #ff5c5c;
       font-weight: bold;
     }
     button{
-        /* margin-left: 45px; */
         margin-top: 10px;
         width: 75%;
         max-width: 350px;
+        margin-left: -20px;
         min-width: 250px;
-        height: 40px;
+        height: 50px;
         border: none;
         box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
-        border-radius: 8px;
+        border-radius: 17px;
         background-color: #568d33;
         color: #fff;
         font-weight: 600;
@@ -138,6 +153,8 @@ const Form = styled.form`
 `;
 
 const LogoWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
     img{
         height: 6rem;
         margin-bottom: -20px;
@@ -149,17 +166,16 @@ const LogoWrapper = styled.div`
         font-size: 22px;
     }
 
-    span{
+    h2{
         color: #568d33;
         font-weight: 300;
         font-size: 18px;
+        margin-top: 25px;
     }
-
 `;
 
 const Container = styled.div`
-  min-width: 400px;
-  /* backdrop-filter: blur(35px); */
+  min-width: 600px;
   backdrop-filter: blur(9px);
   background-color: rgba(255, 255, 255, 0.5);
   height: 100%;
@@ -182,22 +198,25 @@ const Container = styled.div`
       margin-top: 2rem;
 
       span {
-          // color: #ff8d8d;
           color: #568d33;
           cursor: pointer;
       }
+  }
+  span:hover{
+    transform: translateY(-3px);
+    color: #ec9736;
   }
 `;
 const StyledInput = styled.input`
     width: 80%;
     max-width: 450px;
     min-width: 350px;
-    height: 40px;
+    height: 50px;
     border: none;
     margin: 0.5rem 0;
-    background-color: #f5f5f5;
+    background-color: white;
     box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
-    border-radius: 8px;
+    border-radius: 17px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
 
@@ -226,7 +245,6 @@ const Status = styled.div`
     background: #fe2f75;
   }
   ${StyledInput}:valid + & {
-    // background: #70edb9;
     background: #568d33;
   }
 `;

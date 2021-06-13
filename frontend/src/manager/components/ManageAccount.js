@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Modal from 'react-modal';
 import { BiArrowBack } from "react-icons/bi";
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
 
 class ManageAccount extends Component {
   constructor(props) {
@@ -13,14 +14,31 @@ class ManageAccount extends Component {
       currentNav: "account",
       editing: false,
       currentAccEdit: null,
-      currentStoreEdit: null
+      currentStoreEdit: null,
+      user_info: [],
+      username: '',
+      email: '',
+      successful: false,
+      error: false,
+      error_msg: ''
      }
+     this.getUserInfo = this.getUserInfo.bind(this);
      this.navClick = this.navClick.bind(this);
      this.editThis = this.editThis.bind(this);
      this.closeEdit = this.closeEdit.bind(this);
+     this.editUsername = this.editUsername.bind(this);
+     this.editEmail = this.editEmail.bind(this);
+  }
+  async componentDidMount(){
+    document.title = "MinimaLine | Account Management";
+    this.getUserInfo();
+  }
+  async getUserInfo(){
+    let user = await Axios.get(`http://localhost:3005/account-info/${this.props.location.state.userId}`);
+    console.log(user.data[0]);
+    this.setState({user_info: user.data[0]})
   }
   navClick(id){
-    console.log(this.state.current)
     if(id==="account"){
       this.setState({
         account: true,
@@ -40,28 +58,74 @@ class ManageAccount extends Component {
     if(this.state.currentNav==="account")
       this.setState({
         editing: true,
+        successful: false,
         currentAccEdit: curr
       })
     else if(this.state.currentNav==="store")
     this.setState({
       editing: true,
+      successful: false,
       currentStoreEdit: curr
     })
   }
   closeEdit(){
     this.setState({
       editing: false,
-      currentAccEdit: false,
-      currentStoreEdit: false
+      // currentAccEdit: false,
+      // currentStoreEdit: false
     })
   }
-
+  handleChange(e){
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+  editEmail(e){
+    e.preventDefault();
+    const data = {email: this.state.email};
+    Axios.post(`http://localhost:3005/edit-email/${this.props.location.state.userId}`, data).then((response) => {
+      if(response.data.errors){
+        this.setState({
+          error: true,
+          error_msg: response.data.errors[0].msg
+        })
+      }else{
+        this.closeEdit();
+        this.getUserInfo();
+        this.setState({
+          successful: true,
+          error: false,
+          email: ''
+        })
+      }
+    })
+  }
+  editUsername(e){
+    e.preventDefault();
+    const data = {username: this.state.username};
+    Axios.post(`http://localhost:3005/edit-username/${this.props.location.state.userId}`, data).then((response) => {
+      if(response.data.errors){
+        this.setState({
+          error: true,
+          error_msg: response.data.errors[0].msg
+        })
+      }else{
+        this.closeEdit();
+        this.getUserInfo();
+        this.setState({
+          successful: true,
+          error: false,
+          username: ''
+        })
+      }
+    })
+  }
   render() { 
     return ( 
       <Container>
         <Top>
           <div className="arrow">
-            <Link to='/dashboard'>
+            <Link to={{ pathname: "/dashboard", state: {userId: this.props.location.state.userId} }}>
                 <BiArrowBack size="50px" color="#676666"/>
             </Link>
           </div>
@@ -89,34 +153,42 @@ class ManageAccount extends Component {
                   <div className="info">
                     <div className="block">
                       <h2 className="label">Username</h2>
+                      {this.state.successful && this.state.currentAccEdit===1 ? <p className="successful">Successfully changed username</p> : null}
+                      {this.state.error && this.state.currentAccEdit===1 ? <p className="error">{this.state.error_msg}</p> : null}
                       {(this.state.editing && this.state.currentAccEdit===1) ? 
-                        <Form>
+                        <Form onSubmit={this.editUsername}>
                           <p className="edit-label">Enter your new username</p>
-                          <StyledInput placeholder="your_username"/>
+                          <StyledInput type="text" autoComplete="off"
+                            name="username" value={this.state.username}
+                            placeholder="Username" onChange={this.handleChange.bind(this)}/>
                           <div>
-                            <button className="save" onClick={this.closeEdit}>Save Changes</button>
+                            <button className="save">Save Changes</button>
                             <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                           </div>
                         </Form> 
                       : <div>
-                          <p>your_username</p>
+                          <p>{this.state.user_info["username"]}</p>
                           <button className="edit" onClick={()=>this.editThis(1)}>Edit</button> 
                         </div> }
                     </div>
 
                     <div className="block">
                       <h2 className="label">E-mail</h2>
+                      {this.state.successful && this.state.currentAccEdit===2 ? <p className="successful">Successfully changed e-mail</p> : null}
+                      {this.state.error && this.state.currentAccEdit===2 ? <p className="error">{this.state.error_msg}</p> : null}
                       {(this.state.editing && this.state.currentAccEdit===2) ? 
-                        <Form>
-                          <p className="edit-label">Enter your new e-mail address</p>
-                          <StyledInput placeholder="email@email.com"/>
+                        <Form onSubmit={this.editEmail}>
+                          <p className="edit-label">Enter your new e-mail</p>
+                          <StyledInput type="email" autoComplete="off"
+                            name="email" value={this.state.email}
+                            placeholder="E-mail" onChange={this.handleChange.bind(this)}/>
                           <div>
-                            <button className="save" onClick={this.closeEdit}>Save Changes</button>
+                            <button className="save">Save Changes</button>
                             <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                           </div>
                         </Form> 
                       : <div>
-                          <p>email@email.com</p>
+                          <p>{this.state.user_info["email"]}</p>
                           <button className="edit" onClick={()=>this.editThis(2)}>Edit</button> 
                         </div> }
                     </div>
@@ -152,14 +224,14 @@ class ManageAccount extends Component {
                     {(this.state.editing && this.state.currentStoreEdit===1) ? 
                       <Form>
                         <p className="edit-label">Enter store name</p>
-                        <StyledInput placeholder="your_storename"/>
+                        <StyledInput placeholder="Store name"/>
                         <div>
                           <button className="save" onClick={this.closeEdit}>Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                         </div>
                       </Form> 
                     : <div>
-                        <p>your_storename</p>
+                        <p>{this.state.user_info["store_name"]}</p>
                         <button className="edit" onClick={()=>this.editThis(1)}>Edit</button> 
                       </div> }
                   </div>
@@ -169,14 +241,14 @@ class ManageAccount extends Component {
                     {(this.state.editing && this.state.currentStoreEdit===2) ? 
                       <Form>
                         <p className="edit-label">Enter store location</p>
-                        <StyledInput placeholder="your_storelocation"/>
+                        <StyledInput placeholder="Branch"/>
                         <div>
                           <button className="save" onClick={this.closeEdit}>Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                         </div>
                       </Form> 
                     : <div>
-                        <p>your_storelocation</p>
+                        <p>{this.state.user_info["location"]}</p>
                         <button className="edit" onClick={()=>this.editThis(2)}>Edit</button> 
                       </div> }
                   </div>
@@ -186,14 +258,14 @@ class ManageAccount extends Component {
                     {(this.state.editing && this.state.currentStoreEdit===3) ? 
                       <Form>
                         <p className="edit-label">Enter store manager's name</p>
-                        <StyledInput placeholder="your_storemanager"/>
+                        <StyledInput placeholder="Store manager"/>
                         <div>
                           <button className="save" onClick={this.closeEdit}>Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                         </div>
                       </Form> 
                     : <div>
-                        <p>your_storemanager</p>
+                        <p>{this.state.user_info["manager_name"]}</p>
                         <button className="edit" onClick={()=>this.editThis(3)}>Edit</button> 
                       </div> }
                   </div>
@@ -313,9 +385,14 @@ const Body = styled.div`
   h2{
     font-size: 30px;
   }
-  /* hr{
-    color: #676666;
-  } */
+  .successful{
+    color: #568d33;
+    font-weight: bold;
+  }
+  .error{
+    color: #ff5c5c;
+    font-weight: bold;
+  }
   .info{
     display: flex;
     flex-direction: column;
