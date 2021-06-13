@@ -107,9 +107,10 @@ class EditMenu extends Component {
             prod_img: e.target.files[0]
         })
     }
+
     addNewCateg = e =>{
         const data = {
-            category: this.state.new_categ
+            category: (this.state.new_categ).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())
         };
         e.preventDefault();
         Axios.post("http://localhost:3005/add-categ", data).then((response) => {
@@ -122,7 +123,7 @@ class EditMenu extends Component {
         console.log(this.state.current_categ)
         e.preventDefault();
         const data = {
-            product: this.state.prod_name,
+            product: (this.state.prod_name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
             price: this.state.prod_price,
             availability: Number(this.state.prod_availability),
             category: this.state.current_categ,
