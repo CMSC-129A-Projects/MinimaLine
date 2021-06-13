@@ -246,6 +246,10 @@ class EditMenu extends Component {
                     <Nav>
                         <Categ mode={"edit"} categs={this.state.all_categs} curr={this.state.current_categ} onClick={this.handleClick}/>
                         <AddCategButton size="50px" onClick={this.toggleAddCateg}/>
+                        {!this.state.all_categs.length ? 
+                            <Instruction>
+                                <h1>Click to add category</h1>
+                            </Instruction> : null}
                     </Nav>
                     <EditButton>
                         <Link to={{ pathname: "/view-menu", state: {userId: this.props.location.state.userId} }}>
@@ -642,5 +646,44 @@ const Wrapper = styled.div`
     margin-top: 70px; 
   }
 `;
+
+const Instruction = styled.div`
+    position: relative;
+    max-width: 30em;
+    background-color: #F9C91E;
+    padding: 0.7em 1.5em;
+    font-size: 1.25em;
+    border-radius: 1rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
+    margin-left: 14px;
+
+    animation: MoveUpDown 1s linear infinite;
+
+    @keyframes MoveUpDown {
+        0%, 10% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+
+    h1{
+        font-size: 20px;
+    }
+    ::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 20px solid transparent;
+        border-right-color: #F9C91E;
+        border-left: 0;
+        margin-top: -20px;
+        margin-left: -20px;
+    }
+`
 
 export default EditMenu;
