@@ -17,6 +17,7 @@ class ManageAccount extends Component {
       currentStoreEdit: null,
       user_info: [],
       username: '',
+      email: '',
       successful: false,
       error: false,
       error_msg: ''
@@ -26,6 +27,7 @@ class ManageAccount extends Component {
      this.editThis = this.editThis.bind(this);
      this.closeEdit = this.closeEdit.bind(this);
      this.editUsername = this.editUsername.bind(this);
+     this.editEmail = this.editEmail.bind(this);
   }
   async componentDidMount(){
     document.title = "MinimaLine | Account Management";
@@ -69,13 +71,33 @@ class ManageAccount extends Component {
   closeEdit(){
     this.setState({
       editing: false,
-      currentAccEdit: false,
-      currentStoreEdit: false
+      // currentAccEdit: false,
+      // currentStoreEdit: false
     })
   }
   handleChange(e){
     this.setState({
       [e.target.name]: e.target.value
+    })
+  }
+  editEmail(e){
+    e.preventDefault();
+    const data = {email: this.state.email};
+    Axios.post(`http://localhost:3005/edit-email/${this.props.location.state.userId}`, data).then((response) => {
+      if(response.data.errors){
+        this.setState({
+          error: true,
+          error_msg: response.data.errors[0].msg
+        })
+      }else{
+        this.closeEdit();
+        this.getUserInfo();
+        this.setState({
+          successful: true,
+          error: false,
+          email: ''
+        })
+      }
     })
   }
   editUsername(e){
@@ -131,8 +153,8 @@ class ManageAccount extends Component {
                   <div className="info">
                     <div className="block">
                       <h2 className="label">Username</h2>
-                      {this.state.successful ? <p className="successful">Successfully changed username</p> : null}
-                      {this.state.error ? <p className="error">{this.state.error_msg}</p> : null}
+                      {this.state.successful && this.state.currentAccEdit===1 ? <p className="successful">Successfully changed username</p> : null}
+                      {this.state.error && this.state.currentAccEdit===1 ? <p className="error">{this.state.error_msg}</p> : null}
                       {(this.state.editing && this.state.currentAccEdit===1) ? 
                         <Form onSubmit={this.editUsername}>
                           <p className="edit-label">Enter your new username</p>
@@ -151,13 +173,17 @@ class ManageAccount extends Component {
                     </div>
 
                     <div className="block">
-                      <h2 className="label">E-mail address</h2>
+                      <h2 className="label">E-mail</h2>
+                      {this.state.successful && this.state.currentAccEdit===2 ? <p className="successful">Successfully changed e-mail</p> : null}
+                      {this.state.error && this.state.currentAccEdit===2 ? <p className="error">{this.state.error_msg}</p> : null}
                       {(this.state.editing && this.state.currentAccEdit===2) ? 
-                        <Form>
-                          <p className="edit-label">Enter your new e-mail address</p>
-                          <StyledInput placeholder="E-mail address"/>
+                        <Form onSubmit={this.editEmail}>
+                          <p className="edit-label">Enter your new e-mail</p>
+                          <StyledInput type="email" autoComplete="off"
+                            name="email" value={this.state.email}
+                            placeholder="E-mail" onChange={this.handleChange.bind(this)}/>
                           <div>
-                            <button className="save" onClick={this.closeEdit}>Save Changes</button>
+                            <button className="save">Save Changes</button>
                             <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                           </div>
                         </Form> 

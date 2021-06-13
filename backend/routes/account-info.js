@@ -61,7 +61,7 @@ app.post('/user-registration', [
         .custom(async email => {
             const value = await isEmailUsed(email);
             if (value) {
-                throw new Error('Email is already in use!');
+                throw new Error('E-mail is already in use!');
             }
         }),
     check('password') // 
@@ -217,7 +217,40 @@ app.post('/edit-username/:id', [
         )
     
 });
+app.post('/edit-email/:id', [
+    check('email')
+        .custom(async email => {
+            const value = await isEmailUsed(email);
+            if (value) {
+                throw new Error('E-mail is already in use!');
+            }
+        })
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            console.log(errors)
+            return res.send({errors: errors.array()});
+        }
+        var id= req.params.id;
+        var email = req.body.email;
 
+        console.log(id)
+        database.query("UPDATE account_info SET email=? WHERE id = ? ", [email,id],
+            (err,result) => {
+                if(result){
+                    console.log("hello")
+                    console.log(result)
+                    res.send(result)
+                }
+                else{
+                    console.log(err)
+                    res.send(err)
+                }
+            }
+        )
+    
+});
 // custom validator functions
 function isEmailUsed(email){
     return new Promise((resolve, reject) => {

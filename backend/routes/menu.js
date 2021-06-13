@@ -57,7 +57,21 @@ app.get('/display-category', (req,res) => {
         else res.status(200).json({});
     });
 });
+//send category list to frontend for display to edit menu BY ID
+app.get('/display-category/:id', (req,res) => {
+    let id = req.params.id;
 
+    database.query('SELECT * FROM category where store_id=?', id, (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        if (result.length) {
+            res.status(200).json(result);
+        }
+        else res.status(200).json({});
+    });
+});
 //get products by category ID
 app.get('/menu-info/:id', (req,res) => {
     // let sql = 'SELECT * FROM menu_info';
@@ -76,7 +90,25 @@ app.get('/menu-info/:id', (req,res) => {
         else res.status(200).json({});
     });
 });
+//get products by category ID and store ID
+app.get('/:userID/menu-info/:categID', (req,res) => {
+    // let sql = 'SELECT * FROM menu_info';
+    const userID = req.params.userID;
+    const categID = req.params.categID;
 
+    database.query("SELECT * FROM menu_info WHERE category_id = ? AND store_id = ?", [categID,userID],
+    (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+
+        if (result.length) {
+            res.status(200).json(result);
+        }
+        else res.status(200).json({});
+    });
+});
 //to add products to menu (manager side)
 app.post('/add-product', (req,res)=> {
     if(req.method == "POST"){
