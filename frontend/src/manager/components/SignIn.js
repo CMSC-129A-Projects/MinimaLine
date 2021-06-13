@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-// import Input from "./Input";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
-
 
 class SignIn extends Component {
   constructor(props) {
@@ -43,7 +41,7 @@ class SignIn extends Component {
   login = e => {
     e.preventDefault();
     const data = this.state;
-    Axios.post("http://localhost:3005/user-login", data).then((response) => {
+    Axios.post("http://localhost:3005/user-login", data, {withCredentials: true}).then((response) => {
       if(response.data.message){
         this.setState({
           error_msg: response.data.message,
@@ -51,7 +49,7 @@ class SignIn extends Component {
         })
       }
       else{
-        console.log(response.data[0]["id"])
+        console.log(response)
         let userId = response.data[0]["id"]
         this.setState({ 
           userId: userId,
@@ -62,15 +60,14 @@ class SignIn extends Component {
   };
 
   render() { 
-    if(this.state.redirect || this.state.userId)
+    if(this.state.redirect)
       return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return ( 
       <Container>
       <LogoWrapper>
         {/* <img src={logo} alt="" /> */}
-        <h3>
-          Minima<span>Line</span>
-        </h3>
+        <h3>Minima</h3>
+        <h2>Line</h2>
       </LogoWrapper>
 
       <Form onSubmit={this.login}>
@@ -156,6 +153,8 @@ const Form = styled.form`
 `;
 
 const LogoWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
     img{
         height: 6rem;
         margin-bottom: -20px;
@@ -167,12 +166,12 @@ const LogoWrapper = styled.div`
         font-size: 22px;
     }
 
-    span{
+    h2{
         color: #568d33;
         font-weight: 300;
         font-size: 18px;
+        margin-top: 25px;
     }
-
 `;
 
 const Container = styled.div`

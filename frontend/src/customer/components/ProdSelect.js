@@ -103,7 +103,14 @@ class ProdSelect extends Component {
                                     )
                                 })}
                                 {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} mode={this.showModal}/> : null }
-                                <OrderSum />
+                                <RightContainer>
+                                    <OrderSum />
+                                    <CheckoutButton>
+                                        <Link to='/checkout'>
+                                            <button>Checkout</button>
+                                        </Link>         
+                                    </CheckoutButton>
+                                </RightContainer>
                             </section>
                          </ProdGrid>
                     }

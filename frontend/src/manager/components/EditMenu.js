@@ -43,7 +43,7 @@ class EditMenu extends Component {
         this.showCategs("first");
     }
     async showCategs(id){
-        let categs = await Axios.get('http://localhost:3005/display-category');
+        let categs = await Axios.get(`http://localhost:3005/display-category/${this.props.location.state.userId}`);
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }
@@ -65,15 +65,45 @@ class EditMenu extends Component {
                 })
             this.showProducts(this.state.current_categ)
         }
+        // let categs = await Axios.get('http://localhost:3005/display-category');
+        // if(JSON.stringify(categs.data)==='{}'){
+        //     this.showProducts("empty")
+        // }
+        // else{
+        //     this.setState({
+        //         all_categs: categs.data
+        //     })
+        //     if(id==="first")
+        //         this.setState({
+        //             current_categ: this.state.all_categs[0]["id"],
+        //         })
+        //     else if(id!=="added")
+        //         this.setState({
+        //             current_categ: id,
+        //         })
+        //     else if(id==="deleted" || id==="added")
+        //         this.setState({
+        //             current_categ: this.state.all_categs[this.state.all_categs.length-1]["id"],
+        //         })
+        //     this.showProducts(this.state.current_categ)
+        // }
     }
     async showProducts(categ_id){
+        // if(categ_id!=="empty"){
+        //     let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+        //     this.setState({
+        //         prods: categProds.data,
+        //         isProdClicked: false,
+        //         current_prod: null,
+        //         current_categ: categ_id
+        //     })
+        // }
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+            let categProds = await Axios.get(`http://localhost:3005/${this.props.location.state.userId}/menu-info/${categ_id}`);
             this.setState({
                 prods: categProds.data,
-                isProdClicked: false,
-                current_prod: null,
-                current_categ: categ_id
+                clicked: false,
+                current: null
             })
         }
     }
@@ -107,9 +137,10 @@ class EditMenu extends Component {
             prod_img: e.target.files[0]
         })
     }
+
     addNewCateg = e =>{
         const data = {
-            category: this.state.new_categ
+            category: (this.state.new_categ).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())
         };
         e.preventDefault();
         Axios.post("http://localhost:3005/add-categ", data).then((response) => {
@@ -122,7 +153,7 @@ class EditMenu extends Component {
         console.log(this.state.current_categ)
         e.preventDefault();
         const data = {
-            product: this.state.prod_name,
+            product: (this.state.prod_name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
             price: this.state.prod_price,
             availability: Number(this.state.prod_availability),
             category: this.state.current_categ,
@@ -246,38 +277,51 @@ class EditMenu extends Component {
                     <Nav>
                         <Categ mode={"edit"} categs={this.state.all_categs} curr={this.state.current_categ} onClick={this.handleClick}/>
                         <AddCategButton size="50px" onClick={this.toggleAddCateg}/>
+                        {!this.state.all_categs.length ? 
+                            <Instruction>
+                                <h1>Click to add category</h1>
+                            </Instruction> : null}
                     </Nav>
                     <EditButton>
                         <Link to={{ pathname: "/view-menu", state: {userId: this.props.location.state.userId} }}>
                             <button>Save</button>
                         </Link>
                     </EditButton>
-                    {!this.state.prods.length ? 
-                        <div className="empty-grid">
-                            <AddButton size="100px" onClick={this.toggleAddProd}/> 
-                        </div> :
-                        <ProdGrid>
-                                <section className='productlist'> 
-                                        {this.state.prods.map((prod,index)=>{
-                                                return (
-                                                    <div
-                                                    onClick={()=>this.changeColor(index)}
-                                                    className={(this.state.isProdClicked && (this.state.current_prod===index)) ? 'clicked' : 'unclicked'}>
-                                                            <DeleteButton size="50px" onClick={()=>this.toggleDeleteProd(prod["id"])}/>
-                                                            <article>
-                                                                <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
-                                                                <h1>{prod["product"]}</h1>
-                                                                <h2>Php {prod["price"]}</h2>
-                                                                <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
-                                                            </article> 
-                                                    </div>
-                                                )
-                                            })}
-                                    {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"}/> : null }
-                                    <AddButton size="100px" onClick={this.toggleAddProd}/>
-                                </section>
-                        </ProdGrid>
-                    }
+                    {this.state.all_categs.length ?
+                        (!this.state.prods.length ? 
+                            <div className="empty-grid">
+                                <AddButton size="100px" onClick={this.toggleAddProd}/> 
+                                <InstructWrapper>
+                                    <Instruction>
+                                        <div className="prod-instruct">
+                                            <h2>Click to add product</h2>
+                                        </div>
+                                    </Instruction>
+                                </InstructWrapper>
+                            </div> :
+                            <ProdGrid>
+                                    <section className='productlist'> 
+                                            {this.state.prods.map((prod,index)=>{
+                                                    return (
+                                                        <div
+                                                        onClick={()=>this.changeColor(index)}
+                                                        className={(this.state.isProdClicked && (this.state.current_prod===index)) ? 'clicked' : 'unclicked'}>
+                                                                <DeleteButton size="50px" onClick={()=>this.toggleDeleteProd(prod["id"])}/>
+                                                                <article>
+                                                                    <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
+                                                                    <h1>{prod["product"]}</h1>
+                                                                    <h2>Php {prod["price"]}</h2>
+                                                                    <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
+                                                                </article> 
+                                                        </div>
+                                                    )
+                                                })}
+                                        {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts}/> : null }
+                                        <AddButton size="100px" onClick={this.toggleAddProd}/>
+                                    </section>
+                            </ProdGrid>
+                        )
+                    : null}
                 </Wrapper>
             </Container>
          );
@@ -642,5 +686,45 @@ const Wrapper = styled.div`
     margin-top: 70px; 
   }
 `;
+
+const InstructWrapper = styled.div`
+    margin-left: 180px;
+`
+
+const Instruction = styled.div`
+    position: relative;
+    max-width: 30em;
+    background-color: #F9C91E;
+    padding: 0.7em 1.5em;
+    border-radius: 1rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
+    margin-left: 14px;
+    animation: MoveUpDown 1s linear infinite;
+
+    @keyframes MoveUpDown {
+        0%, 10% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+    h1{
+        font-size: 20px;
+    }
+    ::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 20px solid transparent;
+        border-right-color: #F9C91E;
+        border-left: 0;
+        margin-top: -20px;
+        margin-left: -20px;
+    }
+`
 
 export default EditMenu;
