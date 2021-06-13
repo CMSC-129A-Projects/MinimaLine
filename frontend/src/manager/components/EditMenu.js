@@ -256,32 +256,34 @@ class EditMenu extends Component {
                             <button>Save</button>
                         </Link>
                     </EditButton>
-                    {!this.state.prods.length ? 
-                        <div className="empty-grid">
-                            <AddButton size="100px" onClick={this.toggleAddProd}/> 
-                        </div> :
-                        <ProdGrid>
-                                <section className='productlist'> 
-                                        {this.state.prods.map((prod,index)=>{
-                                                return (
-                                                    <div
-                                                    onClick={()=>this.changeColor(index)}
-                                                    className={(this.state.isProdClicked && (this.state.current_prod===index)) ? 'clicked' : 'unclicked'}>
-                                                            <DeleteButton size="50px" onClick={()=>this.toggleDeleteProd(prod["id"])}/>
-                                                            <article>
-                                                                <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
-                                                                <h1>{prod["product"]}</h1>
-                                                                <h2>Php {prod["price"]}</h2>
-                                                                <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
-                                                            </article> 
-                                                    </div>
-                                                )
-                                            })}
-                                    {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts}/> : null }
-                                    <AddButton size="100px" onClick={this.toggleAddProd}/>
-                                </section>
-                        </ProdGrid>
-                    }
+                    {this.state.all_categs.length ?
+                        (!this.state.prods.length ? 
+                            <div className="empty-grid">
+                                <AddButton size="100px" onClick={this.toggleAddProd}/> 
+                            </div> :
+                            <ProdGrid>
+                                    <section className='productlist'> 
+                                            {this.state.prods.map((prod,index)=>{
+                                                    return (
+                                                        <div
+                                                        onClick={()=>this.changeColor(index)}
+                                                        className={(this.state.isProdClicked && (this.state.current_prod===index)) ? 'clicked' : 'unclicked'}>
+                                                                <DeleteButton size="50px" onClick={()=>this.toggleDeleteProd(prod["id"])}/>
+                                                                <article>
+                                                                    <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
+                                                                    <h1>{prod["product"]}</h1>
+                                                                    <h2>Php {prod["price"]}</h2>
+                                                                    <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
+                                                                </article> 
+                                                        </div>
+                                                    )
+                                                })}
+                                        {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts}/> : null }
+                                        <AddButton size="100px" onClick={this.toggleAddProd}/>
+                                    </section>
+                            </ProdGrid>
+                        )
+                    : null}
                 </Wrapper>
             </Container>
          );
