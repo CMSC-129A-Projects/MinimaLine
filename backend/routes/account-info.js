@@ -128,15 +128,22 @@ app.post('/add-cashier', [
     //console.log(password+'\n'+hashPass)
     //console.log(username, password, email) 
 
-    database.query("INSERT INTO account_info (username, email, password,role) VALUES (?,?,?,?)", 
-    [username, email, password,role], 
-    (err, result) => {
-        if(!err){
-            //console.log(result.insertId)
-            res.status(201).send(result)   
-        }
-        else
-            res.status(400)
+    bcrypt.hash(password,saltRounds, (err, hash) => {
+        database.query(
+            "INSERT INTO account_info (username, email, password,role) VALUES (?,?,?,?)", 
+            [username, email, hash, role], 
+            (err, result) => {
+                if(err){
+                    console.log(err)
+                    res.status(400)
+                     
+                }
+                else{
+                    //console.log(result.insertId)
+                    res.status(201).send(result)  
+            }
+                
+        })
     })
 });
 

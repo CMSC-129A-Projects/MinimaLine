@@ -14,8 +14,8 @@ database.connect((err) => {
 //allow access of rest api for cross-origin resource sharing
 app.use(cors());
 
-//to upload file
-//app.use(upload());
+//to make upload folder public
+//app.use('/public/uploads',express.static('public/uploads'));
 
 //allow api for parsing json
 app.use(express.json());
