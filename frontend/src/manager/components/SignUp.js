@@ -14,12 +14,25 @@ class SignUp extends Component{
       password: '',
       redirect: false,
       error: false,
-      newUserId: null
+      error_msg: '',
+      loggedIn: false,
+      userId: null
     }
     // this.register = this.register.bind(this);
   }
-  componentDidMount(){
-    document.title = "MinimaLine | Sign Up"
+  async componentDidMount(){
+    document.title = "MinimaLine | Sign Up";
+    Axios.defaults.withCredentials = true;
+    await Axios.get("http://localhost:3005/user-login").then((response) => {
+      if(response.data.loggedIn==true){
+        this.setState({
+          userId: response.data.user[0]["id"],
+          loggedIn: true
+        })
+      }
+      else 
+        console.log(response)
+    })
   }
 
   handleChange(e){
@@ -33,16 +46,17 @@ class SignUp extends Component{
       email: this.state.email,
       password: this.state.password
     };
-    console.log('hello this is your input:',data)
     e.preventDefault();
     Axios.post('http://localhost:3005/user-registration',data).then((response) => {
       console.log(response)
-      if(response.data=="username/email already used")
-        this.setState({error:true})
-      else{
-        console.log("hello")
+      if(response.data.errors){
         this.setState({
-          newUserId: response.data.insertId,
+          error: true,
+          error_msg: response.data.errors[0].msg
+        })
+      }else{
+        this.setState({
+          userId: response.data.insertId,
           redirect: true
         })
       }
@@ -51,18 +65,19 @@ class SignUp extends Component{
 
   render(){
     if(this.state.redirect)
-      return <Redirect to={{ pathname: "/store-reg", state: {userId: this.state.newUserId} }}/>
+      return <Redirect to={{ pathname: "/store-reg", state: {userId: this.state.userId} }}/>
+    else if(this.state.loggedIn)
+      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return (
       <Container>
         <LogoWrapper>
           {/* <img src={logo} alt="" /> */}
-          <h3>
-            Minima<span>Line</span>
-          </h3>
+          <h3>Minima</h3>
+          <h2>Line</h2>
         </LogoWrapper>
         <Form onSubmit={this.register}>
           <h3>Sign Up</h3>
-            {/* {this.state.error ? <h1>The username/e-mail is already being used.</h1> : null} */}
+            {this.state.error ? <p>{this.state.error_msg}</p> : null}
             <InputContainer>
               <StyledInput 
                 type="text" 
@@ -94,6 +109,8 @@ class SignUp extends Component{
                 name="password"
                 value={this.state.password} 
                 required
+                minLength="6"
+                maxLength="20"
                 autoComplete="off"
                 onChange={this.handleChange.bind(this)}/>
               <Status />
@@ -135,22 +152,25 @@ const Form = styled.form`
 
     h3{
       color: #666666;
-      // color: black;
       margin-bottom: 2rem;
       font-size: 40px;
       align-items: left;
+      margin-left: -10px;
     }
-
+    p{
+      color: #ff5c5c;
+      font-weight: bold;
+    }
     button{
-        /* margin-left: 45px; */
         margin-top: 10px;
         width: 75%;
         max-width: 350px;
+        margin-left: -20px;
         min-width: 250px;
-        height: 40px;
+        height: 50px;
         border: none;
         box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
-        border-radius: 8px;
+        border-radius: 17px;
         background-color: #568d33;
         color: #fff;
         font-weight: 600;
@@ -164,6 +184,8 @@ const Form = styled.form`
 `;
 
 const LogoWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
     img{
         height: 6rem;
         margin-bottom: -20px;
@@ -174,17 +196,18 @@ const LogoWrapper = styled.div`
         color: #ec9736;
         font-size: 22px;
     }
-
-    span{
+    
+    h2{
         color: #568d33;
         font-weight: 300;
         font-size: 18px;
+        margin-top: 25px;
     }
 
 `;
 
 const Container = styled.div` 
-  min-width: 400px;
+  min-width: 600px;
   backdrop-filter: blur(9px);
   background-color: rgba(255, 255, 255, 0.5);
   height: 100%;
@@ -212,6 +235,11 @@ const Container = styled.div`
         cursor: pointer;
       }
   }
+
+  span:hover{
+    transform: translateY(-3px);
+    color: #ec9736;
+  }
 `;
 const InputContainer  = styled.div`
     display: flex;
@@ -223,12 +251,12 @@ const StyledInput = styled.input`
     width: 80%;
     max-width: 450px;
     min-width: 350px;
-    height: 40px;
+    height: 50px;
     border: none;
     margin: 0.5rem 0;
-    background-color: #f5f5f5;
+    background-color: white;
     box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
-    border-radius: 8px;
+    border-radius: 17px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
 

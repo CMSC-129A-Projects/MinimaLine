@@ -21,6 +21,7 @@ class RegularPriority extends Component {
                 clickRegular: false,
                 clickPriority: true
             });
+        this.props.onClick();
     }
     render() { 
         return ( 
@@ -49,17 +50,18 @@ const StyledButtons = styled.input`
     margin: 0px 30px 20px;
     padding: 10px 15px;
     width: 120px;
-    background-color: ${props => props.selected ? '#f9c91e' : 'transparent'};
-    border-radius: 8px;
-    border: ${props => props.selected ? '2px solid #f9c91e' : '2px solid #676666'};
+    background-color: ${props => props.selected ? '#ec9736' : 'transparent'};
+    border-radius: 15px;
+    border: ${props => props.selected ? '2px solid #ec9736' : '2px solid #568d33'};
     font-size: 20px;
-    color: ${props => props.selected ? 'black' : '#676666'};;
+    color: ${props => props.selected ? 'white' : '#568d33'};;
 
     :hover{
-        background-color: ${props => props.selected ? '#f9c91e' : 'transparent'};
-        border: 2px solid #f9c91e;
-        color: ${props => props.selected ? 'black' : '#f9c91e'};
+        background-color: ${props => props.selected ? '#ec9736' : 'transparent'};
+        border: 2px solid #ec9736;
+        color: ${props => props.selected ? 'white' : '#ec9736'};
         transform: translateY(3px);
+        cursor: pointer;
     }
 
     @media (max-width: 900px) {

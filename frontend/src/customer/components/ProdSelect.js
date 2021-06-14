@@ -75,11 +75,6 @@ class ProdSelect extends Component {
                             </Link>
                         </ArrowWrapper>
                     </Arrow>
-                    <CheckoutButton>
-                        <Link to='/checkout'>
-                            <button>Checkout</button>
-                        </Link>
-                    </CheckoutButton>
                     <Nav>
                         {/* <Categ mode={"view"}/>  */}
                         <Categ mode={"view"} categs={this.state.all_categs} onClick={this.showProducts}/> 
@@ -108,7 +103,14 @@ class ProdSelect extends Component {
                                     )
                                 })}
                                 {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} mode={this.showModal}/> : null }
-                                <OrderSum />
+                                <RightContainer>
+                                    <OrderSum />
+                                    <CheckoutButton>
+                                        <Link to='/checkout'>
+                                            <button>Checkout</button>
+                                        </Link>         
+                                    </CheckoutButton>
+                                </RightContainer>
                             </section>
                          </ProdGrid>
                     }
@@ -119,31 +121,47 @@ class ProdSelect extends Component {
 }
 
 const CheckoutButton = styled.div`
-    right: 0;
+    /* right: 80px; */
     display: flex;
     flex-direction: row;
-    height: 120px;
     position: fixed;
-    width: 12%;
+    /* right: 6vh; */
+    /* margin-top: 78vh; */
+    margin-top: 70vh;
+    /* right: -38vh; */
     align-items: center;
-    background: white;
     z-index: 1;
+    /* margin-top: 750px; */
+    width: 20%;
+    /* background-color: white; */
+    display: flex;
+    justify-content: center;
 
     button{ 
+        /* position: absolute; */
+        /* right: 0; */
+        /* margin-right: 11vh; */
+
+        /* width: 250px; */
+        width: 25vh;
+        /* height: 200px; */
+        height: 8vh;
         outline: none;
         border: none;
         color: black;
-        padding: 0rem 1rem;
-        margin: 0.1px 10px 0.1px 10px;
-        min-width: 110px;
-        height: 70px;
-        line-height: 70px;
+        /* padding: 0rem 1rem; */
+        padding: 0vh 1vh;
+        /* margin: 0.1px 10px 0.1px 10px; */
+        /* margin: 0.1vh 10vh 0.1vh 10vh; */
+        /* height: 70px; */
+        /* line-height: 70px; */
         text-align: center;
         background: #F9C91E;
         border-radius: 1rem;
         transition: all 0.1s ease-in;
         font-family: "Work Sans";
-        font-size: 90%;
+        /* font-size: 35px; */
+        font-size: 3vh;
         font-weight: bold;
 
         &:hover {
@@ -202,6 +220,7 @@ const CategModal = styled(Modal)`
     flex-direction: row;
     
     button{
+        outline: none;
         font-family: "Work Sans";
         margin: 30px 20px 0px;
         width: 150px;
@@ -237,7 +256,7 @@ const Nav = styled.div`
   overflow-x: auto;
   position: fixed;
   margin-left: 5%;
-  width: 83%;
+  width: 95%;
   align-items: center;
   background: white;
   z-index: 1;
@@ -308,7 +327,6 @@ const ProdGrid = styled.div`
 
         @media screen and (max-width: 1024px) {
             width: 70%;
-            /* padding: 1rem 2rem; */
         }
     }
     .unclicked{
@@ -340,6 +358,21 @@ const ProdGrid = styled.div`
         width: 150px;
     }
 `;
+
+const RightContainer = styled.div`
+    width: 20%;
+    height: 50vh;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    margin-top: 4vh;
+    right: -38vh;
+    align-items: center;
+    z-index: 1;
+    width: 20%;
+    display: flex;
+    justify-content: center;
+`
 
 const Wrapper = styled.div`
   width: 100%;

@@ -99,7 +99,7 @@ app.get('/storeLogo/:id', (req,res) => {
         if (logo) {
             res.status(200).send(logo);
         }
-        else res.status(200).json({});
+        else res.status(200).send('No Logo');
     });
 });
 

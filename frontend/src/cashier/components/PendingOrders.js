@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styled from "styled-components";
 import {Link} from 'react-router-dom';
 import {FaLongArrowAltRight} from "react-icons/fa";
-// import {RiSearchLine} from "react-icons/ri";
 import search from "../../assets/search.png";
 import burger_img from "../../assets/burger.png";
 import fries_img from "../../assets/fries.png";
@@ -34,95 +33,115 @@ class PendingOrders extends Component {
                 <div className="left">
                     <h1>Priority Type</h1>
                     <div className="orderlist">
-    
                     <Table>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">Potasdsgdfgdalsa</td>
-                                <td width="20%">2</td>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                    <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={burger_img}/></td>
-                        <td width="50%"> McBurger</td>
-                                <td width="20%">2</td>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                            <td width="20%">2</td>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                            <td width="20%">2</td>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                            <td width="20%">2</td>
-                        <td width="20%">Php 1000.00</td>
-                    </tr>
-                    <tr width="10%">
-                        <td><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                                <td width="20%">3</td>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
+                        <tr>
+                            <td width="10%"><img src={burger_img}/></td>
+                            <td width="50%">Potasdsgdfgdalsa</td>
+                                    <td width="10%">2</td>
+                            <td width="30%">Php 300.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                        <td width="=10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={burger_img}/></td>
+                            <td width="50%"> McBurger</td>
+                                    <td width="10%">2</td>
+                            <td width="30%">Php 300.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={burger_img}/></td>
+                            <td width="50%">McBurger</td>
+                                <td width="10%">2</td>
+                            <td width="30%">Php 300.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={burger_img}/></td>
+                            <td width="50%">McBurger</td>
+                                <td width="10%">2</td>
+                            <td width="30%">Php 300.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={burger_img}/></td>
+                            <td width="50%">McBurger</td>
+                                <td width="10%">2</td>
+                            <td width="30%">Php 1000.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                                                <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={burger_img}/></td>
+                            <td width="50%">McBurger</td>
+                                <td width="10%">2</td>
+                            <td width="30%">Php 1000.00</td>
+                        </tr>
+                        <tr width="10%">
+                            <td><img src={fries_img}/></td>
+                                <td width="50%">McFries</td>
+                                    <td width="10%">3</td>
+                                <td width="30%">Php 90.00</td>
+                        </tr>
                     </Table>
-
                     </div>
-                    <h2>Order Notes</h2>
-                    <div className="notes">
-                        <p>No ketchup and mayo</p>
+
+                    <div className="notes-container">
+                        <h2>Order Notes</h2>
+                        <div className="notes">
+                            <p>No ketchup and mayo</p>
+                        </div>
                     </div>
                     <div className="price">
                         <div className="total-price">
                             <h1>Total Price</h1>
+                            <h3>Php 4,030.00</h3>
                         </div>
                         <button className="confirm">
                             Confirm
                         </button>
-                        <button>
+                        <button className="cancel">
                             Cancel
                         </button>
                     </div>
@@ -173,6 +192,13 @@ const Container = styled.div`
         h1{
             margin-left: 40px;
             font-size: 30px;  
+
+            @media screen and (max-width: 1470px) {
+                margin-left: 120px;
+            }
+            @media screen and (max-width: 1300px) {
+                margin-left: 40px;
+            }
         }
 
         h2{
@@ -190,54 +216,144 @@ const Container = styled.div`
         .orderlist{
             position: absolute;
             background-color: white;
-            box-shadow: 3px 6px 5px 3px #d6d6d6;
+            box-shadow: 0px 5px 10px -2px #858585;
             border-radius: 35px;
             height: 400px;
             width: 780px;
             margin-top: -10px;
             margin-left: 40px;  
+
+            @media screen and (max-width: 1470px) {
+                height: 370px;
+                width: 500px;
+                margin-top: -10px;
+                margin-left: 120px; 
+            }
+
+            @media screen and (max-width: 1300px) {
+                height: 266px;
+                width: 500px;
+                margin-top: -10px;
+                margin-left: 40px; 
+            }
         }
 
-        .notes{
-            position: absolute;
-            background-color: white;
-            box-shadow: 3px 6px 5px 3px #d6d6d6;
-            border-radius: 30px;
-            height: 100px;
-            width: 770px;
-            margin-top: 460px;
-            margin-left: 40px;  
-            padding: 5px;
+        .notes-container{
+            h2{
+                @media screen and (max-width: 1470px) {
+                    margin-top: 370px;
+                    margin-left: 120px;
+                }
+
+                @media screen and (max-width: 1300px) {
+                    margin-top: 266px;
+                    margin-left: 40px;
+                }
+            }
+            .notes{
+                position: absolute;
+                background-color: white;
+                box-shadow: 0px 5px 10px -2px #858585;
+                border-radius: 30px;
+                height: 100px;
+                width: 760px;
+                margin-top: 460px;
+                margin-left: 40px;  
+                padding: 5px;
+
+                @media screen and (max-width: 1470px) {
+                    height: 70px;
+                    width: 490px;
+                    margin-top: 410px;
+                    margin-left: 120px;  
+                    padding: 5px;
+                    font-size: 13px;
+                }   
+
+                @media screen and (max-width: 1300px) {
+                    height: 55px;
+                    width: 490px;
+                    margin-top: 302px;
+                    margin-left: 37px;  
+                    padding: 5px;
+                    font-size: 13px;
+                }
+            }      
+
         }
 
         .price{
             position: absolute;
             background-color: white;
-            box-shadow: 3px 6px 5px 3px #d6d6d6;
+            box-shadow: 0px 5px 10px -2px #858585;
             border-radius: 40px;
             height: 215px;
             width: 780px;
             margin-top: 590px;
             margin-left: 40px; 
 
+            @media screen and (max-width: 1470px) {
+                border-radius: 30px;
+                height: 160px;
+                width: 500px;
+                margin-top: 510px;
+                margin-left: 120px; 
+            }
+
+            @media screen and (max-width: 1300px) {
+                border-radius: 30px;
+                height: 160px;
+                width: 500px;
+                margin-top: 387px;
+                margin-left: 40px; 
+            }
+
             .total-price{
                 position: absolute;
-                background-color: #f9c91e;
-                box-shadow: 3px 6px 5px 3px #d6d6d6;
+                background-color: #f5f5f5;
+                box-shadow: 0px 5px 10px -4px #858585;
                 border-radius: 40px;
                 height: 60px;
                 width: 620px;
                 margin-top: 20px;
                 margin-left: 85px; 
 
+                @media screen and (max-width: 1470px) {
+                    border-radius: 40px;
+                    height: 40px;
+                    width: 410px;
+                    margin-top: 15px;
+                    margin-left: 50px; 
+                }
+
                 h1{
                     position: absolute;
                     margin-top: 15px;
                     margin-left: 20px;
+
+                    @media screen and (max-width: 1470px) {
+                        margin-top: 5px;
+                        margin-left: 20px;
+                        font-size: 23px;
+                    }
+                }
+
+                h3{
+                    font-size: 27px;
+                    position: absolute;
+                    margin-top: 15px;
+                    margin-left: 400px;
+
+                    @media screen and (max-width: 1470px) {
+                        margin-top: 5px;
+                        margin-left: 240px;
+                        font-size: 23px;
+                    }
                 }
             } 
 
             button{
+                outline: none;
                 margin-left: 10px;
                 margin-top: 100px;
                 font-family: "Work Sans";
@@ -250,11 +366,25 @@ const Container = styled.div`
                 font-size: 25px;
                 cursor: pointer;
                 color: black;
-                background-color: #f9c91e;
+                background-color: #f9c91e;         
                 
                 :hover{
                     transform: translateY(2px)
                 }
+      
+                @media screen and (max-width: 1470px) {
+                    margin-left: 10px;
+                    margin-top: 75px;
+                    width: 200px;
+                    height: 70px;
+                    border-radius: 30px;
+                    font-weight: 600;
+                    font-size: 25px;
+                }
+            }
+            .cancel{
+                color: #fff;
+                background-color: #FF5C5C;
             }
         }
 
@@ -263,18 +393,34 @@ const Container = styled.div`
     .right{
         position: absolute;
         background-color: white;
-        box-shadow: 3px 6px 5px 3px #d6d6d6;
+        box-shadow: 0px 5px 10px -2px #858585;
         border-radius: 70px;
         height: 850px;
         width: 1000px;
         margin-top: -45px;
         margin-left: 870px;
 
-                
+
+        @media screen and (max-width: 1470px) {
+            height: 720px;
+            width: 670px;
+            margin-top: -45px;
+            margin-left: 660px;
+        }
+
+        @media screen and (max-width: 1300px) {
+            height: 590px;
+            margin-left: 568px;
+        }
+
         h1{
             text-align: left;
             margin-left: 40px;
             font-size: 60px;  
+
+            @media screen and (max-width: 1470px) {
+                font-size: 40px;  
+            }
         }
 
         .arrow{
@@ -283,10 +429,19 @@ const Container = styled.div`
             margin-top: -180px;
             display: flex;
             flex-direction: row;
+  
+            @media screen and (max-width: 1470px) {
+                margin-left: 420px;
+                margin-top: -120px;
+            }
 
             h2{
                 margin-top: -1px;
                 margin-right: 10px;
+
+                @media screen and (max-width: 1470px) {
+                    font-size: 21px;
+                }
             }
         }
     }
@@ -298,6 +453,11 @@ const Search = styled.div`
     margin-left: 590px;
     display: flex;
     flex-direction: row;
+
+    @media screen and (max-width: 1470px) {
+        margin-top: -80px;
+        margin-left: 280px;
+    }
 
     .search-button{
         background: transparent;
@@ -327,15 +487,37 @@ const Search = styled.div`
 const Table = styled.table`
     table-layout: fixed;
     width: 90%;
-    margin-left: -500px;
     position: absolute;
     left: 50%;
     font-size: 20px;
     margin-left: -345px;
-    /* margin-right: 500px; */
     display: block;
     overflow: auto;
     height: 400px;
+    
+    @media screen and (max-width: 1470px) {
+        table-layout: fixed;
+        height: 366px;
+        width: 90%;
+        position: absolute;
+        left: 50%;
+        font-size: 15px;
+        margin-left: -225px;
+        display: block;
+        overflow: auto;
+    }
+
+    @media screen and (max-width: 1300px) {
+        table-layout: fixed;
+        height: 265px;
+        width: 90%;
+        position: absolute;
+        left: 50%;
+        font-size: 15px;
+        margin-left: -225px;
+        display: block;
+        overflow: auto;
+    }
 
     td{
         text-align: left;
@@ -356,22 +538,31 @@ const Table = styled.table`
 `;
 
 const OrderGrid = styled.div`
-    overflow-y: auto;
     .order-list {
-        height: 600px;
         position: absolute;
+        height: 600px;
         width: 93%;
         margin-top: -10px;
         margin-left: 60px;
         display: grid;
         gap: 2rem;
-        z-index: 0;
         grid-template-columns: repeat(5, 150px);
         overflow-y: auto;
 
-        @media screen and (max-width: 1024px) {
-            gap: 1.5rem;
+        @media screen and (max-width: 1470px) {
+            height: 520px;
+            gap: 1rem;
+            margin-left: 30px;
+            grid-template-columns: repeat(4, 140px);
+            margin-top: 24px;
+        }
 
+        @media screen and (max-width: 1300px) {
+            height: 420px;
+            gap: 1rem;
+            margin-left: 30px;
+            grid-template-columns: repeat(4, 140px);
+            margin-top: -5px;
         }
     }
 
@@ -380,6 +571,7 @@ const OrderGrid = styled.div`
         border-radius: 1rem;
         transition: all 0.2s ease-in;
         text-align: center;
+        box-shadow: 0px 5px 10px -4px #858585;
 
         &:hover {
             transform: translateY(-4px);
@@ -395,16 +587,16 @@ const OrderGrid = styled.div`
             font-size: 0.9rem;
             margin-top: -40px;
         }
-
-        /* @media screen and (max-width: 1024px) {
-            width: 70%;
-        } */
+        @media screen and (max-width: 1470px) {
+            height: 110px;
+        }
     }
     .unclicked{
         background: #f9c91e;
         border-radius: 1rem;
         transition: all 0.2s ease-in;
         text-align: center;
+        box-shadow: 0px 5px 10px -2px #858585;
 
         &:hover {
             transform: translateY(-4px);
@@ -422,9 +614,9 @@ const OrderGrid = styled.div`
             margin-top: -40px;
         }
 
-        /* @media screen and (max-width: 1024px) {
-            width: 70%;
-        } */
+        @media screen and (max-width: 1470px) {
+            height: 110px;
+        }
     }
 `;
 
