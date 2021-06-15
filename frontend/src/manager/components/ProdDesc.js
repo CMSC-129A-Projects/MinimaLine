@@ -21,7 +21,7 @@ class ProdDesc extends Component {
           [e.target.name]: e.target.value
         })
     }
-    edit = e =>{
+    edit = e => {
         e.preventDefault();
         const id = this.props["id"]
         const data = {

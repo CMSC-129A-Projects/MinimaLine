@@ -30,7 +30,7 @@ class ViewMenu extends Component {
     }
     async showProducts(categ_id){
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+            let categProds = await Axios.get(`http://localhost:3005/${this.props.location.state.userId}/menu-info/${categ_id}`);
             this.setState({
                 prods: categProds.data,
                 clicked: false,
@@ -41,7 +41,7 @@ class ViewMenu extends Component {
     async componentDidMount(){
         document.title = "MinimaLine | View Menu"
         // this.setState({})
-        let categs = await Axios.get('http://localhost:3005/display-category');
+        let categs = await Axios.get(`http://localhost:3005/display-category/${this.props.location.state.userId}`);
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }

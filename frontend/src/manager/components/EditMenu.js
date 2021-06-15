@@ -43,7 +43,7 @@ class EditMenu extends Component {
         this.showCategs("first");
     }
     async showCategs(id){
-        let categs = await Axios.get('http://localhost:3005/display-category');
+        let categs = await Axios.get(`http://localhost:3005/display-category/${this.props.location.state.userId}`);
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }
@@ -65,15 +65,45 @@ class EditMenu extends Component {
                 })
             this.showProducts(this.state.current_categ)
         }
+        // let categs = await Axios.get('http://localhost:3005/display-category');
+        // if(JSON.stringify(categs.data)==='{}'){
+        //     this.showProducts("empty")
+        // }
+        // else{
+        //     this.setState({
+        //         all_categs: categs.data
+        //     })
+        //     if(id==="first")
+        //         this.setState({
+        //             current_categ: this.state.all_categs[0]["id"],
+        //         })
+        //     else if(id!=="added")
+        //         this.setState({
+        //             current_categ: id,
+        //         })
+        //     else if(id==="deleted" || id==="added")
+        //         this.setState({
+        //             current_categ: this.state.all_categs[this.state.all_categs.length-1]["id"],
+        //         })
+        //     this.showProducts(this.state.current_categ)
+        // }
     }
     async showProducts(categ_id){
+        // if(categ_id!=="empty"){
+        //     let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+        //     this.setState({
+        //         prods: categProds.data,
+        //         isProdClicked: false,
+        //         current_prod: null,
+        //         current_categ: categ_id
+        //     })
+        // }
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+            let categProds = await Axios.get(`http://localhost:3005/${this.props.location.state.userId}/menu-info/${categ_id}`);
             this.setState({
                 prods: categProds.data,
-                isProdClicked: false,
-                current_prod: null,
-                current_categ: categ_id
+                clicked: false,
+                current: null
             })
         }
     }
