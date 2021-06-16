@@ -12,11 +12,7 @@ database.connect((err) => {
 });
 
 //allow access of rest api for cross-origin resource sharing
-app.use(cors({
-    origin: ["http://localhost:3000"],
-    methods: ["POST", "GET", "DELETE"],
-    credentials: true,
-}));
+app.use(cors());
 
 //to make upload folder public
 //app.use('/public/uploads',express.static('public/uploads'));
