@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 08, 2021 at 06:45 PM
+-- Generation Time: Jun 16, 2021 at 05:53 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -29,35 +29,24 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `account_info` (
   `id` int(11) NOT NULL,
-  `username` varchar(30) DEFAULT NULL,
+  `username` varchar(30) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `password` text DEFAULT NULL,
-  `role` varchar(7) DEFAULT NULL,
-  `store_id` int(11) DEFAULT NULL,
+  `password` text NOT NULL,
+  `role` varchar(7) NOT NULL,
+  `manager_id` int(11) DEFAULT NULL,
   `store_name` varchar(30) DEFAULT NULL,
   `manager_name` varchar(30) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `logo` mediumblob DEFAULT NULL
+  `logo` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `account_info`
 --
 
-INSERT INTO `account_info` (`id`, `username`, `email`, `password`, `role`, `store_id`, `store_name`, `manager_name`, `location`, `logo`) VALUES
-(1, 'daisy', 'daisy@gmail.com', 'daisy1234', 'manager', NULL, '', '', '', ''),
-(2, 'toti', 'toti@gmail.com', 'toti123', 'manager', NULL, '', '', '', ''),
-(3, 'ren_amores', 'ren@gmail.com', 'ren1234', 'manager', NULL, '', '', '', ''),
-(4, 'seth', 'seth@gmail.com', 'seth1234', 'manager', NULL, '', '', '', ''),
-(5, 'mira', 'mira@gmail.com', 'mira1234', 'manager', NULL, '', '', '', ''),
-(6, 'miraboo', 'mohammira@gmail.com', 'mira1234', 'manager', NULL, '', '', '', ''),
-(7, 'daisyjane', 'dsbolivar@gmail.com', '123456', 'manager', NULL, '', '', '', ''),
-(8, 'kelvinyong', 'kyong@gmail.com', 'kyyong', 'manager', NULL, '', '', '', ''),
-(9, 'kelvinold', 'toti1234@gmail.com', 'toti12345', 'manager', NULL, '', '', '', ''),
-(12, 'kelvinyong1', 'kelvinyong1@gmail.com', 'kelvinyong1', 'manager', NULL, NULL, NULL, NULL, NULL),
-(14, 'kelvinyong2', 'kelvinyong2@gmail.com', 'kelvinyong2', 'manager', NULL, NULL, NULL, NULL, NULL),
-(15, 'kelvinyong3', 'kelvinyong3@gmail.com', 'kelvinyong3', 'manager', NULL, NULL, NULL, NULL, NULL),
-(17, 'miraboooo', 'mmohammad@up.edu.ph', 'berikyuu1234', 'manager', NULL, 'mystore', 'manager', 'mybranch', NULL);
+INSERT INTO `account_info` (`id`, `username`, `email`, `password`, `role`, `manager_id`, `store_name`, `manager_name`, `location`, `logo`) VALUES
+(1, 'mohammira', 'mohammira@gmail.com', '$2b$10$5Gds1I8RupVOalcISHcq6ekhVLAg/yXFA12DF5AF3VmVB/n/CxUHq', 'manager', NULL, 'mira\'s store', 'mira', 'cebu', NULL),
+(2, 'daisybolivar', 'dsbolivar@up.edu.ph', '$2b$10$WGQ4xW/eJSIFM0fb0vX/E.VegHLMEszTHPr9DIZqFNB6X0FYLxjJq', 'manager', NULL, 'daisy\'s store', 'daisy', 'cebu', NULL);
 
 -- --------------------------------------------------------
 
@@ -96,16 +85,6 @@ CREATE TABLE `category` (
   `name` varchar(100) NOT NULL,
   `store_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `category`
---
-
-INSERT INTO `category` (`id`, `name`, `store_id`) VALUES
-(1, 'Dessert', NULL),
-(2, 'Drinks', NULL),
-(3, 'Mains', NULL),
-(4, 'Appetizers', NULL);
 
 -- --------------------------------------------------------
 
@@ -157,23 +136,13 @@ CREATE TABLE `customer_order_list` (
 
 CREATE TABLE `menu_info` (
   `id` int(11) NOT NULL,
-  `product` varchar(30) DEFAULT NULL,
-  `price` decimal(6,0) DEFAULT NULL,
+  `product` int(30) NOT NULL,
+  `price` decimal(6,0) NOT NULL,
   `category_id` int(11) NOT NULL,
-  `availability` tinyint(1) DEFAULT NULL,
-  `photo` mediumblob DEFAULT NULL,
-  `store_id` int(11) DEFAULT NULL
+  `availability` tinyint(1) NOT NULL,
+  `photo` varchar(255) DEFAULT NULL,
+  `store_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `menu_info`
---
-
-INSERT INTO `menu_info` (`id`, `product`, `price`, `category_id`, `availability`, `photo`, `store_id`) VALUES
-(1, 'Ice Cream', '50', 1, 0, NULL, NULL),
-(2, 'Iced Tea', '30', 2, 1, NULL, NULL),
-(3, 'Spaghetti', '150', 3, 1, NULL, NULL),
-(4, 'Fries', '30', 4, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -186,34 +155,6 @@ CREATE TABLE `pending_orders` (
   `customer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `store_info`
---
-
-CREATE TABLE `store_info` (
-  `id` int(11) NOT NULL,
-  `store_name` varchar(30) DEFAULT NULL,
-  `manager_name` varchar(30) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `logo` mediumblob DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `store_info`
---
-
-INSERT INTO `store_info` (`id`, `store_name`, `manager_name`, `location`, `logo`) VALUES
-(1, 'store', 'manager', 'branch', NULL),
-(2, 'ren', 'ren', 'cebu', NULL),
-(3, 'seth', 'seth nemeno', 'mactan', NULL),
-(4, 'mira', 'mira mohammad', 'cebu', NULL),
-(5, 'store1', 'manager1', 'branch1', NULL),
-(6, 'daisy', 'daisy bolivar', 'guadalupe', NULL),
-(7, 'totistore', 'toti', 'cebu', NULL),
-(8, 'store4', 'manager4', 'branch4', NULL);
-
 --
 -- Indexes for dumped tables
 --
@@ -224,7 +165,7 @@ INSERT INTO `store_info` (`id`, `store_name`, `manager_name`, `location`, `logo`
 ALTER TABLE `account_info`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
-  ADD KEY `store_id` (`store_id`);
+  ADD UNIQUE KEY `username_2` (`username`,`email`);
 
 --
 -- Indexes for table `all_orders`
@@ -270,19 +211,12 @@ ALTER TABLE `customer_order_list`
 -- Indexes for table `menu_info`
 --
 ALTER TABLE `menu_info`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `product` (`product`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `pending_orders`
 --
 ALTER TABLE `pending_orders`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `store_info`
---
-ALTER TABLE `store_info`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -293,7 +227,7 @@ ALTER TABLE `store_info`
 -- AUTO_INCREMENT for table `account_info`
 --
 ALTER TABLE `account_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `all_orders`
@@ -311,7 +245,7 @@ ALTER TABLE `cancelled_orders`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `customer`
@@ -335,29 +269,13 @@ ALTER TABLE `customer_order_list`
 -- AUTO_INCREMENT for table `menu_info`
 --
 ALTER TABLE `menu_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pending_orders`
 --
 ALTER TABLE `pending_orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `store_info`
---
-ALTER TABLE `store_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `account_info`
---
-ALTER TABLE `account_info`
-  ADD CONSTRAINT `account_info_ibfk_1` FOREIGN KEY (`store_id`) REFERENCES `store_info` (`id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
