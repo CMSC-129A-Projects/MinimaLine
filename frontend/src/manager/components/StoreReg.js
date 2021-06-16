@@ -4,8 +4,7 @@ import styled from "styled-components";
 import {Link, Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import { FiUpload } from "react-icons/fi";
-// import UploadPhoto from "./UploadPhoto";
-// import Input from "./Input";
+import Auth from '../../services/Auth';
 
 class StoreReg extends Component{
   constructor(props){
@@ -16,13 +15,19 @@ class StoreReg extends Component{
       location: '',
       logo: '',
       redirect: false,
-      userId: null
+      userId: '',
+      username: '',
+      password: ''
     }
   }
   componentDidMount(){
     document.title = "MinimaLine | Store Registration"
-    console.log(this.props.location.state.userId)
-    this.setState({ userId: this.props.location.state.userId })
+    console.log("store reg page")
+    this.setState({ 
+      userId: this.props.location.state.userId,
+      username: this.props.location.state.username,
+      password: this.props.location.state.password 
+    })
   }
 
   handleChange(e){
@@ -38,27 +43,39 @@ class StoreReg extends Component{
   }
   
   registerStore = e => {
-    console.log(this.state.storeId)
-    const data = {
-      store_name: this.state.store_name,
-      manager_name: this.state.manager_name,
-      location: this.state.location,
-      logo: this.state.logo//img
-    };
-    console.log('hello this is your input:',data)
     e.preventDefault();
-    Axios.post(`http://localhost:3005/store-registration/${this.state.userId}`,data).then((response) => {
-      console.log(response)
-      this.setState({redirect:true})
-    })
-    .catch(error => {
-      console.log(error.response)
-    })
+    Auth.registerStore(this.state.userId,this.state.store_name,this.state.manager_name,this.state.location,this.state.logo)
+      .then((error) => {
+        if(error){
+          console.log(error.msg)
+          this.setState({ 
+            error_msg: error.msg,
+            login_error: true
+          })
+        }
+        else{
+          console.log("store registered")
+          Auth.login(this.state.username, this.state.password)
+            .then((error) => {
+              if(error){
+                console.log(error.msg)
+                this.setState({ 
+                  error_msg: error.msg,
+                  login_error: true
+                })
+              }
+              else{
+                console.log("logged in")
+                this.setState({redirect: true})
+              }
+            })
+        }
+      })
   };
 
   render(){
     if(this.state.redirect)
-      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
+      return <Redirect to={{ pathname: "/dashboard" }}/>
     return (
       <Container>
         <ArrowWrapper>

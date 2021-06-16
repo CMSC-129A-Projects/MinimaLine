@@ -2,37 +2,39 @@ var express = require('express');
 var app = express();
 var database = require('../config/database');
 const {check, validationResult} = require('express-validator');
+var Auth = require('../jwt-auth.js');
 
+// , [
+//     check('category')
+//     .notEmpty()
+//     .withMessage("Category cannot be empty")
+//     .exists()
+//     .withMessage("Category exists")
+//     ]
 //Add categories to edit menu
-app.post('/add-categ', [
-    check('category')
-    .notEmpty()
-    .withMessage("Category cannot be empty")
-    .exists()
-    .withMessage("Category exists")
-    ], (req,res)=> {
+app.post('/add-categ', Auth.checkAccessToken, (req,res)=> {
+    let id = req.userId;
+    let category = req.body.category
+    console.log(`store id: ${id}, category: ${category}`)
     
-    const {category} = req.body
-    // console.log(category)
-    // console.log(req.body)
-    
-    database.query("INSERT INTO category (name) VALUES (?)", 
-    [category],
+    database.query("INSERT INTO category (name,store_id) VALUES (?,?)", [category, id],
     (err, result) => {
         if(!err)
             // console.log(result)
-            res.status(201).send(result)
+            res.send(result)
+        else
+            console.log(err)
         }
     )
 });
 
 //Delete categories 
-app.delete('/delete-categ/:id', (req,res)=> {
-    
-    const id = req.params.id
+app.delete('/delete-categ/:id', Auth.checkAccessToken, (req,res)=> {
+    let store_id = req.userId;
+    let categ_id = req.params.id
     console.log(id)
     
-    database.query("DELETE FROM category WHERE id = ?", id,
+    database.query("DELETE FROM category WHERE id = ? AND store_id = ?", [categ_id,store_id],
     (err, result) => {
         if(!err)
             console.log(result)
@@ -42,26 +44,11 @@ app.delete('/delete-categ/:id', (req,res)=> {
     
 });
 
-//send category list to frontend for display to edit menu
-app.get('/display-category', (req,res) => {
-    let sql = 'SELECT * FROM category';
+//send category list 
+app.get('/display-category', Auth.checkAccessToken, (req,res) => {
+    let id = req.userId;
 
-    database.query(sql, (err, result) => {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
-        if (result.length) {
-            res.status(200).json(result);
-        }
-        else res.status(200).json({});
-    });
-});
-//send category list to frontend for display to edit menu BY ID
-app.get('/display-category/:id', (req,res) => {
-    let id = req.params.id;
-
-    database.query('SELECT * FROM category where store_id=?', id, (err, result) => {
+    database.query('SELECT * FROM category WHERE store_id = ?', id, (err, result) => {
         if (err) {
             res.status(400).send(err);
             return;
@@ -73,11 +60,10 @@ app.get('/display-category/:id', (req,res) => {
     });
 });
 //get products by category ID
-app.get('/menu-info/:id', (req,res) => {
-    // let sql = 'SELECT * FROM menu_info';
-    const id = req.params.id
-
-    database.query("SELECT * FROM menu_info WHERE category_id = ?", id,
+app.get('/menu-info/:id', Auth.checkAccessToken, (req,res) => {
+    let categ_id = req.params.id
+    let store_id = req.userId;
+    database.query("SELECT * FROM menu_info WHERE category_id = ? AND store_id = ? ", [categ_id,store_id],
     (err, result) => {
         if (err) {
             res.status(400).send(err);
@@ -90,36 +76,19 @@ app.get('/menu-info/:id', (req,res) => {
         else res.status(200).json({});
     });
 });
-//get products by category ID and store ID
-app.get('/:userID/menu-info/:categID', (req,res) => {
-    // let sql = 'SELECT * FROM menu_info';
-    const userID = req.params.userID;
-    const categID = req.params.categID;
 
-    database.query("SELECT * FROM menu_info WHERE category_id = ? AND store_id = ?", [categID,userID],
-    (err, result) => {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
-
-        if (result.length) {
-            res.status(200).json(result);
-        }
-        else res.status(200).json({});
-    });
-});
 //to add products to menu (manager side)
-app.post('/add-product', (req,res)=> {
+app.post('/add-product', Auth.checkAccessToken, (req,res)=> {
     if(req.method == "POST"){
-        var post  = req.body;
-        var product= post.product;
-        var price= post.price;
-        var availability= post.availability;
-        var category = post.category;
+        let store_id = req.userId;
+        let post  = req.body;
+        let product= post.product;
+        let price= post.price;
+        let availability= post.availability;
+        let category = post.category;
         console.log(product, price, availability, category)
         if (!req.files){
-            database.query("INSERT INTO menu_info (product,price,category_id,availability) VALUES ('" + product + "','" + price + "','" + category + "','" + availability + "')",
+            database.query("INSERT INTO menu_info (product,price,category_id,availability,store_id) VALUES (?,?,?,?,?)", [product,price,category,availability,store_id],
                 (err, result) => {
                     if(!err)
                         return res.status(200).send(result);
@@ -129,8 +98,8 @@ app.post('/add-product', (req,res)=> {
         }
         
         else{
-          var file = req.files.photo;
-          var img_name = file.name;
+          let file = req.files.photo;
+          let img_name = file.name;
           console.log("file uploaded:")
           console.log(file)
 
@@ -141,7 +110,7 @@ app.post('/add-product', (req,res)=> {
                     if (err)
                         // console.log(err)
                       return res.status(500).send(err);
-                            database.query("INSERT INTO menu_info (product,price,category_id,availability,photo) VALUES ('" + product + "','" + price + "','" + category + "','" + availability + "','" + img_name + "')",
+                            database.query("INSERT INTO menu_info (product,price,category_id,availability,photo,store_id) VALUES (?,?,?,?,?,?)",[product,price,category,availability,img_name,store_id],
                             (err, result) => {
                                 if(!err)
                                     return res.status(200).send(result)
@@ -157,12 +126,12 @@ app.post('/add-product', (req,res)=> {
 });
 
 //Delete products
-app.delete('/delete-product/:id', (req,res)=> {
-    
-    const id = req.params.id
+app.delete('/delete-product/:id', Auth.checkAccessToken,(req,res)=> {
+    let store_id = req.userId;
+    let prod_id = req.params.id
     console.log(id)
     
-    database.query("DELETE FROM menu_info WHERE id = ?", id,
+    database.query("DELETE FROM menu_info WHERE id = ? AND store_id = ?", [prod_id,store_id],
     (err, result) => {
         if(!err){
             //console.log(result)
@@ -174,25 +143,15 @@ app.delete('/delete-product/:id', (req,res)=> {
     })
 });
 
-// app.get('/edit-menu/:id', function(req, res, next) {
-//     var id = req.params.id;
-//     var sql = `SELECT * FROM menu_info WHERE id= ${id}`;
-//     database.query(sql, function (err, data) {
-//       if (err) throw err;
-//         res.send(result)
-//     });
-// });
+app.post('/edit-menu/:id', Auth.checkAccessToken,(req, res) => {
+    let prod_id= req.params.id;
+    let product= req.body.product;
+    let price= req.body.price;
+    let availability= req.body.availability;
+    let category = req.body.category;
+    let store_id = req.userId;
 
-app.post('/edit-menu/:id', (req, res) => {
-    var id= req.params.id;
-    var post  = req.body;
-    var product= post.product;
-    var price= post.price;
-    var availability= post.availability;
-    var category = post.category;
-
-    console.log(id)
-    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=? WHERE id = ? ", [product, price, category, availability,id],
+    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=? WHERE id = ? AND store_id = ?", [product, price, category, availability,prod_id,store_id],
         (err,result) => {
             if(result){
                 console.log("hello")
@@ -205,6 +164,5 @@ app.post('/edit-menu/:id', (req, res) => {
         }
     )
 });
-        
 
 module.exports = app;

@@ -8,6 +8,7 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import Modal from 'react-modal';
 import Axios from "axios";
+import Auth from '../../services/Auth';
 
 class EditMenu extends Component {
     constructor(){
@@ -40,10 +41,11 @@ class EditMenu extends Component {
     }
     async componentDidMount(){
         document.title = "MinimaLine | Edit Menu";
+        console.log("edit menu page")
         this.showCategs("first");
     }
     async showCategs(id){
-        let categs = await Axios.get(`http://localhost:3005/display-category/${this.props.location.state.userId}`);
+        let categs = await Axios.get('http://localhost:3005/display-category',{headers: Auth.header()});
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }
@@ -99,7 +101,7 @@ class EditMenu extends Component {
         //     })
         // }
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/${this.props.location.state.userId}/menu-info/${categ_id}`);
+            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`,{headers: Auth.header()});
             this.setState({
                 prods: categProds.data,
                 clicked: false,
@@ -143,7 +145,8 @@ class EditMenu extends Component {
             category: (this.state.new_categ).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())
         };
         e.preventDefault();
-        Axios.post("http://localhost:3005/add-categ", data).then((response) => {
+        console.log("adding categ")
+        Axios.post("http://localhost:3005/add-categ",data,{headers: Auth.header()}).then((response) => {
             this.setState({new_categ: ''})
             this.toggleAddCateg()
             this.showCategs("added")
@@ -159,7 +162,7 @@ class EditMenu extends Component {
             category: this.state.current_categ,
             photo: this.state.prod_image
         };
-        Axios.post("http://localhost:3005/add-product", data).then((response) => {
+        Axios.post("http://localhost:3005/add-product",data,{headers: Auth.header()}).then((response) => {
             console.log("new product")
             this.toggleAddProd()
             this.showProducts(this.state.current_categ)
@@ -172,7 +175,7 @@ class EditMenu extends Component {
         })
     }
     deleteProd(){
-        Axios.delete(`http://localhost:3005/delete-product/${this.state.delete_this}`).then((response) => {
+        Axios.delete(`http://localhost:3005/delete-product/${this.state.delete_this}`,{headers: Auth.header()}).then((response) => {
             this.toggleDeleteProd()
         })
     }
@@ -269,7 +272,7 @@ class EditMenu extends Component {
                 <Wrapper>
                     <Arrow>
                         <ArrowWrapper>
-                            <Link to={{ pathname: "/dashboard", state: {userId: this.props.location.state.userId} }}>
+                            <Link to={{ pathname: "/dashboard" }}>
                                 <BiArrowBack size="40px" color="#676666"/>
                             </Link>
                         </ArrowWrapper>
@@ -283,7 +286,7 @@ class EditMenu extends Component {
                             </Instruction> : null}
                     </Nav>
                     <EditButton>
-                        <Link to={{ pathname: "/view-menu", state: {userId: this.props.location.state.userId} }}>
+                        <Link to={{ pathname: "/view-menu" }}>
                             <button>Save</button>
                         </Link>
                     </EditButton>

@@ -13,14 +13,17 @@ import Dashboard from "./Dashboard";
 import ManageAccount from "./ManageAccount";
 import * as Customer from '../../customer/components';
 import * as Cashier from '../../cashier/components';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
+import Auth from '../../services/Auth';
 
-const ProtectedRoute = ({component:Component, ...rest}) => {
+const PrivateRoute = ({component:Component, ...rest}) => {
   return(
     <Route
       {...rest}
       render={()=>(
-        <Component/>
+        Auth.hasAccess() ?
+          <Component/>
+        : <Redirect to="/"/>
       )}
     />
   )
@@ -35,10 +38,10 @@ const App = () => {
           <Route exact path="/sign-up" component={SignUp} />
           <Route exact path="/terms" component={Terms} />
           <Route exact path="/store-reg" component={StoreReg} />
-          <Route exact path="/view-menu" component={ViewMenu} />
-          <Route exact path="/edit-menu" component={EditMenu} />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/account" component={ManageAccount} />
+          <PrivateRoute exact path="/view-menu" component={ViewMenu} />
+          <PrivateRoute exact path="/edit-menu" component={EditMenu} />
+          <PrivateRoute exact path="/dashboard" component={Dashboard} />
+          <PrivateRoute exact path="/account" component={ManageAccount} />
           <Route exact path="/customer" component={Customer.App} />
           <Route exact path="/cashier" component={Cashier.App} />
         </Switch>

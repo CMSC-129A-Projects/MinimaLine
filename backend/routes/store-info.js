@@ -3,6 +3,7 @@ var app = express();
 var database = require('../config/database');
 const {check, validationResult} = require('express-validator');
 const multer = require('multer');
+var Auth = require('../jwt-auth.js');
 
 const storage = multer.diskStorage({
     destination: (req,file,cb) => {
@@ -44,22 +45,24 @@ app.post('/single', [
 });
 
 
-//get data from store-info table
-app.get('/store-info', (req,res) => {
-    let sql = 'SELECT * FROM store_info';
+// //get data from store-info table
+// app.get('/store-info', Auth.checkAccessToken, (req,res) => {
+//     let id = req.userId;
 
-    database.query(sql, (err, result) => {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
+//     // let sql = 'SELECT * FROM store_info where id =';
 
-        if (result.length) {
-            res.json(result);
-        }
-        else res.json({});
-    });
-});
+//     database.query('SELECT * FROM category where store_id=?', (err, result) => {
+//         if (err) {
+//             res.status(400).send(err);
+//             return;
+//         }
+
+//         if (result.length) {
+//             res.json(result);
+//         }
+//         else res.json({});
+//     });
+// });
 
 //to register store into account_info table
 app.post('/store-registration/:id', [
@@ -92,7 +95,7 @@ app.post('/store-registration/:id', [
                     return res.status(200).send(result);
                 }
                 else
-                    console.log(err)
+                    return res.status(400).send({message: "Error"})
                 });
         }
     
@@ -114,7 +117,7 @@ app.post('/store-registration/:id', [
                         if(!err)
                             return res.status(200).send(result)
                         else
-                            return res.status(400).send("error")
+                            return res.status(400).send({message: "Error"})
                     });
             } 
                 else {

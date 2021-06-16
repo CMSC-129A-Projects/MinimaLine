@@ -3,39 +3,55 @@ import styled from 'styled-components';
 import logo from '../../assets/random.jpeg';
 import {MdRestaurantMenu, MdAccountCircle} from 'react-icons/md';
 import {AiOutlineUserSwitch} from 'react-icons/ai';
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import Modal from 'react-modal';
 import Axios from 'axios';
+import Auth from '../../services/Auth';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
       clicked: false,
-      username: null
+      username: null,
+      redirect: false
      }
      this.handleClick = this.handleClick.bind(this);
+     this.handleLogout = this.handleLogout.bind(this);
   }
   async componentDidMount(){
     document.title = "MinimaLine | Dashboard"
-    let username = await Axios.get(`http://localhost:3005/account-info/${this.props.location.state.userId}`);
-    console.log(username)
-      this.setState({
-        username: username.data[0]["username"]
+    // if(Auth.hasAccess()){
+      console.log("dashboard")
+      await Axios.get(`http://localhost:3005/account-info`,{headers: Auth.header()})
+      .then((response)=>{
+          console.log(response.data[0])
+          this.setState({username: response.data[0]["username"]})
       })
+      .catch((error)=> {
+        console.log(error)
+        this.setState({redirect: true})
+      })
+    // }
+    
   }
 
   handleClick(){
     this.setState({clicked: !this.state.clicked})
   }
-
+  handleLogout(){
+    if(Auth.logout())
+      this.setState({redirect: true})
+  }
   render() {
+    if(this.state.redirect)
+      return <Redirect to="/"/>
     return ( 
       <Container>
         <div className="header">
           <HeaderBar>
             <h1>Welcome, {this.state.username}.</h1>
-            <button>logout</button>
+            <button onClick={this.handleLogout}>logout</button>
           </HeaderBar>
           <HeaderCircle>
             <img src={logo}/>
@@ -43,13 +59,13 @@ class App extends Component {
         </div>
 
         <Body>
-          <StyledLink to={{ pathname: "/view-menu", state: {userId: this.props.location.state.userId} }}
+          <StyledLink to={{ pathname: "/view-menu" }}
                       style={{textDecoration:'none'}}>
               <MdRestaurantMenu className="icon" size="90px"/>
               <h2>View Menu</h2>
               <p>View and edit the restaurant menu.</p>
           </StyledLink>
-          <StyledLink to={{ pathname: "/account", state: {userId: this.props.location.state.userId} }}
+          <StyledLink to={{ pathname: "/account" }}
                       style={{textDecoration:'none'}}>
             <MdAccountCircle className="icon" size="90px"/>
             <h2>Account</h2>

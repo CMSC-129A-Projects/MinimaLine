@@ -3,6 +3,8 @@ import styled from "styled-components";
 import logo from "../../assets/logo.svg";
 import {Redirect,Link} from 'react-router-dom';
 import Axios from "axios";
+import Auth from '../../services/Auth';
+// Axios.defaults.withCredentials = true;
 
 class SignIn extends Component {
   constructor(props) {
@@ -18,19 +20,7 @@ class SignIn extends Component {
   }
   async componentDidMount(){
     document.title = "MinimaLine | Sign In";
-    Axios.defaults.withCredentials = true;
-    await Axios.get("http://localhost:3005/user-login").then((response) => {
-      if(response.data.loggedIn==true){
-        console.log(response.data.user)
-        this.setState({
-          userId: response.data.user[0]["id"],
-          redirect: true
-        })
-        console.log(this.state.userId)
-      }
-      else 
-        console.log(response)
-    })
+    console.log("sign in page")
   }
   
   handleChange(e){
@@ -40,28 +30,26 @@ class SignIn extends Component {
   }
   login = e => {
     e.preventDefault();
-    const data = this.state;
-    Axios.post("http://localhost:3005/user-login", data, {withCredentials: true}).then((response) => {
-      if(response.data.message){
-        this.setState({
-          error_msg: response.data.message,
-          login_error: true
-        })
-      }
-      else{
-        console.log(response)
-        let userId = response.data[0]["id"]
-        this.setState({ 
-          userId: userId,
-          redirect:true
-        })
-      }
-    })
+    Auth.login(this.state.username, this.state.password)
+      .then((error) => {
+        if(error){
+          console.log(error.msg)
+          this.setState({ 
+            error_msg: error.msg,
+            login_error: true
+          })
+        }
+        else{
+          console.log("logged in")
+          this.setState({redirect: true})
+        }
+      })
   };
 
   render() { 
     if(this.state.redirect)
-      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
+      return <Redirect to="/dashboard"/>
+      // return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return ( 
       <Container>
       <LogoWrapper>

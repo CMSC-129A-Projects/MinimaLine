@@ -22,17 +22,7 @@ class SignUp extends Component{
   }
   async componentDidMount(){
     document.title = "MinimaLine | Sign Up";
-    Axios.defaults.withCredentials = true;
-    await Axios.get("http://localhost:3005/user-login").then((response) => {
-      if(response.data.loggedIn==true){
-        this.setState({
-          userId: response.data.user[0]["id"],
-          loggedIn: true
-        })
-      }
-      else 
-        console.log(response)
-    })
+    console.log("sign up page")
   }
 
   handleChange(e){
@@ -52,7 +42,7 @@ class SignUp extends Component{
       if(response.data.errors){
         this.setState({
           error: true,
-          error_msg: response.data.errors[0].msg
+          error_msg: response.data.errors
         })
       }else{
         this.setState({
@@ -65,9 +55,10 @@ class SignUp extends Component{
 
   render(){
     if(this.state.redirect)
-      return <Redirect to={{ pathname: "/store-reg", state: {userId: this.state.userId} }}/>
+      return <Redirect to={{ pathname: "/store-reg",
+          state: {userId: this.state.userId,username: this.state.username,password: this.state.password} }}/>
     else if(this.state.loggedIn)
-      return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
+      return <Redirect to={{ pathname: "/dashboard" }}/>
     return (
       <Container>
         <LogoWrapper>
@@ -77,7 +68,13 @@ class SignUp extends Component{
         </LogoWrapper>
         <Form onSubmit={this.register}>
           <h3>Sign Up</h3>
-            {this.state.error ? <p>{this.state.error_msg}</p> : null}
+            {this.state.error && this.state.error_msg ? 
+              <>
+              {this.state.error_msg.map((error,index)=>{
+                return( <p>{error["msg"]}</p>)
+              })} 
+              </>
+            : null}
             <InputContainer>
               <StyledInput 
                 type="text" 
