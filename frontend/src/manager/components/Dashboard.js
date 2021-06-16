@@ -49,12 +49,11 @@ class App extends Component {
     return ( 
       <Container>
         <div className="logout">
-            <button>Logout</button>
+            <button onClick={this.handleLogout}>Logout</button>
         </div>
         <div className="header">
           <HeaderBar>
             <h1>Welcome, {this.state.username}.</h1>
-            <button onClick={this.handleLogout}>logout</button>
           </HeaderBar>
           <HeaderCircle>
             <img src={logo}/>
@@ -120,6 +119,9 @@ const Container = styled.div`
     z-index: 1;
     display: flex;
     justify-content: center;
+    :hover{
+      cursor: pointer;
+    }
   }
 
   button{
