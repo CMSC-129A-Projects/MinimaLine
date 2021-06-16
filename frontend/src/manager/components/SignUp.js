@@ -229,11 +229,10 @@ const Container = styled.div`
       font-size: 16px;
       margin-top: 2rem;
       margin-left: 25px;
-
-      span {
+  }
+  span {
         color: #568d33;
         cursor: pointer;
-      }
   }
 
   span:hover{
@@ -253,12 +252,22 @@ const StyledInput = styled.input`
     min-width: 350px;
     height: 50px;
     border: none;
+    outline: none;
     margin: 0.5rem 0;
     background-color: white;
     box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
     border-radius: 17px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
+
+    @media (prefers-reduced-motion: no-preference){
+        :focus {
+            transition: outline-offset .25s ease;
+            outline-offset: 1px;
+            box-shadow: 0 0 2pt 1pt #568d33;
+            border-radius: 20px;
+        }
+    }
 
     &:hover {
         transform: translateY(-3px);

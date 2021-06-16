@@ -364,6 +364,7 @@ const ProdModal = styled(Modal)`
     min-width: 250px;
     height: 40px;
     border: none;
+    outline: none;
     color: black;
     margin: 7px 0px 10px;
     background-color: #f5f5f5;
@@ -371,6 +372,15 @@ const ProdModal = styled(Modal)`
     border-radius: 8px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
+
+    @media (prefers-reduced-motion: no-preference){
+        :focus {
+            transition: outline-offset .25s ease;
+            outline-offset: 1px;
+            box-shadow: 0 0 2pt 1pt #F9C91E;
+            border-radius: 14px;
+        }
+    }
   }
     
   select{
@@ -379,6 +389,7 @@ const ProdModal = styled(Modal)`
     min-width: 250px;
     height: 40px;
     border: none;
+    outline: none;
     color: black;
     margin: 7px 0px 10px;
     background-color: #f5f5f5;
@@ -386,6 +397,14 @@ const ProdModal = styled(Modal)`
     border-radius: 8px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
+    
+    @media (prefers-reduced-motion: no-preference){
+        :focus {
+            transition: outline-offset .25s ease;
+            outline-offset: 1px;
+            box-shadow: 0 0 2pt 1pt #F9C91E;
+        }
+    }
   }
 
   .buttons{
@@ -452,6 +471,7 @@ const CategModal = styled(Modal)`
     min-width: 250px;
     height: 40px;
     border: none;
+    outline: none;
     color: black;
     margin: 7px 0px 10px;
     background-color: #f5f5f5;
@@ -459,6 +479,14 @@ const CategModal = styled(Modal)`
     border-radius: 8px;
     padding: 0 1rem;
     transition: all 0.2s ease-in;
+    @media (prefers-reduced-motion: no-preference){
+        :focus {
+            transition: outline-offset .25s ease;
+            outline-offset: 1px;
+            box-shadow: 0 0 2pt 1pt #F9C91E;
+            border-radius: 14px;
+        }
+    }
   }
     
   .buttons{
