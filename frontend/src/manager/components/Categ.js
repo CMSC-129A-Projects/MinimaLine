@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { TiDeleteOutline } from "react-icons/ti";
+import { MdModeEdit } from "react-icons/md";
 import Modal from 'react-modal';
 import Axios from 'axios';
 
@@ -77,7 +77,9 @@ class Categ extends Component {
                                     <h1>{categ["name"]}</h1>
                                 </div>
                                 {this.props.mode==="edit" ? 
-                                    <DeleteButton size="25px" onClick={() => this.toggleModal(categ["id"])}/>
+                                    <DeleteButton size="25px" onClick={() => this.toggleModal(categ["id"])}>
+                                        <h1>Edit</h1>
+                                    </DeleteButton>
                                 : null}
                             </div>
                         )
@@ -85,10 +87,27 @@ class Categ extends Component {
                     {this.state.openModal ?
                         <ModalContainer>
                             <DeleteModal isOpen={true} style={modalStyle}>
-                                <h2>Are you sure you want to remove this category from the menu?</h2>
+                            <h2>Change Category</h2>
+                            <form>
+                                <input
+                                    type="text"
+                                    placeholder="Category Name"
+                                    name="new_categ"
+                                    // value={this.state.new_categ}
+                                    required
+                                    autoComplete="off"
+                                    // onChange={this.handleChange.bind(this)}
+                                />
+                                <div className="buttons">
+                                    <button className="save">Save Changes</button>
+                                    <button onClick={this.toggleModal}>Cancel</button>
+                                </div>
+                            </form>
+                            <h3>-------------------  or  -------------------</h3>
+                                {/* <h2>Are you sure you want to remove this category from the menu?</h2> */}
+                                <h4>Delete Category</h4>
                                 <div className="buttons">
                                     <button className="delete" onClick={this.deleteCateg}>Delete</button>
-                                    <button onClick={this.toggleModal}>Cancel</button>
                                 </div>
                             </DeleteModal>
                         </ModalContainer>
@@ -100,7 +119,7 @@ class Categ extends Component {
     }
 }
 
-const DeleteButton = styled(TiDeleteOutline)`
+const DeleteButton = styled(MdModeEdit)`
     position: absolute;
     right: -10px;
     top: -10px;
@@ -165,12 +184,14 @@ const ModalContainer = styled.div`
 `;
 const DeleteModal = styled(Modal)`
   background-color: white;
+  outline: none;
+  border: none;
   box-shadow: 3px 6px 5px 3px #d6d6d6;
-  border-radius: 8px;
-  height: 300px;
-  width: 600px;
-  margin-top: -150px;
-  margin-left: -300px;
+  border-radius: 15px;
+  height: 520px;
+  width: 480px;
+  margin-top: -260px;
+  margin-left: -240px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -183,7 +204,7 @@ const DeleteModal = styled(Modal)`
 
   h2{
       text-align: center;
-      padding: 45px 50px 0px;
+      padding: 25px 50px 0px;
   }
   .buttons{
     display: flex;
@@ -196,6 +217,7 @@ const DeleteModal = styled(Modal)`
         width: 150px;
         height: 50px;
         border: none;
+        outline: none;
         box-shadow: 0px 10px 9px -15px rgba(0,0,0,0.25);
         border-radius: 8px;
         font-weight: 600;
@@ -208,11 +230,57 @@ const DeleteModal = styled(Modal)`
         }
     }
     .delete{
+        margin-top: 5px;
         color: #fff;
         background-color: #FF5C5C;
         box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
     }
   }
+
+  form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  input{
+    width: 80%;
+    max-width: 350px;
+    min-width: 250px;
+    height: 40px;
+    border: none;
+    outline: none;
+    color: black;
+    margin: 7px 0px 10px;
+    background-color: #f5f5f5;
+    box-shadow: 0px 14px 9px -15px rbga(0,0,0,0.25);
+    border-radius: 8px;
+    padding: 0 1rem;
+    transition: all 0.2s ease-in;
+
+    @media (prefers-reduced-motion: no-preference){
+        :focus {
+            transition: outline-offset .25s ease;
+            outline-offset: 1px;
+            box-shadow: 0 0 2pt 1pt #F9C91E;
+            border-radius: 14px;
+        }
+    }
+  }
+
+  .save{
+        color: black;
+        background-color: #F9C91E;
+    }
+
+    h3{
+        margin-top: 60px;
+        font-weight: 100;
+    }
+    h4{
+        font-size: 23px;
+        text-align: center;
+        /* padding: 10px 50px 0px; */
+    }
 `;
 
 export default Categ;

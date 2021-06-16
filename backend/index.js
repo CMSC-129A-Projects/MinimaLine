@@ -14,12 +14,12 @@ database.connect((err) => {
 //allow access of rest api for cross-origin resource sharing
 app.use(cors({
     origin: ["http://localhost:3000"],
-    methods: ["POST", "GET", "DELETE"],
-    credentials: true,
+    methods: ["POST","GET","DELETE"],
+    credentials: true
 }));
 
-//to upload file
-//app.use(upload());
+//to make upload folder public
+//app.use('/public/uploads',express.static('public/uploads'));
 
 //allow api for parsing json
 app.use(express.json());
@@ -33,7 +33,7 @@ app.use(express.urlencoded ({
 app.use('/', [
     require('./routes/store-info'),
     require('./routes/account-info'),
-    require('./routes/menu'),
+    require('./routes/menu')
 ]);
 
 //http://localhost:3001/ (index.js)

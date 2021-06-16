@@ -48,6 +48,9 @@ class App extends Component {
       return <Redirect to="/"/>
     return ( 
       <Container>
+        <div className="logout">
+            <button>Logout</button>
+        </div>
         <div className="header">
           <HeaderBar>
             <h1>Welcome, {this.state.username}.</h1>
@@ -103,6 +106,40 @@ const Container = styled.div`
   /* background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%); */
   height: 100%;
   width: 100%;
+
+
+  .logout{
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    height: 95px;
+    position: fixed;
+    width: 12%;
+    align-items: center;
+    /* background: blue; */
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  button{
+    /* right: 0; */
+    /* margin-left: 150vh; */
+    top: 30%;
+    /* right: 25%; */
+    /* margin-left: 140vh; */
+    margin-top: -5px;
+    z-index: 1;
+    position: absolute;
+    max-width: 30em;
+    background-color: #F9C91E;
+    padding: 0.7em 1.5em;
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    font-size: 20px;
+  }
+
 `;
 const Body = styled.div`
   display: flex;
@@ -115,7 +152,7 @@ const Body = styled.div`
   height: 100%;
 `;
 const HeaderCircle = styled.div`
-  margin: 20px 0px 0px 130px;
+  margin: 40px 0px 0px 130px;
   position: fixed;
   background-color: #f9c91e;
   width: 230px;
@@ -151,7 +188,7 @@ const HeaderCircle = styled.div`
   }
 `;
 const HeaderBar = styled.div`
-  margin: 65px 0px 0px 300px;
+  margin: 95px 0px 0px 300px;
   position: fixed;
   background-color: white;
   width: 100%;
@@ -182,11 +219,6 @@ const HeaderBar = styled.div`
       margin-left: 120px;
     }
   }
-
-  button{
-    margin-left: 300px;
-  }
-  
 `;
 
 const StyledLink = styled(Link)`

@@ -5,43 +5,28 @@ const {check, validationResult} = require('express-validator');
 const multer = require('multer');
 var Auth = require('../jwt-auth.js');
 
-const storage = multer.diskStorage({
-    destination: (req,file,cb) => {
-        cb(null,'./public/uploads')
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '--' + file.originalname)
-    }
-})
-
-const upload = multer({storage: storage});
-
-app.post('/single', [
-    check('store_name')
-    .notEmpty()
-    .withMessage('Store name cannot be empty'),
-    check('manager_name')
-    .notEmpty()
-    .withMessage('Manager name cannot be empty'),
-    check('location')
-    .notEmpty()
-    .withMessage('Location cannot be empty')
-    ] ,upload.single('logo'),(req,res) => {
+app.post('/single',upload.single('image'),async (req,res) => {
     
-    const store_name = req.body.store_name;
-    const manager_name = req.body.manager_name;
-    const location = req.body.location;
+    const uploader = async(path) => await cloudinary.uploads(path,'Image')
 
+    if (req.method === 'POST'){
+        const url = []
+        const file = req.file
+        const {path} = file
+        const newPath = await uploader(path)
+        url.push(newPath)
+        fs.unlinkSync(path)
 
-    if(!req.file){
-        console.log(store_name,manager_name,location)
-        res.send('No files uploaded')
-    }
+        res.status(200).json({
+            message:'Image upload successful',
+            data:url
+        })
     
-    else{
-        console.log(store_name,manager_name,location,req.file)
-        res.send('Files uploaded')
-        }
+    }else{
+        res.status(405).json({
+            err:"Image not uploaded successfully"
+        })
+    }
 });
 
 
@@ -65,23 +50,8 @@ app.post('/single', [
 // });
 
 //to register store into account_info table
-app.post('/store-registration/:id', [
-    check('store_name')
-    .notEmpty()
-    .withMessage('Store name cannot be empty'),
-    check('manager_name')
-    .notEmpty()
-    .withMessage('Manager name cannot be empty'),
-    check('location')
-    .notEmpty()
-    .withMessage('Location cannot be empty')
-    ] , upload.single('logo'),(req,res)=> {
+app.post('/store-registration/:id',upload.single('logo'), async (req,res) => {
     
-    const errors = validationResult(req);
-    console.log(errors)
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors: errors.array()});
-    }
     const store_name = req.body.store_name;
     const manager_name= req.body.manager_name;
     const location= req.body.location;
@@ -97,8 +67,7 @@ app.post('/store-registration/:id', [
                 else
                     return res.status(400).send({message: "Error"})
                 });
-        }
-    
+    }
     else{
         console.log("hello")
         var file = req.file;
@@ -123,7 +92,39 @@ app.post('/store-registration/:id', [
                 else {
                     console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
                 }
-    }
+            }
+
+    // else{
+    //     database.query("INSERT INTO store_info(store_name, manager_name, location) VALUES (?,?,?)", [store_name, manager_name, location],
+    //     //database.query("UPDATE account_info SET store_name=?, manager_name=?, location=? WHERE id = ? ", [store_name, manager_name, location, id],
+    //             (err, result) => {
+    //                 if(!err){
+    //                     res.status(200).send(result);
+    //                     return
+    //                 } 
+    //                 else
+    //                     console.log(err)
+    //                     return
+    //                 });
+    //             }
+});
+
+//get logo of store
+app.get('/storeLogo/:id', (req,res) => {
+    const id = req.params.id
+
+    database.query("SELECT logo FROM store_info WHERE id = ?", id,
+    (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+
+        if (logo) {
+            res.status(200).send(logo);
+        }
+        else res.status(200).send('No Logo');
+    });
 });
 
 module.exports = app;
