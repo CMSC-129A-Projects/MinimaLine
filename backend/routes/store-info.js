@@ -3,25 +3,32 @@ var app = express();
 var database = require('../config/database');
 const {check, validationResult} = require('express-validator');
 const multer = require('multer');
+const upload = require('../multer')
+const cloudinary = require('../cloudinary')
+const fs = require('fs');
+const { url } = require('inspector');
 
-const storage = multer.diskStorage({
-    destination: (req,file,cb) => {
-        cb(null,'./public/uploads')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname)
-    }
-})
+app.post('/single',upload.single('image'),async (req,res) => {
+    
+    const uploader = async(path) => await cloudinary.uploads(path,'Image')
 
-const upload = multer({storage: storage});
+    if (req.method === 'POST'){
+        const url = []
+        const file = req.file
+        const {path} = file
+        const newPath = await uploader(path)
+        url.push(newPath)
+        fs.unlinkSync(path)
 
-app.post('/single',upload.single('logo'),(req,res) => {
-    if(req.file){
-        console.log(req.file.originalname)
-        res.send('File sent')
-        }
-    else{
-       res.send('No files were sent')
+        res.status(200).json({
+            message:'Image upload successful',
+            data:url
+        })
+    
+    }else{
+        res.status(405).json({
+            err:"Image not uploaded successfully"
+        })
     }
 });
 
@@ -44,7 +51,7 @@ app.get('/store-info', (req,res) => {
 });
 
 //to register store into account_info table
-app.post('/store-registration',upload.single('logo'),(req,res) => {
+app.post('/store-registration/:id',upload.single('logo'), async (req,res) => {
     
     const store_name = req.body.store_name;
     const manager_name= req.body.manager_name;
@@ -52,11 +59,17 @@ app.post('/store-registration',upload.single('logo'),(req,res) => {
     //const id = req.params.id
 
     if(req.file){
-        console.log(req.file)
-        img_name = req.file
-
+        
+        const uploader = async(path) => await cloudinary.uploads(path,'Image')    
+        const file = req.file
+        const {path} = file
+        const newPath = await uploader(path)
+        const url = newPath
+        console.log(url)
+        fs.unlinkSync(path)
+        
         if(req.file.mimetype == "image/jpeg" ||req.file.mimetype == "image/png"|| req.file.mimetype == "image/gif" || req.file.mimetype == "image/svg" || req.file.mimetype == "image/jpg"){
-            database.query("INSERT INTO store_info(store_name, manager_name, location, logo) VALUES (?,?,?,?)", [store_name, manager_name, location, img_name],
+            database.query("INSERT INTO store_info(store_name, manager_name, location, logo) VALUES (?,?,?,?)", [store_name, manager_name, location, url.url],
             //database.query("UPDATE account_info SET store_name=?, manager_name=?, location=?, logo=? WHERE id = ? ", [store_name, manager_name, location, img_name, id],
                 (err, result) => {
                     if(!err)

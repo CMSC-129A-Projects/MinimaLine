@@ -42,22 +42,22 @@ app.get('/account-info/:id', (req,res) => {
 //to register user info in account_info table 
 app.post('/user-registration', [
     check('username') //OK alphanumeric, underscore, period, hyphen; NO spaces and special chars
-        // .notEmpty()
-        // .isLength({min: 4}) 
-        // .withMessage('Username should be at least 4 characters long')
-        // .isLength({max: 20})
-        // .withMessage('Username cannot be more than 20 characters long')
+    //.notEmpty()
+    //.isLength({min: 4}) 
+    //.withMessage('Username should be at least 4 characters long')
+    //.isLength({max: 20})
+    //.withMessage('Username cannot be more than 20 characters long'),
         .custom(async username => {
             const value = await isUsernameUsed(username);
             if (value) {
                 throw new Error('Username is already in use!');
             }
-        }),
+    }),
     check('email') //check for special chars before @ (OK alphanumeric, underscore, period, hyphen)
-        .notEmpty()
-        // .withMessage('Email cannot be empty')
-        // .isEmail()
-        // .withMessage('Email should be valid')
+    //.notEmpty()
+    //.withMessage('Email cannot be empty')
+    //.isEmail()
+    //.withMessage('Email should be valid'),
         .custom(async email => {
             const value = await isEmailUsed(email);
             if (value) {
@@ -65,10 +65,10 @@ app.post('/user-registration', [
             }
         }),
     check('password') // 
-        .notEmpty()
-        .withMessage('Password cannot be empty')
-        .isLength({min: 6, max: 20})
-        .withMessage('Password should be between 6-20 characters!'),
+    .notEmpty()
+    .withMessage('Password cannot be empty')
+    .isLength({min: 6, max: 20})
+    .withMessage('Password should be between 6-20 characters!')
     ], (req,res)=> {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
