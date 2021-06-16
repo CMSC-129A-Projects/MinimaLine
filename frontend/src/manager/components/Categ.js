@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
 import Modal from 'react-modal';
 import Axios from 'axios';
+import Auth from '../../services/Auth';
 
 class Categ extends Component {
     constructor(props){
@@ -54,7 +55,7 @@ class Categ extends Component {
     }
 
     deleteCateg(){
-        Axios.delete(`http://localhost:3005/delete-categ/${this.state.delete_this}`).then((response) => {
+        Axios.delete(`http://localhost:3005/delete-categ/${this.state.delete_this}`,{headers: Auth.header()}).then((response) => {
             console.log(response)
             this.toggleModal()
         })

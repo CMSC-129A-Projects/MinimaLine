@@ -26,7 +26,7 @@ class ProdDesc extends Component {
         e.preventDefault();
         const id = this.props["id"]
         const data = {
-            product: !this.state.prod_name ? this.props["product"] : this.state.prod_name,
+            product: !this.state.prod_name ? this.props["product"] : (this.state.prod_name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
             price: !this.state.prod_price ? this.props["price"] : this.state.prod_price,
             category: this.state.prod_categ,
             availability: this.state.prod_availability
