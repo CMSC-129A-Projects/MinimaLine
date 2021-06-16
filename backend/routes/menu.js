@@ -148,10 +148,6 @@ app.post('/add-product', Auth.checkAccessToken, (req,res)=> {
 app.delete('/delete-product/:id', Auth.checkAccessToken,(req,res)=> {
     let store_id = req.userId;
     let prod_id = req.params.id
-<<<<<<< HEAD
-=======
-    // console.log(id)
->>>>>>> a242d78a77a3f117a1fdbc86d5a9c33aaefcf3f0
     
     database.query("DELETE FROM menu_info WHERE id = ? AND store_id = ?", [prod_id,store_id],
     (err, result) => {
