@@ -193,7 +193,7 @@ app.post('/add-cashier', Auth.checkAccessToken, [
     })
 });
 
-app.post('/edit-username/:id', [
+app.post('/edit-username', Auth.checkAccessToken, [
     check('username') //OK alphanumeric, underscore, period, hyphen; NO spaces and special chars
         // .notEmpty()
         // .isLength({min: 4}) 
@@ -213,10 +213,9 @@ app.post('/edit-username/:id', [
             console.log(errors)
             return res.send({errors: errors.array()});
         }
-        var id= req.params.id;
-        var username = req.body.username;
+        let id = req.userId;
+        let username = req.body.username;
 
-        console.log(id)
         database.query("UPDATE account_info SET username=? WHERE id = ? ", [username,id],
             (err,result) => {
                 if(result){
@@ -232,7 +231,7 @@ app.post('/edit-username/:id', [
         )
     
 });
-app.post('/edit-email/:id', [
+app.post('/edit-email', Auth.checkAccessToken,[
     check('email')
         .custom(async email => {
             const value = await isEmailUsed(email);
@@ -247,8 +246,8 @@ app.post('/edit-email/:id', [
             console.log(errors)
             return res.send({errors: errors.array()});
         }
-        var id= req.params.id;
-        var email = req.body.email;
+        let id = req.userId;
+        let email = req.body.email;
 
         console.log(id)
         database.query("UPDATE account_info SET email=? WHERE id = ? ", [email,id],
@@ -266,6 +265,7 @@ app.post('/edit-email/:id', [
         )
     
 });
+
 // custom validator functions
 function isEmailUsed(email){
     return new Promise((resolve, reject) => {

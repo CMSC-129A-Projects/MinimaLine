@@ -79,7 +79,44 @@ app.post('/store-registration/:id',upload.single('logo'), async (req,res) => {
                     });
                 }
 });
+app.post('/edit-storename', Auth.checkAccessToken, (req, res) => {
+    let id = req.userId;
+    let storename = req.body.storename;
 
+    console.log(id)
+    database.query("UPDATE account_info SET store_name=? WHERE id = ? ", [storename,id],
+        (err,result) => {
+            if(result){
+                console.log("hello")
+                console.log(result)
+                res.send(result)
+            }
+            else{
+                console.log(err)
+                res.send(err)
+            }
+        }
+    )
+});
+app.post('/edit-manager', Auth.checkAccessToken, (req, res) => {
+    let id = req.userId;
+    let manager = req.body.manager;
+
+    console.log(id)
+    database.query("UPDATE account_info SET manager_name=? WHERE id = ? ", [manager,id],
+        (err,result) => {
+            if(result){
+                console.log("hello")
+                console.log(result)
+                res.send(result)
+            }
+            else{
+                console.log(err)
+                res.send(err)
+            }
+        }
+    )
+});
 // //to register store into account_info table
 // app.post('/store-registration/:id',upload.single('logo'), async (req,res) => {
     

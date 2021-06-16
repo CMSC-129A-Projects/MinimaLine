@@ -180,7 +180,7 @@ class EditMenu extends Component {
         })
     }
     handleClick(id){
-        if(id==="deleted")
+        if(id==="deleted" || id==="edited")
             this.showCategs()
         else
             this.showProducts(id)

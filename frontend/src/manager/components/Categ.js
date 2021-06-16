@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
 import Modal from 'react-modal';
 import Axios from 'axios';
+import Auth from '../../services/Auth';
 
 class Categ extends Component {
     constructor(props){
@@ -14,26 +15,19 @@ class Categ extends Component {
             curr_categ: null,
             default: true,      
             openModal: false,
-            delete_this: null
+            new_categ: ''
         }
         this.handleClick = this.handleClick.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.deleteCateg = this.deleteCateg.bind(this);
         this.changeColor = this.changeColor.bind(this);
     }
-
-    // async componentDidMount(){
-    //     let categ
-    // }
+    handleChange(e){
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
     handleClick(index,categ_id){
-        // change color
-        // if(this.state.current !== index) // different category is clicked
-            // this.setState({
-            //     current: index,
-            //     isClicked: true,
-            //     // curr_categ: categ_id,
-            //     default: false
-            // })
         this.changeColor(index)
         this.props.onClick(categ_id)
     }
@@ -49,16 +43,29 @@ class Categ extends Component {
     toggleModal(id){
         this.setState({
             openModal: !this.state.openModal,
-            delete_this: id
+            curr_categ: id
         })
     }
 
-    deleteCateg(){
-        Axios.delete(`http://localhost:3005/delete-categ/${this.state.delete_this}`).then((response) => {
-            console.log(response)
-            this.toggleModal()
-        })
-        this.props.onClick("deleted")
+    async deleteCateg(){
+        console.log(this.state.curr_categ)
+        await Axios.delete(`http://localhost:3005/delete-categ/${this.state.curr_categ}`, {headers: Auth.header()})
+            .then((response) => {
+                console.log(response)
+                this.toggleModal()
+                this.props.onClick("deleted")
+            })
+    }
+    editCateg = e => {
+        e.preventDefault();
+        console.log(this.state.curr_categ)
+        Axios.post(`http://localhost:3005/edit-categ/${this.state.curr_categ}`,
+            {name: this.state.new_categ},{headers: Auth.header()})
+            .then((response) => {
+                console.log(response)
+                this.toggleModal()
+            })
+        this.props.onClick("edited")
     }
 
     render() { 
@@ -77,26 +84,24 @@ class Categ extends Component {
                                     <h1>{categ["name"]}</h1>
                                 </div>
                                 {this.props.mode==="edit" ? 
-                                    <DeleteButton size="25px" onClick={() => this.toggleModal(categ["id"])}>
-                                        <h1>Edit</h1>
-                                    </DeleteButton>
+                                    <EditButton size="25px" onClick={() => this.toggleModal(categ["id"])}/>
                                 : null}
                             </div>
                         )
                     })} 
                     {this.state.openModal ?
                         <ModalContainer>
-                            <DeleteModal isOpen={true} style={modalStyle}>
+                            <EditModal isOpen={true} style={modalStyle}>
                             <h2>Change Category</h2>
-                            <form>
+                            <form onSubmit={this.editCateg}>
                                 <input
                                     type="text"
                                     placeholder="Category Name"
                                     name="new_categ"
-                                    // value={this.state.new_categ}
+                                    value={this.state.new_categ}
                                     required
                                     autoComplete="off"
-                                    // onChange={this.handleChange.bind(this)}
+                                    onChange={this.handleChange.bind(this)}
                                 />
                                 <div className="buttons">
                                     <button className="save">Save Changes</button>
@@ -109,7 +114,7 @@ class Categ extends Component {
                                 <div className="buttons">
                                     <button className="delete" onClick={this.deleteCateg}>Delete</button>
                                 </div>
-                            </DeleteModal>
+                            </EditModal>
                         </ModalContainer>
                     : null}     
                 </Container>
@@ -119,7 +124,7 @@ class Categ extends Component {
     }
 }
 
-const DeleteButton = styled(MdModeEdit)`
+const EditButton = styled(MdModeEdit)`
     position: absolute;
     right: -10px;
     top: -10px;
@@ -182,7 +187,7 @@ const Container = styled.div`
 const ModalContainer = styled.div`
   position: relative;
 `;
-const DeleteModal = styled(Modal)`
+const EditModal = styled(Modal)`
   background-color: white;
   outline: none;
   border: none;

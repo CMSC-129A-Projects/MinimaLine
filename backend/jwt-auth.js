@@ -5,15 +5,12 @@ createTokens = (data) => {
     let accessToken = jwt.sign(data,"access-secret", {expiresIn: "1d"});
     let refreshToken = jwt.sign(data, "refresh-secret", {expiresIn: "7d"})
     refreshTokens.push(refreshToken)
-    console.log({accessToken,refreshToken})
+    // console.log({accessToken,refreshToken})
     return {accessToken,refreshToken}
 }
 checkAccessToken = (req,res,next) => {
-    // console.log(req.headers)
     let token = req.headers["x-access-token"];
-    // console.log(token)
-    // token = token.split(" ")[1];
-    console.log(`checking now: ${token}`)
+    console.log('checking token');
     if(!token){
         console.log("Unauthorized")
         return res.status(401).send({message: "Unauthorized"})

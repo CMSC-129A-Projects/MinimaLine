@@ -4,23 +4,17 @@ import Modal from 'react-modal';
 import { BiArrowBack } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
+import Auth from '../../services/Auth';
 
 class ManageAccount extends Component {
   constructor(props) {
     super(props);
     this.state = { 
-      account: true,
-      store: false,
-      currentNav: "account",
-      editing: false,
-      currentAccEdit: null,
-      currentStoreEdit: null,
-      user_info: [],
-      username: '',
-      email: '',
-      successful: false,
-      error: false,
-      error_msg: ''
+      account: true, store: false, currentNav: "account",
+      editing: false, currentAccEdit: null, currentStoreEdit: null,
+      user_info: [], username: '', email: '', storename: '',
+      manager: '', location: '', successful: false,
+      error: false, error_msg: ''
      }
      this.getUserInfo = this.getUserInfo.bind(this);
      this.navClick = this.navClick.bind(this);
@@ -28,13 +22,14 @@ class ManageAccount extends Component {
      this.closeEdit = this.closeEdit.bind(this);
      this.editUsername = this.editUsername.bind(this);
      this.editEmail = this.editEmail.bind(this);
+     this.editStoreName = this.editStoreName.bind(this);
   }
   async componentDidMount(){
     document.title = "MinimaLine | Account Management";
     this.getUserInfo();
   }
   async getUserInfo(){
-    let user = await Axios.get(`http://localhost:3005/account-info/${this.props.location.state.userId}`);
+    let user = await Axios.get('http://localhost:3005/account-info',{headers: Auth.header()});
     console.log(user.data[0]);
     this.setState({user_info: user.data[0]})
   }
@@ -83,7 +78,7 @@ class ManageAccount extends Component {
   editEmail(e){
     e.preventDefault();
     const data = {email: this.state.email};
-    Axios.post(`http://localhost:3005/edit-email/${this.props.location.state.userId}`, data).then((response) => {
+    Axios.post('http://localhost:3005/edit-email', data, {headers: Auth.header()}).then((response) => {
       if(response.data.errors){
         this.setState({
           error: true,
@@ -103,7 +98,7 @@ class ManageAccount extends Component {
   editUsername(e){
     e.preventDefault();
     const data = {username: this.state.username};
-    Axios.post(`http://localhost:3005/edit-username/${this.props.location.state.userId}`, data).then((response) => {
+    Axios.post('http://localhost:3005/edit-username', data, {headers: Auth.header()}).then((response) => {
       if(response.data.errors){
         this.setState({
           error: true,
@@ -120,12 +115,32 @@ class ManageAccount extends Component {
       }
     })
   }
+  editStoreName(e){
+    e.preventDefault();
+    const data = {storename: this.state.storename};
+    Axios.post('http://localhost:3005/edit-storename', data, {headers: Auth.header()}).then((response) => {
+      if(response.data.errors){
+        this.setState({
+          error: true,
+          error_msg: response.data.errors[0].msg
+        })
+      }else{
+        this.closeEdit();
+        this.getUserInfo();
+        this.setState({
+          successful: true,
+          error: false,
+          storename: ''
+        })
+      }
+    })
+  }
   render() { 
     return ( 
       <Container>
         <Top>
           <div className="arrow">
-            <Link to={{ pathname: "/dashboard", state: {userId: this.props.location.state.userId} }}>
+            <Link to={{ pathname: "/dashboard" }}>
                 <BiArrowBack size="50px" color="#676666"/>
             </Link>
           </div>
@@ -221,12 +236,16 @@ class ManageAccount extends Component {
                 <div className="info">
                   <div className="block">
                     <h2 className="label">Store Name</h2>
+                    {this.state.successful && this.state.currentStoreEdit===1 ? <p className="successful">Successfully changed store name</p> : null}
+                    {this.state.error && this.state.currentStoreEdit===1 ? <p className="error">{this.state.error_msg}</p> : null}
                     {(this.state.editing && this.state.currentStoreEdit===1) ? 
-                      <Form>
+                      <Form onSubmit={this.editStoreName}>
                         <p className="edit-label">Enter store name</p>
-                        <StyledInput placeholder="Store name"/>
+                        <StyledInput type="text" autoComplete="off"
+                            name="storename" value={this.state.storename}
+                            placeholder="Store name" onChange={this.handleChange.bind(this)}/>
                         <div>
-                          <button className="save" onClick={this.closeEdit}>Save Changes</button>
+                          <button className="save">Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                         </div>
                       </Form> 
@@ -243,7 +262,7 @@ class ManageAccount extends Component {
                         <p className="edit-label">Enter store location</p>
                         <StyledInput placeholder="Branch"/>
                         <div>
-                          <button className="save" onClick={this.closeEdit}>Save Changes</button>
+                          <button className="save">Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
                         </div>
                       </Form> 

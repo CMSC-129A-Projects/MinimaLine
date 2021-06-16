@@ -119,9 +119,6 @@ const Container = styled.div`
     z-index: 1;
     display: flex;
     justify-content: center;
-    :hover{
-      cursor: pointer;
-    }
   }
 
   button{
@@ -133,13 +130,16 @@ const Container = styled.div`
     margin-top: -5px;
     z-index: 1;
     position: absolute;
-    max-width: 30em;
+    max-width: 20em;
     background-color: #F9C91E;
     padding: 0.7em 1.5em;
     outline: none;
     border: none;
     border-radius: 1rem;
-    font-size: 20px;
+    font-size: 13px;
+    :hover{
+      cursor: pointer;
+    }
   }
 
 `;

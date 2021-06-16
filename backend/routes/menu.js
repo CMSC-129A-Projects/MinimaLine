@@ -32,8 +32,7 @@ app.post('/add-categ', Auth.checkAccessToken, (req,res)=> {
 app.delete('/delete-categ/:id', Auth.checkAccessToken, (req,res)=> {
     let store_id = req.userId;
     let categ_id = req.params.id
-    console.log(id)
-    
+    console.log(categ_id)
     database.query("DELETE FROM category WHERE id = ? AND store_id = ?", [categ_id,store_id],
     (err, result) => {
         if(!err)
@@ -42,6 +41,26 @@ app.delete('/delete-categ/:id', Auth.checkAccessToken, (req,res)=> {
         }
     )
     
+});
+
+// Edit category name
+app.post('/edit-categ/:id', Auth.checkAccessToken,(req, res) => {
+    let prod_id= req.params.id;
+    let store_id = req.userId;
+    let name = req.body.name
+
+    database.query("UPDATE category SET name = ? WHERE id = ? AND store_id = ?", [name,prod_id,store_id],
+        (err,result) => {
+            if(result){
+                console.log("hello")
+                res.send(result)
+            }
+            else{
+                console.log(err)
+                res.send(err)
+            }
+        }
+    )
 });
 
 //send category list 
@@ -129,7 +148,6 @@ app.post('/add-product', Auth.checkAccessToken, (req,res)=> {
 app.delete('/delete-product/:id', Auth.checkAccessToken,(req,res)=> {
     let store_id = req.userId;
     let prod_id = req.params.id
-    console.log(id)
     
     database.query("DELETE FROM menu_info WHERE id = ? AND store_id = ?", [prod_id,store_id],
     (err, result) => {
