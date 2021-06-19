@@ -98,50 +98,51 @@ app.get('/menu-info/:id', Auth.checkAccessToken, (req,res) => {
 
 //to add products to menu (manager side)
 app.post('/add-product', Auth.checkAccessToken, (req,res)=> {
-    if(req.method == "POST"){
+    // if(req.method == "POST"){
         let store_id = req.userId;
         let post  = req.body;
         let product= post.product;
         let price= post.price;
         let availability= post.availability;
         let category = post.category;
-        console.log(product, price, availability, category)
-        if (!req.files){
-            database.query("INSERT INTO menu_info (product,price,category_id,availability,store_id) VALUES (?,?,?,?,?)", [product,price,category,availability,store_id],
+        let photo=post.photo;
+        console.log(product, price, availability, category,photo)
+        // if (!req.files){
+            database.query("INSERT INTO menu_info (product,price,category_id,availability,photo,store_id) VALUES (?,?,?,?,?,?)", [product,price,category,availability,photo,store_id],
                 (err, result) => {
                     if(!err)
                         return res.status(200).send(result);
                     else
                         console.log(err)
                 });
-        }
+        // }
         
-        else{
-          let file = req.files.photo;
-          let img_name = file.name;
-          console.log("file uploaded:")
-          console.log(file)
+        // else{
+        //   let file = req.files.photo;
+        //   let img_name = file.name;
+        //   console.log("file uploaded:")
+        //   console.log(file)
 
-             if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"|| file.mimetype == "image/gif" || file.mimetype == "image/svg" || file.mimetype == "image/jpg"){
+        //      if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"|| file.mimetype == "image/gif" || file.mimetype == "image/svg" || file.mimetype == "image/jpg"){
                                    
-                file.mv('public/uploads'+file.name, function(err) {
+        //         file.mv('public/uploads'+file.name, function(err) {
                                
-                    if (err)
-                        // console.log(err)
-                      return res.status(500).send(err);
-                            database.query("INSERT INTO menu_info (product,price,category_id,availability,photo,store_id) VALUES (?,?,?,?,?,?)",[product,price,category,availability,img_name,store_id],
-                            (err, result) => {
-                                if(!err)
-                                    return res.status(200).send(result)
-                                else
-                                    return res.status(400).send("error")
-                            });
-                        });
-            } else {
-                console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
-            }
-        }
-    }
+        //             if (err)
+        //                 // console.log(err)
+        //               return res.status(500).send(err);
+        //                     database.query("INSERT INTO menu_info (product,price,category_id,availability,photo,store_id) VALUES (?,?,?,?,?,?)",[product,price,category,availability,img_name,store_id],
+        //                     (err, result) => {
+        //                         if(!err)
+        //                             return res.status(200).send(result)
+        //                         else
+        //                             return res.status(400).send("error")
+        //                     });
+        //                 });
+        //     } else {
+        //         console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
+        //     }
+        // }
+    // }
 });
 
 //Delete products

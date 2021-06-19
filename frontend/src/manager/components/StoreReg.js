@@ -19,6 +19,7 @@ class StoreReg extends Component{
       userId: '',
       username: '',
       password: '',
+      upload_url: '',
       logo_url: ''
     }
   }
@@ -43,20 +44,18 @@ class StoreReg extends Component{
   registerStore = async e => {
     e.preventDefault();
     if(this.state.logo){  // a file was uploaded
-      console.log(this.state.logo)
-      const data = new FormData();
-      data.append("file",this.state.logo);
-      data.append("upload_preset","minimaline");
-      
-      await Axios.post("https://api.cloudinary.com/v1_1/minimaline/image/upload",data,
-            {headers:{'Access-Control-Allow-Origin': '*'}})
+      // get secure upload url
+      await Axios.get('http://localhost:3005/request-upload')
         .then(response => {
-          console.log("uploaded")
           console.log(response.data.url)
-          this.setState({ logo_url: response.data.url })
+          this.setState({upload_url: response.data.url})
         })
-        .catch(err => {
-          console.log(err)
+      // upload img using above url
+      await Axios.put(this.state.upload_url,this.state.logo)
+        .then(response=>{
+          const imgURL = this.state.upload_url.split('?')[0]
+          console.log(imgURL)
+          this.setState({logo_url: imgURL})
         })
     }
     Auth.registerStore(this.state.userId,this.state.store_name,this.state.manager_name,this.state.location,this.state.logo_url)

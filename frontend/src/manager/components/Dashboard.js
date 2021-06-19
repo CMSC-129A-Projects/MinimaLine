@@ -14,25 +14,27 @@ class App extends Component {
     this.state = { 
       clicked: false,
       username: null,
+      logo: null,
       redirect: false
      }
      this.handleClick = this.handleClick.bind(this);
      this.handleLogout = this.handleLogout.bind(this);
   }
   async componentDidMount(){
-    document.title = "MinimaLine | Dashboard"
-    // if(Auth.hasAccess()){
+    document.title = "MinimaLine | Dashboard";
       console.log("dashboard")
       await Axios.get(`http://localhost:3005/account-info`,{headers: Auth.header()})
       .then((response)=>{
           console.log(response.data[0])
-          this.setState({username: response.data[0]["username"]})
+          this.setState({
+            username: response.data[0]["username"],
+            logo: response.data[0]["logo"]
+          })
       })
       .catch((error)=> {
         console.log(error)
         this.setState({redirect: true})
       })
-    // }
     
   }
 
@@ -56,7 +58,7 @@ class App extends Component {
             <h1>Welcome, {this.state.username}.</h1>
           </HeaderBar>
           <HeaderCircle>
-            <img src={logo}/>
+            <img src={this.state.logo}/>
           </HeaderCircle>
         </div>
 

@@ -28,7 +28,9 @@ class EditMenu extends Component {
             openDeleteModal: false,     // open/close modal for delete product
             openAddCateg: false,        // open/close modal for add category
             openAddProd: false,     // open/close modal for add product
-            delete_this: null     // id of product to be deleted 
+            delete_this: null,     // id of product to be deleted 
+            upload_url: '',
+            img_url: ''
         }
         this.changeColor = this.changeColor.bind(this);
         this.toggleDeleteProd = this.toggleDeleteProd.bind(this);
@@ -135,9 +137,7 @@ class EditMenu extends Component {
         })
     }
     handleUpload(e){
-        this.setState({
-            prod_img: e.target.files[0]
-        })
+        this.setState({prod_img: e.target.files[0]})
     }
 
     addNewCateg = e =>{
@@ -152,17 +152,32 @@ class EditMenu extends Component {
             this.showCategs("added")
         })
     }
-    addNewProd = e =>{
+    addNewProd = async e =>{
         console.log(this.state.current_categ)
         e.preventDefault();
+        if(this.state.prod_img){  // a file was uploaded
+            // get secure upload url
+            await Axios.get('http://localhost:3005/request-upload')
+              .then(response => {
+                console.log(response.data.url)
+                this.setState({upload_url: response.data.url})
+              })
+            // upload img using above url
+            await Axios.put(this.state.upload_url,this.state.prod_img)
+              .then(response=>{
+                const imgURL = this.state.upload_url.split('?')[0]
+                console.log(imgURL)
+                this.setState({img_url: imgURL})
+              })
+        }
         const data = {
             product: (this.state.prod_name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
             price: this.state.prod_price,
             availability: Number(this.state.prod_availability),
             category: this.state.current_categ,
-            photo: this.state.prod_image
+            photo: this.state.img_url
         };
-        Axios.post("http://localhost:3005/add-product",data,{headers: Auth.header()}).then((response) => {
+        await Axios.post("http://localhost:3005/add-product",data,{headers: Auth.header()}).then((response) => {
             console.log("new product")
             this.toggleAddProd()
             this.showProducts(this.state.current_categ)
@@ -170,9 +185,10 @@ class EditMenu extends Component {
                 prod_name: '',
                 prod_price: '',
                 prod_availability: "-1",
-                prod_image: ''
+                prod_img: ''
             })
         })
+        console.log(this.state.img_url)
     }
     deleteProd(){
         Axios.delete(`http://localhost:3005/delete-product/${this.state.delete_this}`,{headers: Auth.header()}).then((response) => {
@@ -257,9 +273,8 @@ class EditMenu extends Component {
                                     type="file"
                                     placeholder="Product Image"
                                     name="prod_img"
-                                    value={this.state.prod_img}
                                     autoComplete="off"
-                                    onChange={this.handleChange.bind(this)}/>
+                                    onChange={this.handleUpload.bind(this)}/>
                                 <div className="buttons">
                                     <button className="save">Save Changes</button>
                                     <button onClick={this.toggleAddProd}>Cancel</button>
@@ -311,7 +326,7 @@ class EditMenu extends Component {
                                                         className={(this.state.isProdClicked && (this.state.current_prod===index)) ? 'clicked' : 'unclicked'}>
                                                                 <DeleteButton size="50px" onClick={()=>this.toggleDeleteProd(prod["id"])}/>
                                                                 <article>
-                                                                    <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
+                                                                    <h3><img className='image' src={prod["photo"]} /></h3>
                                                                     <h1>{prod["product"]}</h1>
                                                                     <h2>Php {prod["price"]}</h2>
                                                                     <h2>{prod["availability"]===1 ? "Available" : "Not Available"}</h2>
