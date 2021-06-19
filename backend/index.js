@@ -1,23 +1,25 @@
 var express = require('express');
 var app = express();
 var bcrypt = require('bcrypt');
-//var upload = require('express-fileupload');
 var cors = require("cors");
 var database = require('./config/database');
 var port = process.env.PORT || 3005;
 
 //Connect to database
-database.connect((err) => {
-    if (err) throw err;
-});
+// database.connect((err) => {
+//     if (err) throw err;
+// });
+// database.connect((err) => {
+//     if (err) throw err;
+// });
 
 //allow access of rest api for cross-origin resource sharing
 app.use(cors({
-    origin: ["http://localhost:3000"],
-    methods: ["POST","GET","DELETE"],
+    origin: 'https://xenodochial-goldwasser-e801d5.netlify.app',
+    methods: ["POST","GET","DELETE","OPTIONS","PUT"],
     credentials: true
 }));
-
+// app.use(cors());
 //to make upload folder public
 //app.use('/public/uploads',express.static('public/uploads'));
 

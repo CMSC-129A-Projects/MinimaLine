@@ -3,35 +3,8 @@ var app = express();
 var database = require('../config/database');
 const {check, validationResult} = require('express-validator');
 var Auth = require('../jwt-auth.js');
-const upload = require('../multer')
-const cloudinary = require('../cloudinary')
 const fs = require('fs');
 var s3 = require('../s3.js');
-
-
-app.post('/single',upload.single('image'),async (req,res) => {
-    
-    const uploader = async(path) => await cloudinary.uploads(path,'Image')
-
-    if (req.method === 'POST'){
-        const url = []
-        const file = req.file
-        const {path} = file
-        const newPath = await uploader(path)
-        url.push(newPath)
-        fs.unlinkSync(path)
-
-        res.status(200).json({
-            message:'Image upload successful',
-            data:url
-        })
-    
-    }else{
-        res.status(405).json({
-            err:"Image not uploaded successfully"
-        })
-    }
-});
 
 app.get('/request-upload', async (req,res) => {
     const url = await s3.getUploadURL();
