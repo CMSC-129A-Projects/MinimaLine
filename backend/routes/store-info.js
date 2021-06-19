@@ -117,6 +117,18 @@ app.post('/edit-manager', Auth.checkAccessToken, (req, res) => {
         }
     )
 });
+app.post('/store-registration/:id', (req,res) => {
+    const {store_name,manager_name,location,logo} = req.body;
+    const id = req.params.id;
+
+    database.query("UPDATE account_info SET store_name=?, manager_name=?, location=?, logo=? WHERE id = ? ", [store_name, manager_name, location, logo, id],
+        (err, result) => {
+            if(err)
+                return res.send("Error")
+            else
+                return res.send(result);
+        })
+})
 // //to register store into account_info table
 // app.post('/store-registration/:id',upload.single('logo'), async (req,res) => {
     

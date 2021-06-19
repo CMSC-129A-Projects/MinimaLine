@@ -26,25 +26,14 @@ class Auth {
           let error = {msg: response.data.message}
           return error;
         }
-        // localStorage.setItem("accessToken",response.data.accessToken)
-        // localStorage.setItem("refreshToken",response.data.accessToken)
-        // localStorage.setItem("tokens",JSON.stringify({access: response.data.accessToken, refresh: response.data.refreshToken}))
-        // console.log(localStorage.getItem("tokens"))
         Cookies.set("access",response.data.accessToken)
         Cookies.set("refresh",response.data.refreshToken)
         
         return;
-        // if (response.data.accessToken){
-        //   console.log("yes")
-        //     localStorage.setItem("user", JSON.stringify(response.data));
-        //     return;
-        // }
       });
   }
 
-  logout() {
-    // localStorage.removeItem("accessToken")
-    // localStorage.removeItem("refreshToken")
+  logout(){
     Cookies.remove("access")
     Cookies.remove("refresh")
     return true;
@@ -68,13 +57,9 @@ class Auth {
   }
   
   async hasAccess(){
-    console.log("checking access")
-    // let tokens = localStorage.getItem("tokens")
-    // console.log(tokens)
+    console.log("checking access");
     let accessToken = Cookies.get("access")
     let refreshToken = Cookies.get("refresh")
-    // let accessToken = localStorage.getItem("accessToken")
-    // let refreshToken = localStorage.getItem("refreshToken")
     console.log(accessToken)
     // no tokens
     if(!refreshToken){

@@ -5,6 +5,7 @@ import {Link, Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import { FiUpload } from "react-icons/fi";
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class StoreReg extends Component{
   constructor(props){
@@ -17,7 +18,8 @@ class StoreReg extends Component{
       redirect: false,
       userId: '',
       username: '',
-      password: ''
+      password: '',
+      logo_url: ''
     }
   }
   componentDidMount(){
@@ -31,20 +33,33 @@ class StoreReg extends Component{
   }
 
   handleChange(e){
-    this.setState({
-      [e.target.name]: e.target.value
-    })
+    this.setState({ [e.target.name]: e.target.value })
   }
   handleUpload(e){
     console.log(e.target.files[0])
-    this.setState({
-      logo: e.target.files[0]
-    })
+    this.setState({ logo: e.target.files[0] })
   }
   
-  registerStore = e => {
+  registerStore = async e => {
     e.preventDefault();
-    Auth.registerStore(this.state.userId,this.state.store_name,this.state.manager_name,this.state.location,this.state.logo)
+    if(this.state.logo){  // a file was uploaded
+      console.log(this.state.logo)
+      const data = new FormData();
+      data.append("file",this.state.logo);
+      data.append("upload_preset","minimaline");
+      
+      await Axios.post("https://api.cloudinary.com/v1_1/minimaline/image/upload",data,
+            {headers:{'Access-Control-Allow-Origin': '*'}})
+        .then(response => {
+          console.log("uploaded")
+          console.log(response.data.url)
+          this.setState({ logo_url: response.data.url })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    Auth.registerStore(this.state.userId,this.state.store_name,this.state.manager_name,this.state.location,this.state.logo_url)
       .then((error) => {
         if(error){
           console.log(error.msg)
@@ -131,11 +146,8 @@ class StoreReg extends Component{
             <InputContainer>
               <StyledUpload
                 type="file"
-                placeholder="Logo"
                 name="logo"
-                // value={this.state.logo}
-                onChange={this.handleUpload.bind(this)}
-                />
+                onChange={this.handleUpload.bind(this)} />
             </InputContainer>
             <button type="submit"> Submit </button>
         </Form>
