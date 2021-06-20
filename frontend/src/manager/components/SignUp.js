@@ -4,6 +4,7 @@ import Axios from "axios"
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
 import {Redirect,Link} from 'react-router-dom';
+Axios.defaults.withCredentials = true;
 
 class SignUp extends Component{
   constructor(props){

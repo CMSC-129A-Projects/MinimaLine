@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class ProdDesc extends Component {
     constructor(props){

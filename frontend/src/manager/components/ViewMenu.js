@@ -6,6 +6,7 @@ import Categ from "./Categ";
 import ProdDesc from "./ProdDesc";
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class ViewMenu extends Component {
     constructor(){

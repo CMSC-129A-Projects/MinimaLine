@@ -4,6 +4,7 @@ import { MdModeEdit } from "react-icons/md";
 import Modal from 'react-modal';
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class Categ extends Component {
     constructor(props){

@@ -7,6 +7,7 @@ import {Link,Redirect} from 'react-router-dom';
 import Modal from 'react-modal';
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class App extends Component {
   constructor(props) {

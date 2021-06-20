@@ -9,6 +9,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import Modal from 'react-modal';
 import Axios from "axios";
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class EditMenu extends Component {
     constructor(){
