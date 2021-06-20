@@ -111,9 +111,10 @@ class ProdDesc extends Component {
     }
 }
 const StyledInput = styled.input`
-    width: 40%;
-    max-width: 350px;
-    min-width: 250px;
+    /* width: 40%; */
+    width: 15vw;
+    /* max-width: 350px;
+    min-width: 250px; */
     height: 40px;
     border: none;
     color: black;
@@ -144,15 +145,20 @@ const Buttons = styled.div`
 
     button{
         font-family: "Work Sans";
-        margin: 30px 5px 0px;
-        width: 130px;
-        height: 40px;
+        font-size: 1.5vh;
+        margin: 3vh 5px 0px;
+        width: 8vw;
+        height: 5vh;
         border: none;
         box-shadow: 0px 14px 9px -15px rgba(0,0,0,0.25);
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease-in;
+
+        @media screen and (max-width: 1024px) {
+            width: 20vw;
+        }
 
         &:hover{
             transform: translateY(-3px);
@@ -181,14 +187,15 @@ const Buttons = styled.div`
 const Upload = styled.input`
     margin-top: 10px;
     margin-bottom: 10px;
-    @media screen and (max-width: 1024px) {
-        margin-left: 80px;
-    }  
+    margin-left: 6vw;
+    padding-bottom: .5vh;
+
 `
 
 const Select = styled.select`
     display: flex;
-    width: 280px;
+    /* width: 280px; */
+    width: 17vw;
     // width: 100%;
     // max-width: 700px;
     /* min-width: 150px; */
@@ -215,7 +222,8 @@ const Select = styled.select`
     }
 `
 const Form = styled.form`
-    height: 500px;
+    /* height: 500px; */
+    height: 62vh;
     width: 20%;
     display: flex;
     flex-direction: column;
@@ -223,11 +231,16 @@ const Form = styled.form`
     position: fixed;
     background: #fff;
     right: 0;
-    margin-top: 50px;
+    margin-top: 8vh;
     border-radius: 1rem;
     margin-right: 30px;
     box-shadow: 0px 5px 10px -2px #858585;
+    padding-bottom: 3vh;
     /* padding: 1rem; */
+
+    @media screen and (max-width: 1350px) {
+        width: 25vw;
+    }
 
     img{
         height: 200px;
@@ -243,7 +256,8 @@ const Form = styled.form`
     }
 `;
 const Container = styled.div`
-    height: 500px;
+    /* height: 500px; */
+    height: 50vh;
     width: 20%;
     display: flex;
     flex-direction: column;
@@ -253,20 +267,22 @@ const Container = styled.div`
     right: 0;
     margin-top: 50px;
     border-radius: 1rem;
-    margin-right: 30px;
+    margin-right: 4vw;
     box-shadow: 0px 5px 10px -2px #858585;
-    /* padding: 1rem; */
+    padding-bottom: 2vh;
 
     img{
         height: 200px;
         width: 200px;
         margin-top: -60px;
-    }
-    @media screen and (max-width: 1024px) {
-        margin-right: 27px;
-        img{
-            height: 180px;
-            width: 180px;
+
+        @media screen and (max-width: 1180px) {
+            height: 170px;
+            width: 170px;
+        }
+        @media screen and (max-width: 1000px) {
+            height: 140px;
+            width: 140px;
         }
     }
 `;

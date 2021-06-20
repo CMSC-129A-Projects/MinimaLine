@@ -164,6 +164,10 @@ const Form = styled.form`
     margin-top: 170px;
     margin-right: 50px;
 
+    @media screen and (max-width: 1280px) {
+      margin-top: 90px;
+    }
+
     h2{
       color: #666666;
       margin-bottom: 2rem;
@@ -294,6 +298,9 @@ const InputStatus = styled.div`
 const LogoWrapper = styled.div`
   position: fixed;
   margin-top: 80px;
+  @media screen and (max-width: 1280px) {
+    margin-top: 30px;
+  }
   img{
       height: 6rem;
       margin-bottom: -20px;

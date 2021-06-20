@@ -277,8 +277,8 @@ const StyledLink = styled(Link)`
   }
   animation: fadeInY 2s;
 
-  @media screen and (max-width: 1230px) {
-    height: 310px;
+  @media screen and (max-width: 1280px) {
+    height: 290px;
     width: 250px;
     margin: 50px 40px;
     .icon{
@@ -338,8 +338,8 @@ const Option = styled.div`
   }
   animation: fadeInY 2s;
 
-  @media screen and (max-width: 1230px) {
-    height: 310px;
+  @media screen and (max-width: 1280px) {
+    height: 290px;
     width: 250px;
     margin: 50px 40px;
     .icon{
