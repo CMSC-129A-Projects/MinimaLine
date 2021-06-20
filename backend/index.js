@@ -13,7 +13,7 @@ var port = process.env.PORT || 3005;
 
 //allow access of rest api for cross-origin resource sharing
 app.use(cors({
-    origin: ["http://localhost:3000","https://minimaline.netlify.app/"],
+    origin: ["http://localhost:3000","https://minimaline.netlify.app"],
     methods: ["POST","GET","DELETE","OPTIONS","PUT"],
     credentials: true
 }));
