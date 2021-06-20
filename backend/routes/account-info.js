@@ -1,7 +1,6 @@
 var express = require('express');
 var bcrypt = require('bcrypt');
 var cookieParser = require('cookie-parser');
-// var session = require('express-session');
 const saltRounds = 10;
 const {check, validationResult} = require('express-validator');
 var app = express();
