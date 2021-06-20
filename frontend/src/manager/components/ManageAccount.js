@@ -5,6 +5,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class ManageAccount extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class ManageAccount extends Component {
     this.getUserInfo();
   }
   async getUserInfo(){
-    let user = await Axios.get('http://localhost:3005/account-info',{headers: Auth.header()});
+    let user = await Axios.get('https://minimaline-server.herokuapp.com/account-info',{headers: Auth.header()});
     console.log(user.data[0]);
     this.setState({user_info: user.data[0]})
   }
@@ -78,7 +79,7 @@ class ManageAccount extends Component {
   editEmail(e){
     e.preventDefault();
     const data = {email: this.state.email};
-    Axios.post('http://localhost:3005/edit-email', data, {headers: Auth.header()}).then((response) => {
+    Axios.post('https://minimaline-server.herokuapp.com/edit-email', data, {headers: Auth.header()}).then((response) => {
       if(response.data.errors){
         this.setState({
           error: true,
@@ -98,7 +99,7 @@ class ManageAccount extends Component {
   editUsername(e){
     e.preventDefault();
     const data = {username: this.state.username};
-    Axios.post('http://localhost:3005/edit-username', data, {headers: Auth.header()}).then((response) => {
+    Axios.post('https://minimaline-server.herokuapp.com/edit-username', data, {headers: Auth.header()}).then((response) => {
       if(response.data.errors){
         this.setState({
           error: true,
@@ -118,7 +119,7 @@ class ManageAccount extends Component {
   editStoreName(e){
     e.preventDefault();
     const data = {storename: this.state.storename};
-    Axios.post('http://localhost:3005/edit-storename', data, {headers: Auth.header()}).then((response) => {
+    Axios.post('https://minimaline-server.herokuapp.com/edit-storename', data, {headers: Auth.header()}).then((response) => {
       if(response.data.errors){
         this.setState({
           error: true,

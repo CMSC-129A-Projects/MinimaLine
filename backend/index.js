@@ -7,14 +7,14 @@ var database = require('./config/database');
 var port = process.env.PORT || 3005;
 
 //Connect to database
-database.connect((err) => {
-    if (err) throw err;
-});
+// database.connect((err) => {
+//     if (err) throw err;
+// });
 
 //allow access of rest api for cross-origin resource sharing
 app.use(cors({
-    origin: ["http://localhost:3000"],
-    methods: ["POST","GET","DELETE"],
+    origin: ["http://localhost:3000","https://minimaline.netlify.app"],
+    methods: ["POST","GET","DELETE","OPTIONS","PUT"],
     credentials: true
 }));
 

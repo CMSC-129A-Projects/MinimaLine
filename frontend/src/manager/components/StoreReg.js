@@ -45,7 +45,7 @@ class StoreReg extends Component{
     e.preventDefault();
     if(this.state.logo){  // a file was uploaded
       // get secure upload url
-      await Axios.get('http://localhost:3005/request-upload')
+      await Axios.get('https://minimaline-server.herokuapp.com/request-upload')
         .then(response => {
           console.log(response.data.url)
           this.setState({upload_url: response.data.url})

@@ -19,7 +19,7 @@ class Auth {
   }
 
   async login(username, password) {
-    return await Axios.post("http://localhost:3005/user-login", {username,password})
+    return await Axios.post("https://minimaline-server.herokuapp.com/user-login", {username,password})
       .then(response => {
         if(response.data.message){
           console.log(response.data.message)
@@ -40,7 +40,7 @@ class Auth {
   }
 
   async registerStore(userId, store_name, manager_name, location, logo) {
-    await Axios.post(`http://localhost:3005/store-registration/${userId}`, {store_name, manager_name, location, logo})
+    await Axios.post(`https://minimaline-server.herokuapp.com/store-registration/${userId}`, {store_name, manager_name, location, logo})
             .then((response) => {
               if(response.data.message){
                 let error = {msg: response.data.message}
@@ -74,7 +74,7 @@ class Auth {
     if(decodedToken.exp < current_time){
       console.log("expired")
       console.log(`refreshtoken: ${refreshToken}`)
-      await Axios.post("http://localhost:3005/renewToken", {refreshToken: refreshToken})
+      await Axios.post("https://minimaline-server.herokuapp.com/renewToken", {refreshToken: refreshToken})
       .then((response)=> {
         if(response.data.accessToken){
           console.log("new token")

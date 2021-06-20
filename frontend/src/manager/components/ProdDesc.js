@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class ProdDesc extends Component {
     constructor(props){
@@ -31,13 +32,13 @@ class ProdDesc extends Component {
             category: this.state.prod_categ,
             availability: this.state.prod_availability
         }
-        Axios.post(`http://localhost:3005/edit-menu/${id}`,data,{headers: Auth.header()}).then((response) => {
+        Axios.post(`https://minimaline-server.herokuapp.com/edit-menu/${id}`,data,{headers: Auth.header()}).then((response) => {
             console.log(response)
             this.props.test(this.state.prod_categ)
         })
     }
     async componentDidMount(){
-        let categs = await Axios.get('http://localhost:3005/display-category',{headers: Auth.header()});
+        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()});
         this.setState({
             all_categs: categs.data,
             prod_categ: this.props["category_id"],

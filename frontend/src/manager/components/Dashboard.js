@@ -7,6 +7,7 @@ import {Link,Redirect} from 'react-router-dom';
 import Modal from 'react-modal';
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class App extends Component {
   async componentDidMount(){
     document.title = "MinimaLine | Dashboard";
       console.log("dashboard")
-      await Axios.get(`http://localhost:3005/account-info`,{headers: Auth.header()})
+      await Axios.get(`https://minimaline-server.herokuapp.com/account-info`,{headers: Auth.header()})
       .then((response)=>{
           console.log(response.data[0])
           this.setState({

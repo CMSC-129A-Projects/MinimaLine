@@ -4,6 +4,7 @@ import { MdModeEdit } from "react-icons/md";
 import Modal from 'react-modal';
 import Axios from 'axios';
 import Auth from '../../services/Auth';
+Axios.defaults.withCredentials = true;
 
 class Categ extends Component {
     constructor(props){
@@ -49,7 +50,7 @@ class Categ extends Component {
 
     async deleteCateg(){
         console.log(this.state.curr_categ)
-        await Axios.delete(`http://localhost:3005/delete-categ/${this.state.curr_categ}`, {headers: Auth.header()})
+        await Axios.delete(`https://minimaline-server.herokuapp.com/delete-categ/${this.state.curr_categ}`, {headers: Auth.header()})
             .then((response) => {
                 console.log(response)
                 this.toggleModal()
@@ -59,7 +60,7 @@ class Categ extends Component {
     editCateg = e => {
         e.preventDefault();
         console.log(this.state.curr_categ)
-        Axios.post(`http://localhost:3005/edit-categ/${this.state.curr_categ}`,
+        Axios.post(`https://minimaline-server.herokuapp.com/edit-categ/${this.state.curr_categ}`,
             {name: this.state.new_categ},{headers: Auth.header()})
             .then((response) => {
                 console.log(response)
