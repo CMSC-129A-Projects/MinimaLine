@@ -8,9 +8,6 @@ const region = 'us-east-2';
 const bucket = 'minimaline';
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
-// const accessKeyId = "AKIASBD4MTA6ZRS6MD7U"
-// const secretAccessKey = "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"
-
 
 const s3_bucket = new aws.S3({
     region,
