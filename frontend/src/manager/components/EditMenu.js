@@ -47,7 +47,7 @@ class EditMenu extends Component {
         this.showCategs("first");
     }
     async showCategs(id){
-        let categs = await Axios.get('http://localhost:3005/display-category',{headers: Auth.header()});
+        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()});
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }
@@ -69,7 +69,7 @@ class EditMenu extends Component {
                 })
             this.showProducts(this.state.current_categ)
         }
-        // let categs = await Axios.get('http://localhost:3005/display-category');
+        // let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category');
         // if(JSON.stringify(categs.data)==='{}'){
         //     this.showProducts("empty")
         // }
@@ -94,7 +94,7 @@ class EditMenu extends Component {
     }
     async showProducts(categ_id){
         // if(categ_id!=="empty"){
-        //     let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+        //     let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`);
         //     this.setState({
         //         prods: categProds.data,
         //         isProdClicked: false,
@@ -103,7 +103,7 @@ class EditMenu extends Component {
         //     })
         // }
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`,{headers: Auth.header()});
+            let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`,{headers: Auth.header()});
             this.setState({
                 prods: categProds.data,
                 clicked: false,
@@ -146,7 +146,7 @@ class EditMenu extends Component {
         };
         e.preventDefault();
         console.log("adding categ")
-        Axios.post("http://localhost:3005/add-categ",data,{headers: Auth.header()}).then((response) => {
+        Axios.post("https://minimaline-server.herokuapp.com/add-categ",data,{headers: Auth.header()}).then((response) => {
             this.setState({new_categ: ''})
             this.toggleAddCateg()
             this.showCategs("added")
@@ -157,7 +157,7 @@ class EditMenu extends Component {
         e.preventDefault();
         if(this.state.prod_img){  // a file was uploaded
             // get secure upload url
-            await Axios.get('http://localhost:3005/request-upload')
+            await Axios.get('https://minimaline-server.herokuapp.com/request-upload')
               .then(response => {
                 console.log(response.data.url)
                 this.setState({upload_url: response.data.url})
@@ -177,7 +177,7 @@ class EditMenu extends Component {
             category: this.state.current_categ,
             photo: this.state.img_url
         };
-        await Axios.post("http://localhost:3005/add-product",data,{headers: Auth.header()}).then((response) => {
+        await Axios.post("https://minimaline-server.herokuapp.com/add-product",data,{headers: Auth.header()}).then((response) => {
             console.log("new product")
             this.toggleAddProd()
             this.showProducts(this.state.current_categ)
@@ -191,7 +191,7 @@ class EditMenu extends Component {
         console.log(this.state.img_url)
     }
     deleteProd(){
-        Axios.delete(`http://localhost:3005/delete-product/${this.state.delete_this}`,{headers: Auth.header()}).then((response) => {
+        Axios.delete(`https://minimaline-server.herokuapp.com/delete-product/${this.state.delete_this}`,{headers: Auth.header()}).then((response) => {
             this.toggleDeleteProd()
         })
     }

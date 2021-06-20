@@ -23,7 +23,7 @@ class App extends Component {
   async componentDidMount(){
     document.title = "MinimaLine | Dashboard";
       console.log("dashboard")
-      await Axios.get(`http://localhost:3005/account-info`,{headers: Auth.header()})
+      await Axios.get(`https://minimaline-server.herokuapp.com/account-info`,{headers: Auth.header()})
       .then((response)=>{
           console.log(response.data[0])
           this.setState({

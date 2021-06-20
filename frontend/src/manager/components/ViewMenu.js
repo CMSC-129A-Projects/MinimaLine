@@ -31,7 +31,7 @@ class ViewMenu extends Component {
     }
     async showProducts(categ_id){
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`,{headers: Auth.header()});
+            let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`,{headers: Auth.header()});
             this.setState({
                 prods: categProds.data,
                 clicked: false,
@@ -42,7 +42,7 @@ class ViewMenu extends Component {
     async componentDidMount(){
         document.title = "MinimaLine | View Menu"
         console.log("view menu page")
-        let categs = await Axios.get('http://localhost:3005/display-category',{headers: Auth.header()});
+        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()});
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }

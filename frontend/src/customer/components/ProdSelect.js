@@ -33,7 +33,7 @@ class ProdSelect extends Component {
     }
     async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
-        let categs = await Axios.get('http://localhost:3005/display-category');
+        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category');
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }

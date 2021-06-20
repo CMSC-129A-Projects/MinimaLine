@@ -37,7 +37,7 @@ class SignUp extends Component{
       password: this.state.password
     };
     e.preventDefault();
-    Axios.post('http://localhost:3005/user-registration',data).then((response) => {
+    Axios.post('https://minimaline-server.herokuapp.com/user-registration',data).then((response) => {
       console.log(response)
       if(response.data.errors){
         this.setState({
