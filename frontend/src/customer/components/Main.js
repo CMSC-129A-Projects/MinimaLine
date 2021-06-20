@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-// import logo from '../../assets/logo.svg';
-import {IconContext} from 'react-icons';
 import {FiArrowRightCircle} from 'react-icons/fi';
 import RegularPriority from './RegularPriority';
 import DineInTakeOut from './DineInTakeOut';
