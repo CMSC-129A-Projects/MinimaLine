@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import logo from '../../assets/random.jpeg';
+import minimaline_logo from '../../assets/MinimaLine.jpeg';
 import {MdRestaurantMenu, MdAccountCircle} from 'react-icons/md';
 import {AiOutlineUserSwitch} from 'react-icons/ai';
 import {Link,Redirect} from 'react-router-dom';
@@ -58,7 +58,7 @@ class App extends Component {
             <h1>Welcome, {this.state.username}.</h1>
           </HeaderBar>
           <HeaderCircle>
-            <img src={this.state.logo}/>
+            {this.state.logo ? <img src={this.state.logo}/> : <img src={minimaline_logo}/>}
           </HeaderCircle>
         </div>
 
