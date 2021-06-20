@@ -17,7 +17,7 @@ const s3_bucket = new aws.S3({
 })
 
 async function getUploadURL(){
-    const rawbytes = await crypto.randomBytes(16)
+    const rawbytes = crypto.randomBytes(16)
     const img_name = rawbytes.toString('hex')
     console.log(img_name)
     const params = ({
