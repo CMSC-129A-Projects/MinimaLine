@@ -21,7 +21,7 @@ class DineInTakeOut extends Component {
                 clickDineIn: false,
                 clickTakeOut: true
             });
-        this.props.onClick();
+        this.props.onClick(id);
     }
     render() { 
         return ( 

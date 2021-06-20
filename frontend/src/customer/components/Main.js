@@ -10,15 +10,23 @@ class Main extends Component {
     super();
     this.state = {
       isPrioritySelected: false, // either regular or priority has been clicked
-      isInputComplete: false // regular/priority and dine in/takeout have been clicked
+      isInputComplete: false, // regular/priority and dine in/takeout have been clicked
+      customerType: '', // regular/priority and dine in/takeout have been clicked
+      dineIn: null // regular/priority and dine in/takeout have been clicked
     }
     this.priorityClick = this.priorityClick.bind(this);
     this.completeInput = this.completeInput.bind(this);
   }
-  priorityClick(){
+  priorityClick(id){
+    /*if 1, customerType='REGULAR'
+      if 2, customerType='PRIORITY'
+     */
     this.setState({isPrioritySelected: true})
   }
-  completeInput(){
+  completeInput(id){
+    /*if 1, dine in
+      if 2, take out'
+     */
     this.setState({isInputComplete: true})
   }
 

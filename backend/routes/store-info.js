@@ -88,21 +88,23 @@ app.post('/store-registration/:id', (req,res) => {
         })
 })
 
-//get logo of store
-app.get('/storeLogo/:id', (req,res) => {
-    const id = req.params.id
-
-    database.query("SELECT logo FROM store_info WHERE id = ?", id,
-    (err, result) => {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
-
-        if (logo) {
-            res.status(200).send(logo);
-        }
-        else res.status(200).send('No Logo');
+app.post('/check-store', (req,res)=> {
+    let id = req.body.id
+    let role = "manager"
+    database.query("SELECT * FROM account_info WHERE id = ? AND role = ?", [id,role], 
+        (err, result) => {
+            if(err){
+                return err;
+            }
+            else{
+                if(result.length > 0){
+                    console.log(result)
+                    return res.send(result);
+                }
+                else
+                    return res.send({message: "Does not exist!!!!!"})
+            }
+            
     });
 });
 

@@ -46,7 +46,7 @@ class ProdSelect extends Component {
     }
     async showProducts(categ_id){
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`http://localhost:3005/menu-info/${categ_id}`);
+            let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`);
             this.setState({
                 prods: categProds.data,
                 clicked: false,

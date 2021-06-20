@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import Categ from "./Categ";
 import ProdDesc from "./ProdDesc";
@@ -31,7 +31,8 @@ class EditMenu extends Component {
             openAddProd: false,     // open/close modal for add product
             delete_this: null,     // id of product to be deleted 
             upload_url: '',
-            img_url: ''
+            img_url: '',
+            redirect: false
         }
         this.changeColor = this.changeColor.bind(this);
         this.toggleDeleteProd = this.toggleDeleteProd.bind(this);
@@ -48,7 +49,11 @@ class EditMenu extends Component {
         this.showCategs("first");
     }
     async showCategs(id){
-        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()});
+        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()})
+                                .catch((error)=> {
+                                    console.log(error)
+                                    this.setState({redirect: true})
+                                })
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }
@@ -70,39 +75,8 @@ class EditMenu extends Component {
                 })
             this.showProducts(this.state.current_categ)
         }
-        // let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category');
-        // if(JSON.stringify(categs.data)==='{}'){
-        //     this.showProducts("empty")
-        // }
-        // else{
-        //     this.setState({
-        //         all_categs: categs.data
-        //     })
-        //     if(id==="first")
-        //         this.setState({
-        //             current_categ: this.state.all_categs[0]["id"],
-        //         })
-        //     else if(id!=="added")
-        //         this.setState({
-        //             current_categ: id,
-        //         })
-        //     else if(id==="deleted" || id==="added")
-        //         this.setState({
-        //             current_categ: this.state.all_categs[this.state.all_categs.length-1]["id"],
-        //         })
-        //     this.showProducts(this.state.current_categ)
-        // }
     }
     async showProducts(categ_id){
-        // if(categ_id!=="empty"){
-        //     let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`);
-        //     this.setState({
-        //         prods: categProds.data,
-        //         isProdClicked: false,
-        //         current_prod: null,
-        //         current_categ: categ_id
-        //     })
-        // }
         if(categ_id!=="empty"){
             let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`,{headers: Auth.header()});
             this.setState({
@@ -204,6 +178,8 @@ class EditMenu extends Component {
     }
 
     render() {
+        if(this.state.redirect)
+            return <Redirect to="/"/>
         var modalStyle={overlay: {zIndex: 2}}
         return ( 
             <Container>

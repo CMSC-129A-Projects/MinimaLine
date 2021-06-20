@@ -30,25 +30,11 @@ const PrivateRoute = ({component:Component, ...rest}) => {
 }
 const App = () => {
   return (
-    <Router>
       <Container>
       <Wrapper>
-        <Switch>
-          <Route exact path="/" component={SignIn} />
-          <Route exact path="/sign-up" component={SignUp} />
-          <Route exact path="/terms" component={Terms} />
-          <Route exact path="/store-reg" component={StoreReg} />
-          <PrivateRoute exact path="/view-menu" component={ViewMenu} />
-          <PrivateRoute exact path="/edit-menu" component={EditMenu} />
-          <PrivateRoute exact path="/dashboard" component={Dashboard} />
-          <PrivateRoute exact path="/account" component={ManageAccount} />
-          <Route exact path="/customer" component={Customer.App} />
-          <Route exact path="/cashier" component={Cashier.App} />
-        </Switch>
         <Main />
       </Wrapper>
     </Container>
-    </Router>
   );
 };
 

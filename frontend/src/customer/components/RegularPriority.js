@@ -21,7 +21,7 @@ class RegularPriority extends Component {
                 clickRegular: false,
                 clickPriority: true
             });
-        this.props.onClick();
+        this.props.onClick(id);
     }
     render() { 
         return ( 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-modal';
 import { BiArrowBack } from "react-icons/bi";
-import { Link } from 'react-router-dom';
+import { Link,Redirect } from 'react-router-dom';
 import Axios from 'axios';
 import Auth from '../../services/Auth';
 Axios.defaults.withCredentials = true;
@@ -15,7 +15,7 @@ class ManageAccount extends Component {
       editing: false, currentAccEdit: null, currentStoreEdit: null,
       user_info: [], username: '', email: '', storename: '',
       manager: '', location: '', successful: false,
-      error: false, error_msg: ''
+      error: false, error_msg: '', redirect: false
      }
      this.getUserInfo = this.getUserInfo.bind(this);
      this.navClick = this.navClick.bind(this);
@@ -30,7 +30,11 @@ class ManageAccount extends Component {
     this.getUserInfo();
   }
   async getUserInfo(){
-    let user = await Axios.get('https://minimaline-server.herokuapp.com/account-info',{headers: Auth.header()});
+    let user = await Axios.get('https://minimaline-server.herokuapp.com/account-info',{headers: Auth.header()})
+                .catch((error)=> {
+                  console.log(error)
+                  this.setState({redirect: true})
+              })
     console.log(user.data[0]);
     this.setState({user_info: user.data[0]})
   }
@@ -137,6 +141,8 @@ class ManageAccount extends Component {
     })
   }
   render() { 
+    if(this.state.redirect)
+      return <Redirect to="/"/>
     return ( 
       <Container>
         <Top>

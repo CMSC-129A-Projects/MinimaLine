@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import Categ from "./Categ";
 import ProdDesc from "./ProdDesc";
@@ -17,6 +17,7 @@ class ViewMenu extends Component {
             prods: [],
             all_categs: [],
             curr_categ: null,
+            redirect: false
             // userId: null
         }
         this.changeColor = this.changeColor.bind(this);
@@ -43,7 +44,11 @@ class ViewMenu extends Component {
     async componentDidMount(){
         document.title = "MinimaLine | View Menu"
         console.log("view menu page")
-        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()});
+        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category',{headers: Auth.header()})
+                            .catch((error)=> {
+                                console.log(error)
+                                this.setState({redirect: true})
+                            })
         if(JSON.stringify(categs.data)==='{}'){
             this.showProducts("empty")
         }
@@ -56,6 +61,8 @@ class ViewMenu extends Component {
     }
 
     render() {
+        if(this.state.redirect)
+            return <Redirect to="/"/>
         return ( 
             <Container>
                 <Wrapper>
