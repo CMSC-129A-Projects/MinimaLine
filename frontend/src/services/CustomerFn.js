@@ -31,12 +31,21 @@ class CustomerFn{
         console.log(res)
     }
     async verifyId(id){
+        // if(!sessionStorage.getItem("customer")){
+            // let redirect = {id: id}
+            // return redirect;
+        // }
         let customer = JSON.parse(sessionStorage.getItem("customer"))
+        if(customer.length < 2){
+            let redirect = {id: id}
+            return redirect;
+        }
         let store_id = customer[0]["id"]
-        if(store_id===id)
-            return;
-        let error = {id: store_id}
-        return error;
+        if(store_id!==id){
+            let wrong = {id: store_id}
+            return wrong;
+        }
+        return;
     }
     // main.js
         // choose type 

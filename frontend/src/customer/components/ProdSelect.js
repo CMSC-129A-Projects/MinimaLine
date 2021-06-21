@@ -20,7 +20,8 @@ class ProdSelect extends Component {
             openProdModal: false,
             redirect: null,
             id: null,
-            orders: [] //{product, quantity, price*quantity}
+            orders: [], //{product, quantity, price*quantity}
+            total_price: null
         }
         this.changeColor = this.changeColor.bind(this);
         this.showModal = this.showModal.bind(this);
@@ -41,11 +42,18 @@ class ProdSelect extends Component {
             }
             else{
                 console.log(response)
-                CustomerFn.verifyId(id).then((error)=>{
-                    if(error){
-                        console.log("henlo")
+                CustomerFn.verifyId(id).then((wrong,redirect)=>{
+                    if(wrong){
+                        console.log("wrong")
                         this.setState({
-                            id: error.id,
+                            id: wrong.id,
+                            redirect: 2
+                        })
+                    }
+                    else if(redirect){
+                        console.log("redirect")
+                        this.setState({
+                            id: redirect.id,
                             redirect: 2
                         })
                     }
@@ -57,7 +65,7 @@ class ProdSelect extends Component {
             }
         })
         .catch(err => {
-            console.log("error")
+            console.log(err)
             this.setState({redirect:1})
         })
         if(!this.state.redirect){
@@ -74,7 +82,6 @@ class ProdSelect extends Component {
         }
     }
     async showProducts(categ_id){
-        console.log(this.state.all_categs)
         if(categ_id!=="empty"){
             let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${this.state.id}/${categ_id}`);
             this.setState({
@@ -111,7 +118,14 @@ class ProdSelect extends Component {
             sessionStorage.setItem("order",JSON.stringify(orderlist))
         }
         console.log(orderlist)
-        this.setState({orders: orderlist})
+        let total = 0;
+        for(let i=0; i<orderlist.length;i++){
+            total += orderlist[i]["price"]
+        }
+        this.setState({
+            orders: orderlist,
+            total_price: total
+        })
         this.showModal();
     }
     render() { 
@@ -160,7 +174,7 @@ class ProdSelect extends Component {
                                 })}
                                 {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} show={this.showModal} onClick={this.addOrder}/> : null }
                                 <RightContainer>
-                                    <OrderSum order={this.state.orders}/>
+                                    <OrderSum order={this.state.orders} total={this.state.total_price}/>
                                     <CheckoutButton>
                                         <Link to='/checkout'>
                                             <button>Checkout</button>

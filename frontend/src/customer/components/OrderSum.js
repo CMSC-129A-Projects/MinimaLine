@@ -44,7 +44,7 @@ class OrderSum extends Component {
                     })} 
                 </div>
                 <div className="total-price">
-                    <h2>Total Price: Php {this.state.total_price}</h2>
+                    <h2>Total Price: Php {this.props.total}</h2>
                 </div>
             </Container>
         );
