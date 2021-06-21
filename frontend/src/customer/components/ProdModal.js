@@ -7,11 +7,16 @@ class ProdModal extends Component {
         super(props);
         this.state = {    
             count: 0,
+            product: null
         }
         this.increment = this.increment.bind(this);
         this.decrement = this.decrement.bind(this);
+        this.addOrder = this.addOrder.bind(this);
     }
-
+    componentDidMount(){
+        console.log(this.props)
+        this.setState({product: this.props})
+    }
     increment(){
         if(this.state.count < 50){
             this.setState({count:this.state.count+1})
@@ -19,14 +24,23 @@ class ProdModal extends Component {
     }
 
     decrement(){
-        if(this.state.count > 1){
+        if(this.state.count > 0){
             this.setState({count:this.state.count-1})
         }
     }
+    addOrder(){
+        const order = {
+            product: this.state.product,
+            quantity: this.state.count,
+            price: this.props["price"]*this.state.count
+        }
+        console.log(order)
+        this.props.onClick(order)
+    }
 
     render() { 
-        console.log(this.props["product"])
         var modalStyle={overlay: {zIndex: 2}}
+        console.log(this.state.product)
         return (  
             <ModalContainer>
                 <ProductModal isOpen={true} style={modalStyle}>
@@ -39,8 +53,8 @@ class ProdModal extends Component {
                             <button onClick={this.increment}>+</button>
                         </div>
                         <div className="buttons">
-                            <button className="add-order">Add Order</button>
-                            <button className="cancel" onClick={this.props.mode}>Cancel</button>
+                            <button className="add-order" onClick={this.addOrder}>Add Order</button>
+                            <button className="cancel" onClick={this.props.show}>Cancel</button>
                         </div>
                     </div>
                     <img src={this.props["photo"]}/>
@@ -97,12 +111,15 @@ const ProductModal = styled(Modal)`
         align-items: center;
 
         button{
-        width: 30px;
-        height: 30px;   
-        color: black;
-        border: none;
-        background-color: #d6d6d6;
-        border-radius: 8px;
+            width: 30px;
+            height: 30px;   
+            color: black;
+            border: none;
+            background-color: #d6d6d6;
+            border-radius: 8px;
+            :hover{
+                cursor: pointer;
+            }
         }
 
         span{

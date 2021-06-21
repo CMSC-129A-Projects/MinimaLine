@@ -19,19 +19,13 @@ class ProdSelect extends Component {
             prods: [],
             openProdModal: false,
             redirect: null,
-            id: null
+            id: null,
+            orders: [] //{product, quantity, price*quantity}
         }
         this.changeColor = this.changeColor.bind(this);
         this.showModal = this.showModal.bind(this);
         this.showProducts = this.showProducts.bind(this);
-    }
-
-    showModal(index){
-        this.setState({
-            openProdModal: !this.state.openProdModal,
-            current: index,
-            clicked: true
-        })
+        this.addOrder = this.addOrder.bind(this);
     }
     async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
@@ -80,6 +74,7 @@ class ProdSelect extends Component {
         }
     }
     async showProducts(categ_id){
+        console.log(this.state.all_categs)
         if(categ_id!=="empty"){
             let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${this.state.id}/${categ_id}`);
             this.setState({
@@ -89,6 +84,14 @@ class ProdSelect extends Component {
             })
         }
     }
+    showModal(index){
+        this.setState({
+            openProdModal: !this.state.openProdModal,
+            current: index,
+            clicked: true
+        })
+        this.changeColor(index)
+    }
     changeColor(index){
         if(this.state.current !== index)
             this.setState({
@@ -96,7 +99,21 @@ class ProdSelect extends Component {
                 clicked: true
             })
     }
-
+    addOrder(order){
+        if(!sessionStorage.getItem("order")){
+            var orderlist = []
+            orderlist.push(order)
+            sessionStorage.setItem("order",JSON.stringify(orderlist))
+        }
+        else{
+            var orderlist = JSON.parse(sessionStorage.getItem("order"))
+            orderlist.push(order)
+            sessionStorage.setItem("order",JSON.stringify(orderlist))
+        }
+        console.log(orderlist)
+        this.setState({orders: orderlist})
+        this.showModal();
+    }
     render() { 
         if(this.state.redirect===1)
             return(<Redirect to="/not-found"/>)
@@ -130,7 +147,7 @@ class ProdSelect extends Component {
                                     return (
                                         <div
                                             onClick={()=>this.showModal(index)}
-                                            onClick={()=>this.changeColor(index)}
+                                            // onClick={()=>this.changeColor(index)}
                                             className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
                                             <article>
                                                 <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
@@ -141,9 +158,9 @@ class ProdSelect extends Component {
                                         </div>
                                     )
                                 })}
-                                {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} mode={this.showModal}/> : null }
+                                {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} show={this.showModal} onClick={this.addOrder}/> : null }
                                 <RightContainer>
-                                    <OrderSum />
+                                    <OrderSum order={this.state.orders}/>
                                     <CheckoutButton>
                                         <Link to='/checkout'>
                                             <button>Checkout</button>

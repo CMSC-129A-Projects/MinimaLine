@@ -10,8 +10,7 @@ class CustomerFn{
         // if no, render 404
     storeId(id){
         let customer = [];
-        let data = {id: id}
-        customer.push(data);
+        customer.push({id:id});
         sessionStorage.setItem("customer",JSON.stringify(customer))
         let res = JSON.parse(sessionStorage.getItem("customer"))
         console.log(res)

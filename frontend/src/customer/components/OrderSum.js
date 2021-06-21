@@ -2,75 +2,23 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
 
-const orders = [
-    {
-        product: 'McBurger',
-        quantity: 2,
-        price: 300
-    },
-    {
-        product: 'McFries',
-        quantity: 3,
-        price: 500
-    },
-    {
-        product: 'McBurger',
-        quantity: 1,
-        price: 300
-    },
-    {
-        product: 'McFries',
-        quantity: 1,
-        price: 50
-    },
-    {
-        product: 'McFries',
-        quantity: 3,
-        price: 500
-    },
-    {
-        product: 'McBurger',
-        quantity: 1,
-        price: 300
-    },
-    {
-        product: 'McFries',
-        quantity: 1,
-        price: 50
-    },
-    {
-        product: 'McFries',
-        quantity: 3,
-        price: 500
-    },
-    {
-        product: 'McBurger',
-        quantity: 1,
-        price: 300
-    },
-    {
-        product: 'McFries',
-        quantity: 1,
-        price: 50
-    },
-    {
-        product: 'McFries',
-        quantity: 3,
-        price: 500
-    },
-    {
-        product: 'McBurger',
-        quantity: 1,
-        price: 300
-    },
-    {
-        product: 'McFries',
-        quantity: 1,
-        price: 50
-    },
-];
 
-class OrderSum extends Component {    
+class OrderSum extends Component {   
+    constructor(){
+        super();
+        this.state = {
+            total_price: null
+        }
+    } 
+    componentDidMount(){
+        if(this.props.order){
+            let total = 0;
+            for(let i=0; i<this.props.order.length;i++){
+                total += this.props.order[i]["price"]
+            }
+            this.setState({total_price: total})
+        }
+    }
     render() { 
         return (
             <Container>
@@ -78,17 +26,17 @@ class OrderSum extends Component {
                     <h1>Order Summary</h1>
                 </div>
                 <div className="list">
-                    {orders.map((order,index)=>{
+                    {this.props.order.map((order,index)=>{
                         return(
                             <div className="wrapper">
                                 <MdModeEdit/>
                                 <div className="order">
                                     <div>
-                                        <p className="name">{order.product}</p>
+                                        <p className="name">{order["product"]["product"]}</p>
                                     </div>
                                     <div className="price">
-                                        <p>x{order.quantity}</p>
-                                        <p>Php {order.price}</p>
+                                        <p>x{order["quantity"]}</p>
+                                        <p>Php {order["price"]}</p>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +44,7 @@ class OrderSum extends Component {
                     })} 
                 </div>
                 <div className="total-price">
-                    <h2>Total Price: Php 790</h2>
+                    <h2>Total Price: Php {this.state.total_price}</h2>
                 </div>
             </Container>
         );
