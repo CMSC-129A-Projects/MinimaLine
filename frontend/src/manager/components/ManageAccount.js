@@ -16,7 +16,7 @@ class ManageAccount extends Component {
       user_info: [], username: '', email: '', storename: '',
       manager: '', location: '', successful: false,
       error: false, error_msg: '', redirect: false, 
-      logo: null, upload_url: ''
+      logo: null, upload_url: '', logo_url: ''
      }
      this.getUserInfo = this.getUserInfo.bind(this);
      this.navClick = this.navClick.bind(this);
@@ -74,15 +74,25 @@ class ManageAccount extends Component {
     })
   }
   closeEdit(){
-    this.setState({
-      editing: false,
-      // currentAccEdit: false,
-      // currentStoreEdit: false
-    })
+    // if(this.state.currentStoreEdit===4){
+    //   this.setState({
+    //     editing: false,
+    //     logo: ''
+    //   })
+    // }
+    // else
+      this.setState({editing: false})
   }
   handleChange(e){
     this.setState({
       [e.target.name]: e.target.value
+    })
+  }
+  handleUpload(e){
+    this.setState({ 
+      logo: e.target.files[0],
+      editing: true,
+      currentStoreEdit: 4
     })
   }
   async editEmail(e){
@@ -200,6 +210,25 @@ class ManageAccount extends Component {
         console.log(imgURL)
         this.setState({logo_url: imgURL})
       })
+      const data = {logo: this.state.logo_url};
+      await Axios.post('https://minimaline-server.herokuapp.com/edit-logo', data, {headers: Auth.header()}).then((response) => {
+        if(response.data.errors){
+          this.setState({
+            error: true,
+            error_msg: response.data.errors[0].msg
+          })
+        }else{
+          this.closeEdit();
+          this.getUserInfo();
+          this.setState({
+            successful: true,
+            error: false,
+            logo: '',
+            upload_url: '',
+            logo_url:''
+          })
+        }
+      })
   }
   
   
@@ -245,7 +274,7 @@ class ManageAccount extends Component {
                           <p className="edit-label">Enter your new username</p>
                           <StyledInput type="text" autoComplete="off" required
                             name="username" value={this.state.username}
-                            placeholder="Username" onChange={this.handleChange.bind(this)}/>
+                            placeholder={this.state.user_info["username"]} onChange={this.handleChange.bind(this)}/>
                           <div>
                             <button className="save">Save Changes</button>
                             <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
@@ -266,7 +295,7 @@ class ManageAccount extends Component {
                           <p className="edit-label">Enter your new e-mail</p>
                           <StyledInput type="email" autoComplete="off" required
                             name="email" value={this.state.email}
-                            placeholder="E-mail" onChange={this.handleChange.bind(this)}/>
+                            placeholder={this.state.user_info["email"]} onChange={this.handleChange.bind(this)}/>
                           <div>
                             <button className="save">Save Changes</button>
                             <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
@@ -313,7 +342,7 @@ class ManageAccount extends Component {
                         <p className="edit-label">Enter store name</p>
                         <StyledInput type="text" autoComplete="off" required
                             name="storename" value={this.state.storename}
-                            placeholder="Store name" onChange={this.handleChange.bind(this)}/>
+                            placeholder={this.state.user_info["store_name"]} onChange={this.handleChange.bind(this)}/>
                         <div>
                           <button className="save">Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
@@ -334,7 +363,7 @@ class ManageAccount extends Component {
                         <p className="edit-label">Enter store location</p>
                         <StyledInput type="text" autoComplete="off" required
                             name="location" value={this.state.location}
-                            placeholder="Location" onChange={this.handleChange.bind(this)}/>
+                            placeholder={this.state.user_info["location"]} onChange={this.handleChange.bind(this)}/>
                         <div>
                           <button className="save">Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
@@ -355,7 +384,7 @@ class ManageAccount extends Component {
                         <p className="edit-label">Enter store manager's name</p>
                         <StyledInput type="text" autoComplete="off" required
                             name="manager" value={this.state.manager}
-                            placeholder="Store Manager" onChange={this.handleChange.bind(this)}/>
+                            placeholder={this.state.user_info["manager_name"]} onChange={this.handleChange.bind(this)}/>
                         <div>
                           <button className="save">Save Changes</button>
                           <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
@@ -369,6 +398,21 @@ class ManageAccount extends Component {
 
                   <div className="block">
                     <h2 className="label">Store Logo</h2>
+                    {this.state.successful && this.state.currentStoreEdit===4 ? <p className="successful">Successfully changed store logo</p> : null}
+                    {this.state.error && this.state.currentStoreEdit===4 ? <p className="error">{this.state.error_msg}</p> : null}
+                    <img src={this.state.user_info["logo"]}/>
+                      {(this.state.editing && this.state.currentStoreEdit===4) ? 
+                        <Form onSubmit={this.editLogo}>
+                          <p className="edit-label">Upload new logo</p>
+                          <input type="file" name="logo" onChange={this.handleUpload.bind(this)}/>
+                          <div>
+                            <button className="save">Save Changes</button>
+                            <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
+                          </div>
+                        </Form> 
+                      : <div>
+                          <button className="edit" onClick={()=>this.editThis(4)}>Edit</button> 
+                        </div> }
                   </div>
 
                   <div className="block cashier-block">
@@ -598,6 +642,10 @@ const Body = styled.div`
       background-color: #ec9736;
       color: white;
     }
+  }
+  img{
+    max-height: 200px;
+    max-width: 200px;
   }
 `;
 const Form = styled.form`
