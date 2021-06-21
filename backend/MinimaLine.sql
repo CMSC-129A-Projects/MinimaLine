@@ -2,10 +2,10 @@
 -- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
--- Host: us-cdbr-east-04.cleardb.com
--- Generation Time: Jun 21, 2021 at 09:59 AM
--- Server version: 5.6.50-log
--- PHP Version: 8.0.2
+-- Host: 127.0.0.1
+-- Generation Time: Jun 21, 2021 at 11:16 AM
+-- Server version: 10.4.17-MariaDB
+-- PHP Version: 8.0.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `heroku_265d1c24262a4ec`
+-- Database: `minimaline`
 --
 
 -- --------------------------------------------------------
@@ -49,32 +49,6 @@ INSERT INTO `account_info` (`id`, `username`, `email`, `password`, `role`, `mana
 (15, 'kjsdshjh', 'jdnsdjh@gmail.com', '$2b$10$807nIccbEWLa7kRmdceXHuAmY6PtVKQNXVN2aYpKaKo5d2IwJE5HG', 'manager', NULL, 'njdasnjdnjd', 'njdsnfhjsnd', 'njkdnsjn', ''),
 (25, 'mohammira', 'mira@gmail.com', '$2b$10$AziYp0d.hBxqYu8AMx/m..LLkLXcxmxF0prvgZ5pUjANgbZ6LcFZ.', 'manager', NULL, 'store', 'manager', 'branch', ''),
 (35, 'seth', 'slnemeno@up.edu.ph', '$2b$10$4noQa0g91UpIQ69IvlFrsu1t39f18Kw6TmWu8faszL2GE2JoPO5ju', 'manager', NULL, 'BedBugs', 'Seth', 'Babag', '');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `all_orders`
---
-
-CREATE TABLE `all_orders` (
-  `id` int(11) NOT NULL,
-  `customer_num` int(11) NOT NULL,
-  `queue` int(11) NOT NULL,
-  `status` char(10) CHARACTER SET utf8mb4 NOT NULL,
-  `store_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cancelled_orders`
---
-
-CREATE TABLE `cancelled_orders` (
-  `id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `store_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -112,7 +86,7 @@ CREATE TABLE `customer` (
   `total_price` decimal(6,0) NOT NULL,
   `date` date NOT NULL,
   `store_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -123,7 +97,7 @@ CREATE TABLE `customer` (
 CREATE TABLE `customer_order_list` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
-  `product` varchar(30) CHARACTER SET utf8mb4 NOT NULL,
+  `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `price` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -157,17 +131,6 @@ INSERT INTO `menu_info` (`id`, `product`, `price`, `category_id`, `availability`
 (55, '豚骨ラーメン', '400', 25, 1, 'https://minimaline.s3.us-east-2.amazonaws.com/30d45450c4606d476aac69c046ef88e9', 5),
 (65, 'Gyoza', '200', 25, 0, 'https://minimaline.s3.us-east-2.amazonaws.com/e1fbe00ed36cc838721eafd7ea51ada4', 5);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `pending_orders`
---
-
-CREATE TABLE `pending_orders` (
-  `id` int(11) NOT NULL,
-  `customer_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --
 -- Indexes for dumped tables
 --
@@ -179,19 +142,6 @@ ALTER TABLE `account_info`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
   ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `all_orders`
---
-ALTER TABLE `all_orders`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `customer_num` (`customer_num`);
-
---
--- Indexes for table `cancelled_orders`
---
-ALTER TABLE `cancelled_orders`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `category`
@@ -218,12 +168,6 @@ ALTER TABLE `menu_info`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `pending_orders`
---
-ALTER TABLE `pending_orders`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -232,18 +176,6 @@ ALTER TABLE `pending_orders`
 --
 ALTER TABLE `account_info`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
-
---
--- AUTO_INCREMENT for table `all_orders`
---
-ALTER TABLE `all_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `cancelled_orders`
---
-ALTER TABLE `cancelled_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -268,12 +200,6 @@ ALTER TABLE `customer_order_list`
 --
 ALTER TABLE `menu_info`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
-
---
--- AUTO_INCREMENT for table `pending_orders`
---
-ALTER TABLE `pending_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
