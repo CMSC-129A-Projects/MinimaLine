@@ -54,26 +54,28 @@ class EditMenu extends Component {
                                     console.log(error)
                                     this.setState({redirect: true})
                                 })
-        if(JSON.stringify(categs.data)==='{}'){
-            this.showProducts("empty")
-        }
-        else{
-            this.setState({
-                all_categs: categs.data
-            })
-            if(id==="first")
+        if(!this.state.redirect){
+            if(JSON.stringify(categs.data)==='{}'){
+                this.showProducts("empty")
+            }
+            else{
                 this.setState({
-                    current_categ: this.state.all_categs[0]["id"],
+                    all_categs: categs.data
                 })
-            else if(id!=="added")
-                this.setState({
-                    current_categ: id,
-                })
-            else if(id==="deleted" || id==="added")
-                this.setState({
-                    current_categ: this.state.all_categs[this.state.all_categs.length-1]["id"],
-                })
-            this.showProducts(this.state.current_categ)
+                if(id==="first")
+                    this.setState({
+                        current_categ: this.state.all_categs[0]["id"],
+                    })
+                else if(id!=="added")
+                    this.setState({
+                        current_categ: id,
+                    })
+                else if(id==="deleted" || id==="added")
+                    this.setState({
+                        current_categ: this.state.all_categs[this.state.all_categs.length-1]["id"],
+                    })
+                this.showProducts(this.state.current_categ)
+            }
         }
     }
     async showProducts(categ_id){

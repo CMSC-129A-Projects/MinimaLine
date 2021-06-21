@@ -6,3 +6,4 @@ export {default as OrderSum} from './OrderSum.js';
 export {default as ProdModal} from './ProdModal.js';
 export {default as Checkout} from './Checkout.js';
 export {default as Confirmation} from './Confirmation.js';
+export {default as NotFound} from './NotFound.js';

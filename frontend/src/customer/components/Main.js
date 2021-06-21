@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import {FiArrowRightCircle} from 'react-icons/fi';
 import RegularPriority from './RegularPriority';
 import DineInTakeOut from './DineInTakeOut';
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
+import CustomerFn from '../../services/CustomerFn';
+import Axios from 'axios';
 
 class Main extends Component {
   constructor(){
@@ -11,26 +13,54 @@ class Main extends Component {
     this.state = {
       isPrioritySelected: false, // either regular or priority has been clicked
       isInputComplete: false, // regular/priority and dine in/takeout have been clicked
-      customerType: '', // regular/priority and dine in/takeout have been clicked
-      dineIn: null // regular/priority and dine in/takeout have been clicked
+      customerType: null, // regular/priority and dine in/takeout have been clicked
+      dineIn: null, // regular/priority and dine in/takeout have been clicked
+      redirect: false,
+      id: null
     }
-    this.priorityClick = this.priorityClick.bind(this);
-    this.completeInput = this.completeInput.bind(this);
+    this.priorityType = this.priorityType.bind(this);
+    this.dineIn = this.dineIn.bind(this);
+    this.proceed = this.proceed.bind(this);
   }
-  priorityClick(id){
-    /*if 1, customerType='REGULAR'
-      if 2, customerType='PRIORITY'
-     */
-    this.setState({isPrioritySelected: true})
+  async componentDidMount(){
+    let path = window.location.pathname
+    let id = parseInt(path.split('/').pop())
+    console.log(id)
+    await Axios.post('https://minimaline-server.herokuapp.com/check-store',{id:id})
+      .then(response =>{
+          if(response.data.message){
+              console.log(response.data)
+              this.setState({redirect:true})
+          }
+          else{
+              console.log(response)
+              CustomerFn.storeId(id)
+              this.setState({id: id})
+          }
+      })
+      .catch(err => {
+          this.setState({redirect:true})
+      })
   }
-  completeInput(id){
-    /*if 1, dine in
-      if 2, take out'
-     */
-    this.setState({isInputComplete: true})
+  priorityType(id){
+    this.setState({
+      isPrioritySelected: true,
+      customerType: id===1 ? 'REGULAR' : 'PRIORITY'
+    })
+  }
+  dineIn(id){
+    this.setState({
+      isInputComplete: true,
+      dineIn: id===1 ? 'DINE IN' : 'TAKE OUT'
+    })
+  }
+  proceed(){
+    CustomerFn.storeCustomerType({priority_type: this.state.customerType, dine_in: this.state.dineIn})
   }
 
   render() { 
+    if(this.state.redirect)
+      return(<Redirect to="/not-found"/>)
     return (
       <Container>
         <Blur>
@@ -43,16 +73,16 @@ class Main extends Component {
             <Buttons1> {/* input buttons; show regular/priority first; */}
               <p className="header">Choose customer type:</p>
               <p className="sub">(Priority: PWD, Pregnant, Senior Citizens)</p>
-              <RegularPriority onClick={this.priorityClick} />
+              <RegularPriority onClick={this.priorityType} />
             </Buttons1>
 
             <Buttons2 > {/* render dine in/takeout on click */}
-              {this.state.isPrioritySelected ? <DineInTakeOut onClick={this.completeInput} /> : null}
+              {this.state.isPrioritySelected ? <DineInTakeOut onClick={this.dineIn} /> : null}
             </Buttons2>
 
             {this.state.isInputComplete ?
               <NextButtonWrapper>
-                <Link to='/prod-select' style={{textDecoration:'none'}}>
+                <Link to={`/store/${this.state.id}/order`} style={{textDecoration:'none'}} onClick={this.proceed}>
                   <NextButton/>
                 </Link>
               </NextButtonWrapper>

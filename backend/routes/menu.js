@@ -4,13 +4,6 @@ var database = require('../config/database');
 const {check, validationResult} = require('express-validator');
 var Auth = require('../jwt-auth.js');
 
-// , [
-//     check('category')
-//     .notEmpty()
-//     .withMessage("Category cannot be empty")
-//     .exists()
-//     .withMessage("Category exists")
-//     ]
 //Add categories to edit menu
 app.post('/add-categ', Auth.checkAccessToken, (req,res)=> {
     let id = req.userId;
@@ -78,6 +71,22 @@ app.get('/display-category', Auth.checkAccessToken, (req,res) => {
         else res.status(200).json({});
     });
 });
+//send category list 
+app.get('/display-category/:id',(req,res) => {
+    let id = req.params.id;
+
+    database.query('SELECT * FROM category WHERE store_id = ?', id, (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        if (result.length) {
+            res.status(200).json(result);
+        }
+        else res.status(200).json({});
+    });
+});
+
 //get products by category ID
 app.get('/menu-info/:id', Auth.checkAccessToken, (req,res) => {
     let categ_id = req.params.id
@@ -95,7 +104,23 @@ app.get('/menu-info/:id', Auth.checkAccessToken, (req,res) => {
         else res.status(200).json({});
     });
 });
+//get products by category ID
+app.get('/menu-info/:store_id/:categ_id', (req,res) => {
+    let categ_id = req.params.categ_id
+    let store_id = req.params.store_id;
+    database.query("SELECT * FROM menu_info WHERE category_id = ? AND store_id = ? ", [categ_id,store_id],
+    (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
 
+        if (result.length) {
+            res.status(200).json(result);
+        }
+        else res.status(200).json({});
+    });
+});
 //to add products to menu (manager side)
 app.post('/add-product', Auth.checkAccessToken, (req,res)=> {
     // if(req.method == "POST"){
@@ -115,34 +140,6 @@ app.post('/add-product', Auth.checkAccessToken, (req,res)=> {
                     else
                         console.log(err)
                 });
-        // }
-        
-        // else{
-        //   let file = req.files.photo;
-        //   let img_name = file.name;
-        //   console.log("file uploaded:")
-        //   console.log(file)
-
-        //      if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"|| file.mimetype == "image/gif" || file.mimetype == "image/svg" || file.mimetype == "image/jpg"){
-                                   
-        //         file.mv('public/uploads'+file.name, function(err) {
-                               
-        //             if (err)
-        //                 // console.log(err)
-        //               return res.status(500).send(err);
-        //                     database.query("INSERT INTO menu_info (product,price,category_id,availability,photo,store_id) VALUES (?,?,?,?,?,?)",[product,price,category,availability,img_name,store_id],
-        //                     (err, result) => {
-        //                         if(!err)
-        //                             return res.status(200).send(result)
-        //                         else
-        //                             return res.status(400).send("error")
-        //                     });
-        //                 });
-        //     } else {
-        //         console.log("This format is not allowed , please upload file with '.png','.gif','.jpg'");
-        //     }
-        // }
-    // }
 });
 
 //Delete products

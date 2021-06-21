@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import Categ from "../../manager/components/Categ";
 import OrderSum from "./OrderSum";
-// import Products from "../../manager/components/Products";
 import Modal from 'react-modal';
 import ProdModal from './ProdModal';
 import Axios from 'axios';
+import CustomerFn from '../../services/CustomerFn';
 
 class ProdSelect extends Component {
     constructor(){
@@ -17,7 +17,9 @@ class ProdSelect extends Component {
             current: null,
             all_categs: [],
             prods: [],
-            openProdModal: false
+            openProdModal: false,
+            redirect: null,
+            id: null
         }
         this.changeColor = this.changeColor.bind(this);
         this.showModal = this.showModal.bind(this);
@@ -33,20 +35,53 @@ class ProdSelect extends Component {
     }
     async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
-        let categs = await Axios.get('https://minimaline-server.herokuapp.com/display-category');
-        if(JSON.stringify(categs.data)==='{}'){
-            this.showProducts("empty")
-        }
-        else{
-            this.setState({
-                all_categs: categs.data
-            })
-            this.showProducts(this.state.all_categs[0]["id"])
+        let path = window.location.pathname
+        let id = parseInt(path.split('/')[2])
+        console.log(id)
+        await Axios.post('https://minimaline-server.herokuapp.com/check-store',{id:id})
+        .then(response =>{
+            if(response.data.message){
+                console.log("message")
+                console.log(response.data)
+                this.setState({redirect:1})
+            }
+            else{
+                console.log(response)
+                CustomerFn.verifyId(id).then((error)=>{
+                    if(error){
+                        console.log("henlo")
+                        this.setState({
+                            id: error.id,
+                            redirect: 2
+                        })
+                    }
+                    else{
+                        console.log("ばか！！！")
+                        this.setState({id:id})
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            console.log("error")
+            this.setState({redirect:1})
+        })
+        if(!this.state.redirect){
+            let categs = await Axios.get(`https://minimaline-server.herokuapp.com/display-category/${this.state.id}`);
+            if(JSON.stringify(categs.data)==='{}'){
+                this.showProducts("empty")
+            }
+            else{
+                this.setState({
+                    all_categs: categs.data
+                })
+                this.showProducts(this.state.all_categs[0]["id"])
+            }
         }
     }
     async showProducts(categ_id){
         if(categ_id!=="empty"){
-            let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${categ_id}`);
+            let categProds = await Axios.get(`https://minimaline-server.herokuapp.com/menu-info/${this.state.id}/${categ_id}`);
             this.setState({
                 prods: categProds.data,
                 clicked: false,
@@ -63,14 +98,18 @@ class ProdSelect extends Component {
     }
 
     render() { 
-        var modalStyle={overlay: {zIndex: 2}}
+        if(this.state.redirect===1)
+            return(<Redirect to="/not-found"/>)
+        else if(this.state.redirect===2)
+            return(<Redirect to={`/store/${this.state.id}`}/>)
+        // var modalStyle={overlay: {zIndex: 2}}
         return( 
             <Container>
 
                 <Wrapper>
                     <Arrow>
                         <ArrowWrapper>
-                            <Link to="/customer">
+                            <Link to={`/store/${this.state.id}`}>
                                 <BiArrowBack size="40px" color="#676666"/>
                             </Link>
                         </ArrowWrapper>

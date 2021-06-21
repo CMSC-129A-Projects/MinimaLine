@@ -8,34 +8,37 @@ class CustomerFn{
         // check if path id===manager id
         // if yes, put id in sessionstorage????? and render Main.js 
         // if no, render 404
-    async validPath(){
-        console.log("checking path")
-        let path = window.location.pathname
-        let id = path.split('/').pop();
-        console.log(id)
-        const data = {id: id}
-        await Axios.post('https://minimaline-server.herokuapp.com/check-store',data)
-            .then(response =>{
-                if(response.data.message){
-                    console.log("invalid")
-                    console.log(response.data)
-                    return false;
-                }
-                else{
-                    console.log("valid")
-                    console.log(response)
-                    return true;
-                }
-            })
-            .catch(err => {
-                console.log(err)
-                return false;
-            })
+    storeId(id){
+        let customer = [];
+        let data = {id: id}
+        customer.push(data);
+        sessionStorage.setItem("customer",JSON.stringify(customer))
+        let res = JSON.parse(sessionStorage.getItem("customer"))
+        console.log(res)
     }
-
-
-
-
+    storeCustomerType(data){
+        console.log(data)
+        let customer = JSON.parse(sessionStorage.getItem("customer"))
+        customer.push(data);
+        sessionStorage.setItem("customer",JSON.stringify(customer))
+        let res = JSON.parse(sessionStorage.getItem("customer"))
+        console.log(res)
+    }
+    storeCustomerOrder(data){
+        let customer = JSON.parse(sessionStorage.getItem("customer"))
+        customer.push(data);
+        sessionStorage.setItem("customer",JSON.stringify(customer))
+        let res = JSON.parse(sessionStorage.getItem("customer"))
+        console.log(res)
+    }
+    async verifyId(id){
+        let customer = JSON.parse(sessionStorage.getItem("customer"))
+        let store_id = customer[0]["id"]
+        if(store_id===id)
+            return;
+        let error = {id: store_id}
+        return error;
+    }
     // main.js
         // choose type 
         // choose dine in
@@ -52,3 +55,27 @@ class CustomerFn{
 }
 
 export default new CustomerFn();
+// async validPath(){
+    //     console.log("checking path")
+    //     let path = window.location.pathname
+    //     let id = path.split('/').pop();
+    //     console.log(id)
+    //     const data = {id: id}
+    //     await Axios.post('https://minimaline-server.herokuapp.com/check-store',data)
+    //         .then(response =>{
+    //             if(response.data.message){
+    //                 console.log("invalid")
+    //                 console.log(response.data)
+    //                 return false;
+    //             }
+    //             else{
+    //                 console.log("valid")
+    //                 console.log(response)
+    //                 return true;
+    //             }
+    //         })
+    //         .catch(err => {
+    //             console.log(err)
+    //             return false;
+    //         })
+    // }

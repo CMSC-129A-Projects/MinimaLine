@@ -3,37 +3,11 @@ import * as Manager from './manager/components';
 import * as Customer from './customer/components';
 import * as Cashier from './cashier/components';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
-import Auth from './services/Auth';
-import CustomerFn from './services/CustomerFn';
 import styled from 'styled-components';
 import chicken from './assets/chicken.png'
 import glitter from './assets/glitter.png'
 import circle from './assets/circle.png'
 
-const ManagerRoute = ({component:Component, ...rest}) => {
-  return(
-    <Route
-      {...rest}
-      render={()=>(
-        Auth.hasAccess() ?
-          <Component/>
-        : <Redirect to="/"/>
-      )}
-    />
-  )
-}
-const PrivateRoute = ({component:Component, ...rest}) => {
-  return(
-    <Route
-      {...rest}
-      render={()=>(
-        CustomerFn.validPath() ?
-          <Component/>
-        : <Redirect to="/confirmation"/>
-      )}
-    />
-  )
-}
 const App = () => {
   return (
     <Container>
@@ -44,14 +18,15 @@ const App = () => {
             <Route exact path="/sign-up" component={Manager.SignUp} />
             <Route exact path="/terms" component={Manager.Terms} />
             <Route exact path="/store-reg" component={Manager.StoreReg} />
-            <ManagerRoute exact path="/view-menu" component={Manager.ViewMenu} />
-            <ManagerRoute exact path="/edit-menu" component={Manager.EditMenu} />
-            <ManagerRoute exact path="/dashboard" component={Manager.Dashboard} />
-            <ManagerRoute exact path="/account" component={Manager.ManageAccount} />
-            <PrivateRoute path="/store/:id" exact component={Customer.Main} />
-            <Route path="/prod-select" exact component={Customer.ProdSelect} />
+            <Route exact path="/view-menu" component={Manager.ViewMenu} />
+            <Route exact path="/edit-menu" component={Manager.EditMenu} />
+            <Route exact path="/dashboard" component={Manager.Dashboard} />
+            <Route exact path="/account" component={Manager.ManageAccount} />
+            <Route path="/store/:id" exact component={Customer.Main} />
+            <Route path="/store/:id/order" exact component={Customer.ProdSelect} />
             <Route path="/checkout" exact component={Customer.Checkout} />
             <Route path="/confirmation" exact component={Customer.Confirmation} />
+            <Route path="/not-found" exact component={Customer.NotFound} />
             {/* <Route exact path="/cashier" component={Cashier.App} /> */}
           </Switch>
         </Router>

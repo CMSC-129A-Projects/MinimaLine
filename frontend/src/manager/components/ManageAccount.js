@@ -35,12 +35,12 @@ class ManageAccount extends Component {
   }
   async getUserInfo(){
     let user = await Axios.get('https://minimaline-server.herokuapp.com/account-info',{headers: Auth.header()})
-                .catch((error)=> {
-                  console.log(error)
-                  this.setState({redirect: true})
-              })
-    console.log(user.data[0]);
-    this.setState({user_info: user.data[0]})
+        .catch((error)=> {
+          this.setState({redirect: true})
+        })
+    if(!this.state.redirect){
+      this.setState({user_info: user.data[0]})
+    }
   }
   navClick(id){
     if(id==="account"){
@@ -74,14 +74,7 @@ class ManageAccount extends Component {
     })
   }
   closeEdit(){
-    // if(this.state.currentStoreEdit===4){
-    //   this.setState({
-    //     editing: false,
-    //     logo: ''
-    //   })
-    // }
-    // else
-      this.setState({editing: false})
+    this.setState({editing: false})
   }
   handleChange(e){
     this.setState({

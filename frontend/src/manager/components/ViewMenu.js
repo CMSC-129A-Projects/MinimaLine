@@ -49,15 +49,18 @@ class ViewMenu extends Component {
                                 console.log(error)
                                 this.setState({redirect: true})
                             })
-        if(JSON.stringify(categs.data)==='{}'){
-            this.showProducts("empty")
+        if(!this.state.redirect){
+            if(JSON.stringify(categs.data)==='{}'){
+                this.showProducts("empty")
+            }
+            else{
+                this.setState({
+                    all_categs: categs.data
+                })
+                this.showProducts(this.state.all_categs[0]["id"])
+            }
         }
-        else{
-            this.setState({
-                all_categs: categs.data
-            })
-            this.showProducts(this.state.all_categs[0]["id"])
-        }
+        
     }
 
     render() {
