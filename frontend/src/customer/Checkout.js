@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { BiArrowBack } from "react-icons/bi";
 import {Link} from 'react-router-dom';
 import { RiDeleteBin2Line } from "react-icons/ri";
-import burger_img from "../../assets/burger.png";
-import fries_img from "../../assets/fries.png";
+import burger_img from "../assets/burger.png";
+import fries_img from "../assets/fries.png";
 
 class Checkout extends Component {
     constructor(props) {

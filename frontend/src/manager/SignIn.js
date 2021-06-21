@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
-import logo from "../../assets/logo.svg";
+import logo from "../assets/logo.svg";
 import {Redirect,Link} from 'react-router-dom';
-import Axios from "axios";
-import Auth from '../../services/Auth';
+import Auth from '../services/Auth';
 // Axios.defaults.withCredentials = true;
 
 class SignIn extends Component {

@@ -4,7 +4,7 @@ import {FiArrowRightCircle} from 'react-icons/fi';
 import RegularPriority from './RegularPriority';
 import DineInTakeOut from './DineInTakeOut';
 import {Link,Redirect} from 'react-router-dom';
-import CustomerFn from '../../services/CustomerFn';
+import CustomerFn from '../services/CustomerFn';
 import Axios from 'axios';
 
 class Main extends Component {

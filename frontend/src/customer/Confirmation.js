@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import {Link} from 'react-router-dom';
-import img from '../../assets/confirm.png';
+import img from '../assets/confirm.png';
 
 class Confirmation extends Component {
     constructor(props) {

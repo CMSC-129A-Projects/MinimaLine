@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import styled from "styled-components";
 import {Link} from 'react-router-dom';
 import {FaLongArrowAltRight} from "react-icons/fa";
-import search from "../../assets/search.png";
-import burger_img from "../../assets/burger.png";
-import fries_img from "../../assets/fries.png";
+import search from "../assets/search.png";
+import burger_img from "../assets/burger.png";
+import fries_img from "../assets/fries.png";
 import Orders from "./Orders";
 
 class PendingOrders extends Component {

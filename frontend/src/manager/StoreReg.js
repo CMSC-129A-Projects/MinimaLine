@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {Link, Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
 import { FiUpload } from "react-icons/fi";
-import Auth from '../../services/Auth';
+import Auth from '../services/Auth';
 Axios.defaults.withCredentials = true;
 
 class StoreReg extends Component{

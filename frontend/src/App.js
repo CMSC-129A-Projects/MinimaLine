@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import * as Manager from './manager/components';
-import * as Customer from './customer/components';
-import * as Cashier from './cashier/components';
+import * as Manager from './manager';
+import * as Customer from './customer';
+import * as Cashier from './cashier';
 import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import styled from 'styled-components';
 import chicken from './assets/chicken.png'

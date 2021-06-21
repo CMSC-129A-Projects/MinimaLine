@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { BiArrowBack } from "react-icons/bi";
 import { Link,Redirect } from 'react-router-dom';
 import Axios from 'axios';
-import Auth from '../../services/Auth';
+import Auth from '../services/Auth';
 Axios.defaults.withCredentials = true;
 
 class ManageAccount extends Component {

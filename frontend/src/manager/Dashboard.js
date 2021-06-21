@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import minimaline_logo from '../../assets/MinimaLine.jpeg';
+import minimaline_logo from '../assets/MinimaLine.jpeg';
 import {MdRestaurantMenu, MdAccountCircle} from 'react-icons/md';
 import {AiOutlineUserSwitch} from 'react-icons/ai';
 import {Link,Redirect} from 'react-router-dom';
 import Modal from 'react-modal';
 import Axios from 'axios';
-import Auth from '../../services/Auth';
+import Auth from '../services/Auth';
 Axios.defaults.withCredentials = true;
 
 class App extends Component {

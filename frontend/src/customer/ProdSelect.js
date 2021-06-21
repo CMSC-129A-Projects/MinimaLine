@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import {Link,Redirect} from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi";
-import Categ from "../../manager/components/Categ";
+import Categ from "../manager/Categ";
 import OrderSum from "./OrderSum";
 import Modal from 'react-modal';
 import ProdModal from './ProdModal';
 import Axios from 'axios';
-import CustomerFn from '../../services/CustomerFn';
+import CustomerFn from '../services/CustomerFn';
 
 class ProdSelect extends Component {
     constructor(){
