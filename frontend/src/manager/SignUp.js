@@ -19,11 +19,9 @@ class SignUp extends Component{
       loggedIn: false,
       userId: null
     }
-    // this.register = this.register.bind(this);
   }
   async componentDidMount(){
     document.title = "MinimaLine | Sign Up";
-    console.log("sign up page")
   }
 
   handleChange(e){
@@ -39,7 +37,6 @@ class SignUp extends Component{
     };
     e.preventDefault();
     Axios.post('https://minimaline-server.herokuapp.com/user-registration',data).then((response) => {
-      console.log(response)
       if(response.data.errors){
         this.setState({
           error: true,

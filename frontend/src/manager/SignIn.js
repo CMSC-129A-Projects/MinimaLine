@@ -19,7 +19,6 @@ class SignIn extends Component {
   }
   async componentDidMount(){
     document.title = "MinimaLine | Sign In";
-    console.log("sign in page")
   }
   
   handleChange(e){
@@ -32,14 +31,12 @@ class SignIn extends Component {
     Auth.login(this.state.username, this.state.password)
       .then((error) => {
         if(error){
-          console.log(error.msg)
           this.setState({ 
             error_msg: error.msg,
             login_error: true
           })
         }
         else{
-          console.log("logged in")
           this.setState({redirect: true})
         }
       })
@@ -48,11 +45,9 @@ class SignIn extends Component {
   render() { 
     if(this.state.redirect)
       return <Redirect to="/dashboard"/>
-      // return <Redirect to={{ pathname: "/dashboard", state: {userId: this.state.userId} }}/>
     return ( 
       <Container>
       <LogoWrapper>
-        {/* <img src={logo} alt="" /> */}
         <h3>Minima</h3>
         <h2>Line</h2>
       </LogoWrapper>
