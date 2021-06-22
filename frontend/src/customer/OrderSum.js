@@ -53,8 +53,8 @@ class OrderSum extends Component {
 
 const Container = styled.div`
     /* height: 500px; */
-    height: 50vh;
-    /* width: 20%; */
+    height: 55vh;
+    width: 35vh;
     display: flex;
     flex-direction: column;
     /* align-items: center; */
@@ -115,7 +115,7 @@ const Container = styled.div`
         /* margin-top: -30px; */
         margin-top: -5vh;
         /* margin-left: 200px; */
-        margin-left: 20vh;
+        margin-left: 15vh;
         p{
             /* margin-right: 10px; */
             margin-right: 1vh;

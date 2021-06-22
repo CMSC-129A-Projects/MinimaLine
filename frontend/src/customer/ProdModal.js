@@ -34,13 +34,11 @@ class ProdModal extends Component {
             quantity: this.state.count,
             price: this.props["price"]*this.state.count
         }
-        console.log(order)
         this.props.onClick(order)
     }
 
     render() { 
         var modalStyle={overlay: {zIndex: 2}}
-        console.log(this.state.product)
         return (  
             <ModalContainer>
                 <ProductModal isOpen={true} style={modalStyle}>
@@ -48,12 +46,16 @@ class ProdModal extends Component {
                         <h1>{this.props["product"]}</h1>
                         <h2>{this.props["price"]}</h2>
                         <div className="counter">
+                            {this.state.count>0 ?
                             <button onClick={this.decrement}>-</button>
+                            : null}
                             <span> {this.state.count} </span>
                             <button onClick={this.increment}>+</button>
                         </div>
                         <div className="buttons">
+                            {this.state.count>0 ? 
                             <button className="add-order" onClick={this.addOrder}>Add Order</button>
+                            : null}
                             <button className="cancel" onClick={this.props.show}>Cancel</button>
                         </div>
                     </div>

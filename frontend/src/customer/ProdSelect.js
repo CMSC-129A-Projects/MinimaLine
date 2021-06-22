@@ -19,8 +19,8 @@ class ProdSelect extends Component {
             prods: [],
             openProdModal: false,
             redirect: null,
+            orders: [],
             id: null,
-            orders: [], //{product, quantity, price*quantity}
             total_price: null
         }
         this.changeColor = this.changeColor.bind(this);
@@ -44,28 +44,24 @@ class ProdSelect extends Component {
                 console.log(response)
                 CustomerFn.verifyId(id).then((wrong,redirect)=>{
                     if(wrong){
-                        console.log("wrong")
                         this.setState({
                             id: wrong.id,
                             redirect: 2
                         })
                     }
                     else if(redirect){
-                        console.log("redirect")
                         this.setState({
                             id: redirect.id,
                             redirect: 2
                         })
                     }
                     else{
-                        console.log("ばか！！！")
                         this.setState({id:id})
                     }
                 })
             }
         })
         .catch(err => {
-            console.log(err)
             this.setState({redirect:1})
         })
         if(!this.state.redirect){
@@ -107,17 +103,28 @@ class ProdSelect extends Component {
             })
     }
     addOrder(order){
-        if(!sessionStorage.getItem("order")){
+        if(!sessionStorage.getItem("order")){ // first item to be added to order list
             var orderlist = []
             orderlist.push(order)
             sessionStorage.setItem("order",JSON.stringify(orderlist))
         }
-        else{
+        else{ // an order list already exists
             var orderlist = JSON.parse(sessionStorage.getItem("order"))
-            orderlist.push(order)
-            sessionStorage.setItem("order",JSON.stringify(orderlist))
+            // check if an order for the same product has already been placed
+            var item = orderlist.find(item=>item["product"]["id"]===order["product"]["id"])
+            if(!item){ // product not yet in order list
+                orderlist.push(order)
+                sessionStorage.setItem("order",JSON.stringify(orderlist))
+            }
+            else{ // product already exists in list
+                var index = orderlist.indexOf(item) // get index of said product
+                order["quantity"] += item["quantity"]
+                order["price"] += item["price"]
+                orderlist[index] = order // replace with updated order
+                sessionStorage.setItem("order",JSON.stringify(orderlist))
+            }
         }
-        console.log(orderlist)
+        // compute total price
         let total = 0;
         for(let i=0; i<orderlist.length;i++){
             total += orderlist[i]["price"]
