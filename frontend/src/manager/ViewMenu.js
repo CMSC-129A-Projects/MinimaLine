@@ -85,11 +85,11 @@ class ViewMenu extends Component {
                         <Categ mode={"view"} categs={this.state.all_categs} onClick={this.showProducts}/> 
                     </Nav>
                     {!this.state.prods.length ?
-                        <ProdGrid>
+                        // <ProdGrid>
                             <div className="productlist">
                                 <h3> No products in this category.</h3>
                             </div>
-                        </ProdGrid>
+                        // </ProdGrid>
                         : <ProdGrid>
                             <section className='productlist'> 
                             {this.state.prods.map((prod,index)=>{

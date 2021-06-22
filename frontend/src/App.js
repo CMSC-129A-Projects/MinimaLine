@@ -24,8 +24,8 @@ const App = () => {
             <Route exact path="/account" component={Manager.ManageAccount} />
             <Route path="/store/:id" exact component={Customer.Main} />
             <Route path="/store/:id/order" exact component={Customer.ProdSelect} />
-            <Route path="/checkout" exact component={Customer.Checkout} />
-            <Route path="/confirmation" exact component={Customer.Confirmation} />
+            <Route path="/store/:id/checkout" exact component={Customer.Checkout} />
+            <Route path="/store/:id/confirm" exact component={Customer.Confirmation} />
             <Route path="/not-found" exact component={Customer.NotFound} />
             {/* <Route exact path="/cashier" component={Cashier.App} /> */}
           </Switch>

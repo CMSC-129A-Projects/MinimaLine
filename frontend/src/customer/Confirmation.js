@@ -1,29 +1,42 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import img from '../assets/confirm.png';
 
 class Confirmation extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            id: null,
+            redirect: false
+         }
+         this.clearSession = this.clearSession.bind(this)
     }
 
     componentDidMount(){
         document.title = "MinimaLine | Confirm Order"
+        let customer = JSON.parse(sessionStorage.getItem("customer"))
+        this.setState({id: customer[0]["id"]})
+        if(!sessionStorage.getItem("order"))
+            this.setState({redirect: true})
     }
-
+    clearSession(){
+        sessionStorage.removeItem("customer")
+        sessionStorage.removeItem("order")
+    }
     render() { 
+        if(this.state.redirect)
+            return(<Redirect to={`/store/${this.state.id}`}/>)
         return ( 
             <Background>
                  <Container>
                     <div>
                         <h1>Your order has been confirmed.</h1>
                         <img src={img}/>
-                        <h2>Please claim your order ticket and proceed to the cashier for payment.</h2>
+                        <h2>Please proceed to the cashier for payment.</h2>
                     </div>
-                    <Link to="/customer">
-                        <button>
+                    <Link to={`/store/${this.state.id}`}>
+                        <button onClick={this.clearSession}>
                             Okay
                         </button>
                     </Link>

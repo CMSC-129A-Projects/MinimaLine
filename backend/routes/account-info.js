@@ -145,12 +145,6 @@ app.post('/user-registration', [
 //register a cashier
 app.post('/add-cashier', Auth.checkAccessToken, [
     check('username')
-        .notEmpty()
-        .withMessage('Username cannot be empty')
-        .isLength({min: 4}) 
-        .withMessage('Username should be at least 4 characters long')
-        .isLength({max: 20})
-        .withMessage('Username cannot be more than 20 characters long')
         .custom(async username => {
             const value = await isUsernameUsed(username);
             if (value) {
@@ -170,26 +164,45 @@ app.post('/add-cashier', Auth.checkAccessToken, [
         return res.status(400).json({errors: errors.array()});
     }
     
+    var id = req.userId
     var role = "cashier"
-    const {username,email,password}=req.body
+    const {username,password}=req.body
 
     bcrypt.hash(password,saltRounds, (err, hash) => {
         database.query(
-            "INSERT INTO account_info (username, email, password,role) VALUES (?,?,?,?)", 
-            [username, email, hash, role], 
+            "INSERT INTO account_info (username,password,role,manager_id) VALUES (?,?,?,?)", 
+            [username, hash, role,id], 
             (err, result) => {
                 if(err){
                     console.log(err)
-                    res.status(400)
+                    res.status(400).send(err)
                      
                 }
                 else{
-                    //console.log(result.insertId)
-                    res.status(201).send(result)  
+                    console.log(result.data)
+                    res.status(200).send(result)  
             }
                 
         })
     })
+});
+
+//get all cashiers of a store 
+app.get('/get-cashiers', Auth.checkAccessToken, (req,res) => {
+    const id = req.userId
+    database.query("SELECT * FROM account_info WHERE manager_id = ? AND role = ?", [id,"cashier"],
+    (err, result) => {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+
+        if (result.length) {
+            // console.log(result)
+            res.status(200).send(result);
+        }
+        else res.status(200).json({});
+    });
 });
 
 app.post('/edit-username', Auth.checkAccessToken, [

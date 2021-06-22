@@ -16,9 +16,11 @@ class ManageAccount extends Component {
       user_info: [], username: '', email: '', storename: '',
       manager: '', location: '', successful: false,
       error: false, error_msg: '', redirect: false, 
-      logo: null, upload_url: '', logo_url: ''
+      logo: null, upload_url: '', logo_url: '',
+      cashier_username: '', cashier_password: '', cashiers: []
      }
      this.getUserInfo = this.getUserInfo.bind(this);
+     this.getCashiers = this.getCashiers.bind(this);
      this.navClick = this.navClick.bind(this);
      this.editThis = this.editThis.bind(this);
      this.closeEdit = this.closeEdit.bind(this);
@@ -28,10 +30,12 @@ class ManageAccount extends Component {
      this.editLocation = this.editLocation.bind(this);
      this.editManager = this.editManager.bind(this);
      this.editLogo = this.editLogo.bind(this);
+     this.addCashier = this.addCashier.bind(this);
   }
   async componentDidMount(){
     document.title = "MinimaLine | Account Management";
     this.getUserInfo();
+    this.getCashiers();
   }
   async getUserInfo(){
     let user = await Axios.get('https://minimaline-server.herokuapp.com/account-info',{headers: Auth.header()})
@@ -41,6 +45,14 @@ class ManageAccount extends Component {
     if(!this.state.redirect){
       this.setState({user_info: user.data[0]})
     }
+  }
+  async getCashiers(){
+    await Axios.get('https://minimaline-server.herokuapp.com/get-cashiers',{headers: Auth.header()})
+        .then((response)=>{
+          if(response.status!==400){
+            this.setState({cashiers: response.data})
+          }
+        })
   }
   navClick(id){
     if(id==="account"){
@@ -223,7 +235,35 @@ class ManageAccount extends Component {
         }
       })
   }
-  
+  async addCashier(e){
+    e.preventDefault();
+    const data = {
+      username: this.state.cashier_username,
+      password: this.state.cashier_password
+    }
+    await Axios.post('https://minimaline-server.herokuapp.com/add-cashier', data, {headers: Auth.header()})
+      .then((response)=>{
+        if(response.data.errors){
+          this.setState({
+            error: true,
+            error_msg: response.data.errors[0].msg
+          })
+        }
+        else if(response.status!==400){
+          this.closeEdit()
+          this.getCashiers()
+          this.setState({
+            successful: true,
+            error: false,
+            cashier_username: '',
+            cashier_password: ''
+          })
+        }
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+  }
   
   render() { 
     if(this.state.redirect)
@@ -397,7 +437,7 @@ class ManageAccount extends Component {
                       {(this.state.editing && this.state.currentStoreEdit===4) ? 
                         <Form onSubmit={this.editLogo}>
                           <p className="edit-label">Upload new logo</p>
-                          <input type="file" name="logo" onChange={this.handleUpload.bind(this)}/>
+                          <input className="upload" type="file" name="logo" required onChange={this.handleUpload.bind(this)}/>
                           <div>
                             <button className="save">Save Changes</button>
                             <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
@@ -410,8 +450,33 @@ class ManageAccount extends Component {
 
                   <div className="block cashier-block">
                     <h2 className="label">Cashiers</h2>
-                    <p>No cashiers have been added for your store.</p>
-                    <button className="add-cashier">Add cashier</button> 
+                    {this.state.successful && this.state.currentStoreEdit===5 ? <p className="successful">Successfully updated cashiers</p> : null}
+                    {this.state.error && this.state.currentStoreEdit===5 ? <p className="error">{this.state.error_msg}</p> : null}
+                    {!this.state.cashiers.length ? <p>No cashiers have been added for your store.</p> :
+                      <div>
+                        {this.state.cashiers.map((cashier,index)=>{
+                          return(<p>{cashier["username"]}</p>)
+                        })}
+                      </div>
+                    }
+                    {(this.state.editing && this.state.currentStoreEdit===5) ? 
+                      <Form onSubmit={this.addCashier}>
+                        <p className="edit-label">Enter cashier username</p>
+                        <StyledInput type="text" autoComplete="off" required
+                            name="cashier_username" value={this.state.cashier_username}
+                            placeholder="Username" onChange={this.handleChange.bind(this)}/>
+                        <p className="edit-label">Enter cashier password</p>
+                        <StyledInput type="password" autoComplete="off" required
+                            name="cashier_password" value={this.state.cashier_password}
+                            placeholder="Password" onChange={this.handleChange.bind(this)}/>
+                        <div>
+                          <button className="save">Save Changes</button>
+                          <button className="cancel-edit" onClick={this.closeEdit}>Cancel</button>
+                        </div>
+                      </Form> 
+                    : <div>
+                        <button className="add-cashier" onClick={()=>this.editThis(5)}>Add cashier</button> 
+                      </div> }
                   </div>
 
                 </div>
@@ -639,6 +704,10 @@ const Body = styled.div`
   img{
     max-height: 200px;
     max-width: 200px;
+    margin-bottom: 10px;
+  }
+  .upload{
+    margin-bottom: 10px;
   }
 `;
 const Form = styled.form`

@@ -1,192 +1,93 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
 import { BiArrowBack } from "react-icons/bi";
-import {Link} from 'react-router-dom';
-import { RiDeleteBin2Line } from "react-icons/ri";
-import burger_img from "../assets/burger.png";
-import fries_img from "../assets/fries.png";
+import {Link,Redirect} from 'react-router-dom';
 
 class Checkout extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            total_price: null,
+            orders: [],
+            notes: '',
+            redirect: false,
+            id: null
+         }
+         this.confirmOrder = this.confirmOrder.bind(this)
     }
-
     componentDidMount(){
-        document.title = "MinimaLine | Checkout"
+        document.title = "MinimaLine | Checkout";
+        let customer = JSON.parse(sessionStorage.getItem("customer"))
+        this.setState({id: customer[0]["id"]})
+        let orderlist = JSON.parse(sessionStorage.getItem("order"))
+        if(!orderlist)
+            this.setState({redirect: true})
+        else{
+            this.setState({
+                total_price: orderlist.pop().total_price,
+                orders: orderlist
+            })
+        }
     }
-
+    handleChange(e){
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+    confirmOrder(){
+        let customer = JSON.parse(sessionStorage.getItem("customer"))
+        console.log(customer)
+        const order = {
+            store_id: customer[0]["id"],
+            priority_type: customer[1]["priority_type"],
+            dine_in: customer[1]["dine_in"],
+            orderlist: this.state.orders,
+            total_price: this.state.total_price,
+            notes: this.state.notes
+        }
+        console.log(order)
+    }
     render() { 
+        if(this.state.redirect)
+            return(<Redirect to={`/store/${this.state.id}`}/>)
         return (
             <Container>
                 <ArrowWrapper>
-                    <Link to="/prod-select">
+                    <Link to={`/store/${this.state.id}/order`}>
                     <BiArrowBack size="40px" color="#676666"/>
                     </Link>
                 </ArrowWrapper>
                 <h1>Checkout</h1>
                 <Table>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                        <div className="counter">
-                            <button>-</button>
-                                <span>
-                                <td width="20%">2</td>
-                                </span>
-                            <button>+</button>
-                        </div>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
+                {this.state.orders.map((order,index)=>{
+                    return (
+                        <tr>
+                            <td width="10%"><img src={order["product"]["photo"]}/></td>
+                            <td width="50%">{order["product"]["product"]}</td>
                             <div className="counter">
                                 <button>-</button>
                                     <span>
-                                    <td width="20%">3</td>
+                                    <td width="20%">{order["quantity"]}</td>
                                     </span>
                                 <button>+</button>
                             </div>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                        <div className="counter">
-                            <button>-</button>
-                                <span>
-                                <td width="20%">2</td>
-                                </span>
-                            <button>+</button>
-                        </div>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                            <div className="counter">
-                                <button>-</button>
-                                    <span>
-                                    <td width="20%">3</td>
-                                    </span>
-                                <button>+</button>
-                            </div>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                        <div className="counter">
-                            <button>-</button>
-                                <span>
-                                <td width="20%">2</td>
-                                </span>
-                            <button>+</button>
-                        </div>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                            <div className="counter">
-                                <button>-</button>
-                                    <span>
-                                    <td width="20%">3</td>
-                                    </span>
-                                <button>+</button>
-                            </div>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                        <div className="counter">
-                            <button>-</button>
-                                <span>
-                                <td width="20%">2</td>
-                                </span>
-                            <button>+</button>
-                        </div>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                            <div className="counter">
-                                <button>-</button>
-                                    <span>
-                                    <td width="20%">3</td>
-                                    </span>
-                                <button>+</button>
-                            </div>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                        <div className="counter">
-                            <button>-</button>
-                                <span>
-                                <td width="20%">2</td>
-                                </span>
-                            <button>+</button>
-                        </div>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                            <div className="counter">
-                                <button>-</button>
-                                    <span>
-                                    <td width="20%">3</td>
-                                    </span>
-                                <button>+</button>
-                            </div>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={burger_img}/></td>
-                        <td width="50%">McBurger</td>
-                        <div className="counter">
-                            <button>-</button>
-                                <span>
-                                <td width="20%">2</td>
-                                </span>
-                            <button>+</button>
-                        </div>
-                        <td width="20%">Php 300.00</td>
-                    </tr>
-                    <tr>
-                        <td width="10%"><img src={fries_img}/></td>
-                            <td width="50%">McFries</td>
-                            <div className="counter">
-                                <button>-</button>
-                                    <span>
-                                    <td width="20%">3</td>
-                                    </span>
-                                <button>+</button>
-                            </div>
-                            <td width="20%">Php 90.00</td>
-                    </tr>
+                            <td width="20%">Php {order["price"]}</td>
+                        </tr>
+                    )
+                })}
                 </Table>
                 <hr/>
                 <div className="total-price">
                     <h2>Total</h2>
-                    <h2>Php 967.00</h2>
+                    <h2>Php {this.state.total_price}</h2>
                 </div>
                 <div className="bottom">
                     <h2>Order Notes</h2>
-                    <textarea
-                        type="text"
-                        placeholder="Optional"
-                        name="order-note"
-                        autoComplete="off"
-                        // onChange={this.handleChange.bind(this)}
-                    />
-                    <Link to="/confirmation">
-                        <button>Confirm</button>
+                    <textarea type="text" placeholder="Optional"
+                        autoComplete="off" name="notes"
+                        value={this.state.notes} onChange={this.handleChange.bind(this)} />
+                    <Link to={`/store/${this.state.id}/confirm`}>
+                        <button onClick={this.confirmOrder}>Confirm</button>
                     </Link>
                 </div>
             </Container>

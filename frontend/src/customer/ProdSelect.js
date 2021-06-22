@@ -29,6 +29,7 @@ class ProdSelect extends Component {
         this.showProducts = this.showProducts.bind(this);
         this.addOrder = this.addOrder.bind(this);
         this.updateOrder = this.updateOrder.bind(this);
+        this.checkOut = this.checkOut.bind(this);
     }
     async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
@@ -77,6 +78,15 @@ class ProdSelect extends Component {
                 })
                 this.showProducts(this.state.all_categs[0]["id"])
             }
+        }
+        let orderlist = JSON.parse(sessionStorage.getItem("order"))
+        if(orderlist){
+            let price = orderlist.find(x=>x["total_price"])
+            console.log(price)
+            if(price)
+                this.setState({total_price: price["total_price"]})
+                orderlist.pop()
+            this.setState({orders: orderlist})
         }
     }
     async showProducts(categ_id){
@@ -161,16 +171,19 @@ class ProdSelect extends Component {
             orders: orderlist,
             total_price: total
         })
-        // this.setState({
-
-        // })
+        
+    }
+    checkOut(){
+        var orderlist = JSON.parse(sessionStorage.getItem("order"))
+        var total = {total_price: this.state.total_price}
+        orderlist.push(total)
+        sessionStorage.setItem("order",JSON.stringify(orderlist))
     }
     render() { 
         if(this.state.redirect===1)
             return(<Redirect to="/not-found"/>)
         else if(this.state.redirect===2)
             return(<Redirect to={`/store/${this.state.id}`}/>)
-        // var modalStyle={overlay: {zIndex: 2}}
         return( 
             <Container>
 
@@ -212,8 +225,8 @@ class ProdSelect extends Component {
                                 <RightContainer>
                                     <OrderSum order={this.state.orders} total={this.state.total_price} update={this.updateOrder}/>
                                     <CheckoutButton>
-                                        <Link to='/checkout'>
-                                            <button>Checkout</button>
+                                        <Link to={`/store/${this.state.id}/checkout`}>
+                                            <button onClick={this.checkOut}>Checkout</button>
                                         </Link>         
                                     </CheckoutButton>
                                 </RightContainer>
