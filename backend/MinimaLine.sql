@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 21, 2021 at 06:18 PM
+-- Generation Time: Jun 22, 2021 at 07:14 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.1
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `heroku_265d1c24262a4ec`
+-- Database: `minimaline`
 --
 
 -- --------------------------------------------------------
@@ -84,20 +84,21 @@ CREATE TABLE `customer` (
   `priority_type` char(10) CHARACTER SET utf8mb4 NOT NULL DEFAULT 'REGULAR',
   `dine_in` varchar(10) NOT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'PENDING',
-  `total_price` decimal(6,0) NOT NULL
+  `total_price` decimal(6,0) NOT NULL,
+  `note` text DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`store_id`, `id`, `date`, `priority_type`, `dine_in`, `status`, `total_price`) VALUES
-(1, 1, '2021-06-22 00:05:04', 'REGULAR', 'DINE IN', 'PENDING', '120'),
-(1, 2, '2021-06-22 00:12:50', 'REGULAR', 'DINE IN', 'PENDING', '350'),
-(1, 3, '2021-06-22 00:13:05', 'REGULAR', 'TAKE OUT', 'PENDING', '300'),
-(2, 1, '2021-06-22 00:13:35', 'REGULAR', 'DINE IN', 'PENDING', '800'),
-(2, 2, '2021-06-22 00:14:12', 'REGULAR', 'TAKE OUT', 'PENDING', '790'),
-(1, 4, '2021-06-22 00:14:25', 'REGULAR', 'TAKE OUT', 'PENDING', '500');
+INSERT INTO `customer` (`store_id`, `id`, `date`, `priority_type`, `dine_in`, `status`, `total_price`, `note`) VALUES
+(1, 1, '2021-06-22 00:05:04', 'REGULAR', 'DINE IN', 'PENDING', '120', NULL),
+(1, 2, '2021-06-22 00:12:50', 'REGULAR', 'DINE IN', 'PENDING', '350', NULL),
+(1, 3, '2021-06-22 00:13:05', 'REGULAR', 'TAKE OUT', 'PENDING', '300', NULL),
+(2, 1, '2021-06-22 00:13:35', 'REGULAR', 'DINE IN', 'PENDING', '800', NULL),
+(2, 2, '2021-06-22 00:14:12', 'REGULAR', 'TAKE OUT', 'PENDING', '790', NULL),
+(1, 4, '2021-06-22 00:14:25', 'REGULAR', 'TAKE OUT', 'PENDING', '500', NULL);
 
 -- --------------------------------------------------------
 
@@ -107,6 +108,7 @@ INSERT INTO `customer` (`store_id`, `id`, `date`, `priority_type`, `dine_in`, `s
 
 CREATE TABLE `customer_order_list` (
   `id` int(11) NOT NULL,
+  `store_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
