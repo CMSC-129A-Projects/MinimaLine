@@ -462,11 +462,13 @@ class ManageAccount extends Component {
                     {(this.state.editing && this.state.currentStoreEdit===5) ? 
                       <Form onSubmit={this.addCashier}>
                         <p className="edit-label">Enter cashier username</p>
-                        <StyledInput type="text" autoComplete="off" required
+                        <StyledInput type="text" autoComplete="off"
+                            minLength="4" maxLength="20" required
                             name="cashier_username" value={this.state.cashier_username}
                             placeholder="Username" onChange={this.handleChange.bind(this)}/>
                         <p className="edit-label">Enter cashier password</p>
-                        <StyledInput type="password" autoComplete="off" required
+                        <StyledInput type="password" autoComplete="off"
+                            minLength="6" maxLength="20" required
                             name="cashier_password" value={this.state.cashier_password}
                             placeholder="Password" onChange={this.handleChange.bind(this)}/>
                         <div>
