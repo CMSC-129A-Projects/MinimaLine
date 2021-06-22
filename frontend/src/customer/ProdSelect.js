@@ -18,15 +18,17 @@ class ProdSelect extends Component {
             all_categs: [],
             prods: [],
             openProdModal: false,
+            openEditModal: false,
             redirect: null,
             orders: [],
             id: null,
             total_price: null
         }
         this.changeColor = this.changeColor.bind(this);
-        this.showModal = this.showModal.bind(this);
+        this.showAddModal = this.showAddModal.bind(this);
         this.showProducts = this.showProducts.bind(this);
         this.addOrder = this.addOrder.bind(this);
+        this.updateOrder = this.updateOrder.bind(this);
     }
     async componentDidMount(){
         document.title = "MinimaLine | Product Selection"
@@ -87,7 +89,7 @@ class ProdSelect extends Component {
             })
         }
     }
-    showModal(index){
+    showAddModal(index){
         this.setState({
             openProdModal: !this.state.openProdModal,
             current: index,
@@ -133,7 +135,35 @@ class ProdSelect extends Component {
             orders: orderlist,
             total_price: total
         })
-        this.showModal();
+        this.showAddModal();
+    }
+    updateOrder(order,mode){
+        var orderlist = JSON.parse(sessionStorage.getItem("order"))
+        var item = orderlist.find(item=>item["product"]["id"]===order["product"]["id"])
+        var index = orderlist.indexOf(item)
+        if(mode==="edit"){
+            orderlist[index] = order // replace with updated order
+            sessionStorage.setItem("order",JSON.stringify(orderlist))
+        }
+        else if(mode==="delete"){
+            orderlist.splice(index,1)
+            if(orderlist.length>0)
+                sessionStorage.setItem("order",JSON.stringify(orderlist))
+            else
+                sessionStorage.removeItem("order")
+        }
+        // compute total price
+        let total = 0;
+        for(let i=0; i<orderlist.length;i++){
+            total += orderlist[i]["price"]
+        }
+        this.setState({
+            orders: orderlist,
+            total_price: total
+        })
+        // this.setState({
+
+        // })
     }
     render() { 
         if(this.state.redirect===1)
@@ -153,7 +183,6 @@ class ProdSelect extends Component {
                         </ArrowWrapper>
                     </Arrow>
                     <Nav>
-                        {/* <Categ mode={"view"}/>  */}
                         <Categ mode={"view"} categs={this.state.all_categs} onClick={this.showProducts}/> 
                     </Nav>
                     {!this.state.prods.length ?
@@ -166,10 +195,8 @@ class ProdSelect extends Component {
                             <section className='productlist'> 
                             {this.state.prods.map((prod,index)=>{
                                     return (
-                                        <div
-                                            onClick={()=>this.showModal(index)}
-                                            // onClick={()=>this.changeColor(index)}
-                                            className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
+                                        <div onClick={()=>this.showAddModal(index)}
+                                             className={(this.state.clicked && (this.state.current===index)) ? 'clicked' : 'unclicked'}>
                                             <article>
                                                 <h3><img className='image' src={prod["photo"]} alt="No image"/></h3>
                                                 <h1>{prod["product"]}</h1>
@@ -179,9 +206,11 @@ class ProdSelect extends Component {
                                         </div>
                                     )
                                 })}
-                                {this.state.openProdModal ? <ProdModal {...this.state.prods[this.state.current]} show={this.showModal} onClick={this.addOrder}/> : null }
+                                {this.state.openProdModal ? 
+                                    <ProdModal {...this.state.prods[this.state.current]} show={this.showAddModal} add={this.addOrder}/>
+                                : null }
                                 <RightContainer>
-                                    <OrderSum order={this.state.orders} total={this.state.total_price}/>
+                                    <OrderSum order={this.state.orders} total={this.state.total_price} update={this.updateOrder}/>
                                     <CheckoutButton>
                                         <Link to='/checkout'>
                                             <button>Checkout</button>

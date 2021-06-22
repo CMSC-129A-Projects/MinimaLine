@@ -11,11 +11,12 @@ class ProdModal extends Component {
         }
         this.increment = this.increment.bind(this);
         this.decrement = this.decrement.bind(this);
-        this.addOrder = this.addOrder.bind(this);
+        this.editOrder = this.editOrder.bind(this);
+        this.deleteOrder = this.deleteOrder.bind(this);
     }
     componentDidMount(){
-        console.log(this.props)
-        this.setState({product: this.props})
+        // console.log(this.props)
+        this.setState({count: this.props.product["quantity"]})
     }
     increment(){
         if(this.state.count < 50){
@@ -28,13 +29,19 @@ class ProdModal extends Component {
             this.setState({count:this.state.count-1})
         }
     }
-    addOrder(){
+    editOrder(){
         const order = {
-            product: this.state.product,
+            product: this.props.product["product"],
             quantity: this.state.count,
-            price: this.props["price"]*this.state.count
+            price: this.props.product["product"]["price"]*this.state.count
         }
-        this.props.add(order)
+        this.props.onClick(order,"edit")
+    }
+    deleteOrder(){
+        const order = {
+            product: this.props.product["product"]
+        }
+        this.props.onClick(order,"delete")
     }
 
     render() { 
@@ -43,8 +50,8 @@ class ProdModal extends Component {
             <ModalContainer>
                 <ProductModal isOpen={true} style={modalStyle}>
                     <div className="left">
-                        <h1>{this.props["product"]}</h1>
-                        <h2>{this.props["price"]}</h2>
+                        <h1>{this.props.product["product"]["product"]}</h1>
+                        <h2>{this.props.product["product"]["price"]}</h2>
                         <div className="counter">
                             {this.state.count>0 ?
                             <button onClick={this.decrement}>-</button>
@@ -54,12 +61,12 @@ class ProdModal extends Component {
                         </div>
                         <div className="buttons">
                             {this.state.count>0 ? 
-                            <button className="add-order" onClick={this.addOrder}>Add Order</button>
-                            : null}
+                            <button className="add-order" onClick={this.editOrder}>Save Changes</button>
+                            : <button className="add-order" onClick={this.deleteOrder}>Delete Order</button>}
                             <button className="cancel" onClick={this.props.show}>Cancel</button>
                         </div>
                     </div>
-                    <img src={this.props["photo"]}/>
+                    <img src={this.props.product["product"]["photo"]}/>
                 </ProductModal>
             </ModalContainer>
         );

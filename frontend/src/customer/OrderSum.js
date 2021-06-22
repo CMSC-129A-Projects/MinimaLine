@@ -1,24 +1,31 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { MdModeEdit } from "react-icons/md";
+import EditModal from './EditModal';
 
 
 class OrderSum extends Component {   
     constructor(){
         super();
         this.state = {
-            total_price: null
+            total_price: null,
+            showEditModal: false,
+            current: null
         }
+        this.handleClick = this.handleClick.bind(this)
+        this.updateOrder = this.updateOrder.bind(this)
     } 
-    componentDidMount(){
-        if(this.props.order){
-            let total = 0;
-            for(let i=0; i<this.props.order.length;i++){
-                total += this.props.order[i]["price"]
-            }
-            this.setState({total_price: total})
-        }
+    handleClick(product){
+        this.setState({
+            showEditModal: !this.state.showEditModal,
+            current: product
+        })
     }
+    updateOrder(order,mode){
+        this.props.update(order,mode)
+        this.handleClick();
+    }
+
     render() { 
         return (
             <Container>
@@ -29,7 +36,7 @@ class OrderSum extends Component {
                     {this.props.order.map((order,index)=>{
                         return(
                             <div className="wrapper">
-                                <MdModeEdit/>
+                                <Edit onClick={()=>this.handleClick(order)}/>
                                 <div className="order">
                                     <div>
                                         <p className="name">{order["product"]["product"]}</p>
@@ -46,6 +53,9 @@ class OrderSum extends Component {
                 <div className="total-price">
                     <h2>Total Price: Php {this.props.total}</h2>
                 </div>
+                {this.state.showEditModal ?
+                    <EditModal product={this.state.current} show={this.handleClick} onClick={this.updateOrder}/> 
+                : null}
             </Container>
         );
     }
@@ -145,5 +155,10 @@ const Container = styled.div`
         }
     } */
 `;
-
+const Edit = styled(MdModeEdit)`
+    :hover{
+        cursor: pointer;
+        color: #F9C91E;
+    }
+`;
 export default OrderSum;
