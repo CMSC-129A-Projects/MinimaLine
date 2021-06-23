@@ -34,7 +34,6 @@ const Container = styled.div`
 const Text = styled.div`
     display: flex;
     flex-direction: column;
-    /* margin-right: 10px; */
     h1{
         font-size: 90px;
         color: #ec9736;

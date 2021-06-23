@@ -240,46 +240,28 @@ class ProdSelect extends Component {
 }
 
 const CheckoutButton = styled.div`
-    /* right: 80px; */
     display: flex;
     flex-direction: row;
     position: fixed;
-    /* right: 6vh; */
-    /* margin-top: 78vh; */
     margin-top: 70vh;
-    /* right: -38vh; */
     align-items: center;
     z-index: 1;
-    /* margin-top: 750px; */
     width: 20%;
-    /* background-color: white; */
     display: flex;
     justify-content: center;
 
     button{ 
-        /* position: absolute; */
-        /* right: 0; */
-        /* margin-right: 11vh; */
-
-        /* width: 250px; */
         width: 25vh;
-        /* height: 200px; */
         height: 8vh;
         outline: none;
         border: none;
         color: black;
-        /* padding: 0rem 1rem; */
         padding: 0vh 1vh;
-        /* margin: 0.1px 10px 0.1px 10px; */
-        /* margin: 0.1vh 10vh 0.1vh 10vh; */
-        /* height: 70px; */
-        /* line-height: 70px; */
         text-align: center;
         background: #F9C91E;
         border-radius: 1rem;
         transition: all 0.1s ease-in;
         font-family: "Work Sans";
-        /* font-size: 35px; */
         font-size: 3vh;
         font-weight: bold;
 
@@ -416,7 +398,6 @@ const ProdGrid = styled.div`
         display: grid;
         gap: 2rem;
         z-index: 0;
-        /* grid-template-columns: repeat(auto-fit, minmax(177px, 1fr)); */
         grid-template-columns: repeat(4, 220px);
 
         @media screen and (max-width: 1650px) {
@@ -438,7 +419,6 @@ const ProdGrid = styled.div`
         border-radius: 1rem;
         padding: 1rem 2rem;
         word-wrap: break-word;
-        /* transition: all 0.2s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
@@ -466,7 +446,6 @@ const ProdGrid = styled.div`
         border-radius: 1rem;
         padding: 1rem 2rem;
         word-wrap: break-word;
-        /* transition: all 0.2s ease-in; */
 
         &:hover {
             transform: translateY(-4px);
