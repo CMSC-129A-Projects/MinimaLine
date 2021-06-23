@@ -419,8 +419,17 @@ const ProdGrid = styled.div`
         /* grid-template-columns: repeat(auto-fit, minmax(177px, 1fr)); */
         grid-template-columns: repeat(4, 220px);
 
-        @media screen and (max-width: 1024px) {
-            gap: 1.5rem;
+        @media screen and (max-width: 1650px) {
+            grid-template-columns: repeat(4, 240px);
+        }
+
+        @media screen and (max-width: 1450px) {
+            grid-template-columns: repeat(3, 240px);
+        }
+
+        @media screen and (max-width: 1180px) {
+            gap: 2rem;
+            grid-template-columns: repeat(2, 265px);
         }
     }
 
@@ -448,6 +457,9 @@ const ProdGrid = styled.div`
         @media screen and (max-width: 1024px) {
             width: 70%;
         }
+        @media screen and (max-width: 1180px) {
+            width: 200px;
+        }
     }
     .unclicked{
         background: #fff;
@@ -470,13 +482,23 @@ const ProdGrid = styled.div`
             font-size: 0.9rem;
             margin-top: 0.25;
         }
-        @media screen and (max-width: 1024px) {
-            width: 70%;
-        }
     }
     .image{
-        height: 150px;
-        width: 150px;
+        height: 160px;
+        width: 160px;
+
+        @media screen and (max-width: 1650px) {
+            height: 180px;
+            width: 180px;
+        }
+
+        @media screen and (max-width: 1180px) {
+            height: 200px;
+            width: 200px;
+        }
+    }
+    @media screen and (max-width: 1024px) {
+        width: 70%;
     }
 `;
 
