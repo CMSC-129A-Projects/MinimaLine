@@ -298,6 +298,7 @@ class EditMenu extends Component {
                             </div> :
                             <ProdGrid>
                                     <section className='productlist'> 
+                                    <AddButton size="100px" onClick={this.toggleAddProd}/>
                                             {this.state.prods.map((prod,index)=>{
                                                     return (
                                                         <div
@@ -314,7 +315,7 @@ class EditMenu extends Component {
                                                     )
                                                 })}
                                         {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts}/> : null }
-                                        <AddButton size="100px" onClick={this.toggleAddProd}/>
+                                        {/* <AddButton size="100px" onClick={this.toggleAddProd}/> */}
                                     </section>
                             </ProdGrid>
                         )
