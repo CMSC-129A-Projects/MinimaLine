@@ -165,9 +165,10 @@ app.post('/edit-menu/:id', Auth.checkAccessToken,(req, res) => {
     let price= req.body.price;
     let availability= req.body.availability;
     let category = req.body.category;
+    let photo = req.body.photo
     let store_id = req.userId;
 
-    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=? WHERE id = ? AND store_id = ?", [product, price, category, availability,prod_id,store_id],
+    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=?, photo=? WHERE id = ? AND store_id = ?", [product, price, category, availability,photo,prod_id,store_id],
         (err,result) => {
             if(result){
                 console.log("hello")
