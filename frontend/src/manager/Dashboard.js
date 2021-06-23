@@ -16,6 +16,7 @@ class App extends Component {
       clicked: false,
       username: null,
       logo: null,
+      id: null,
       redirect: false
      }
      this.handleClick = this.handleClick.bind(this);
@@ -28,6 +29,7 @@ class App extends Component {
       .then((response)=>{
           console.log(response.data[0])
           this.setState({
+            id: response.data[0]["id"],
             username: response.data[0]["username"],
             logo: response.data[0]["logo"]
           })
@@ -78,8 +80,8 @@ class App extends Component {
           </StyledLink>
           <Option onClick={this.handleClick}>
               <AiOutlineUserSwitch className="icon" size="90px"/>
-              <h2>Switch Modes</h2>
-              <p>Switch to Cashier Mode or Customer Mode.</p>
+              <h2>Order Page</h2>
+              <p>View your store's order page.</p>
           </Option>
         </Body>
 
@@ -87,10 +89,11 @@ class App extends Component {
           // <ModalContainer>
             <SwitchModal isOpen={true}>
               <button className="close"onClick={this.handleClick}>X</button>
-              <Link to="/customer">
-                <button className="modes">Customer</button>
+              <h3>Customers can place orders at:</h3>
+              <a href={`https://minimaline.netlify.app/store/${this.state.id}`} target="_blank">{`minimaline.netlify.app/store/${this.state.id}`}</a>
+              <Link to={`/store/${this.state.id}`} target="_blank">
+                <button className="modes">Go!</button>
               </Link>
-              <button className="modes">Cashier</button>
             </SwitchModal>
           // </ModalContainer>
           : null
@@ -142,6 +145,8 @@ const Container = styled.div`
     font-size: 13px;
     :hover{
       cursor: pointer;
+      background-color: white;
+      border: 1px solid #F9C91E;
     }
   }
 
@@ -369,7 +374,8 @@ const SwitchModal = styled(Modal)`
   left: 50%;
   .modes{
         font-family: "Work Sans";
-        margin: 30px 20px 0px;
+        /* margin: 40px 20px 0px; */
+        margin-top: 40px;
         width: 200px;
         height: 60px;
         border: none;
@@ -402,6 +408,10 @@ const SwitchModal = styled(Modal)`
             border-radius: 8px;
             background-color: #F3D9A4;
         }
+    }
+    a{
+      font-weight: bold;
+      margin-top: -10px;
     }
 `;
 export default App;
