@@ -27,7 +27,7 @@ const App = () => {
             <Route path="/store/:id/checkout" exact component={Customer.Checkout} />
             <Route path="/store/:id/confirm" exact component={Customer.Confirmation} />
             <Route path="/not-found" exact component={Customer.NotFound} />
-            {/* <Route exact path="/cashier" component={Cashier.App} /> */}
+            <Route exact path="/cashier" component={Cashier.App} />
           </Switch>
         </Router>
       </Wrapper>
