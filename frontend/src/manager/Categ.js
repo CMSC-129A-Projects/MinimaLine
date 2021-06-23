@@ -31,6 +31,7 @@ class Categ extends Component {
     handleClick(index,categ_id){
         this.changeColor(index)
         this.props.onClick(categ_id)
+        this.props.toggle("close")
     }
     changeColor(index){
         if(this.state.current !== index) // different category is clicked

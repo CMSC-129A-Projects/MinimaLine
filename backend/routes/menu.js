@@ -167,19 +167,35 @@ app.post('/edit-menu/:id', Auth.checkAccessToken,(req, res) => {
     let category = req.body.category;
     let photo = req.body.photo
     let store_id = req.userId;
-
-    database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=?, photo=? WHERE id = ? AND store_id = ?", [product, price, category, availability,photo,prod_id,store_id],
-        (err,result) => {
-            if(result){
-                console.log("hello")
-                res.send(result)
+    if(photo){
+        database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=?, photo=? WHERE id = ? AND store_id = ?", [product, price, category, availability,photo,prod_id,store_id],
+            (err,result) => {
+                if(result){
+                    console.log("hello")
+                    res.send(result)
+                }
+                else{
+                    console.log(err)
+                    res.send(err)
+                }
             }
-            else{
-                console.log(err)
-                res.send(err)
+        )
+    }
+    else{
+        database.query("UPDATE menu_info SET product=?, price=?, category_id=?, availability=? WHERE id = ? AND store_id = ?", [product, price, category, availability,prod_id,store_id],
+            (err,result) => {
+                if(result){
+                    console.log("no photo")
+                    res.send(result)
+                }
+                else{
+                    console.log(err)
+                    res.send(err)
+                }
             }
-        }
-    )
+        )
+    }
+    
 });
 
 module.exports = app;

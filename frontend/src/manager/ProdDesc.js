@@ -13,26 +13,54 @@ class ProdDesc extends Component {
             prod_name: '',
             prod_price: '',
             prod_categ: '',
-            prod_availability: null
+            prod_availability: null,
+            prod_img: null,
+            img_url: '',
+            upload_url: ''
         }
-        // this.showAvailability = this.showAvailability.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
-
+    handleUpload(e){
+        this.setState({prod_img: e.target.files[0]})
+    }
     handleChange(e){
         this.setState({
           [e.target.name]: e.target.value
         })
     }
-    editProd = e => {
+    handleClick(){
+        this.setState({
+            prod_categ: '',
+            prod_availability: null
+        })
+        this.props.toggle("close")
+    }
+    editProd =async  e => {
         e.preventDefault();
+        if(this.state.prod_img){  // a file was uploaded
+            // get secure upload url
+            await Axios.get('https://minimaline-server.herokuapp.com/request-upload')
+              .then(response => {
+                console.log(response.data.url)
+                this.setState({upload_url: response.data.url})
+              })
+            // upload img using above url
+            await Axios.put(this.state.upload_url,this.state.prod_img)
+              .then(response=>{
+                const imgURL = this.state.upload_url.split('?')[0]
+                console.log(imgURL)
+                this.setState({img_url: imgURL})
+              })
+        }
         const id = this.props["id"]
         const data = {
             product: !this.state.prod_name ? this.props["product"] : (this.state.prod_name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()),
             price: !this.state.prod_price ? this.props["price"] : this.state.prod_price,
             category: this.state.prod_categ,
-            availability: this.state.prod_availability
+            availability: this.state.prod_availability,
+            photo: this.state.img_url
         }
-        Axios.post(`https://minimaline-server.herokuapp.com/edit-menu/${id}`,data,{headers: Auth.header()}).then((response) => {
+        await Axios.post(`https://minimaline-server.herokuapp.com/edit-menu/${id}`,data,{headers: Auth.header()}).then((response) => {
             console.log(response)
             this.props.test(this.state.prod_categ)
         })
@@ -59,6 +87,7 @@ class ProdDesc extends Component {
                         type="file"
                         name="photo"
                         autocomplete="off"
+                        onChange={this.handleUpload.bind(this)}
                     />
                     <StyledInput
                         placeholder={this.props["product"]}
@@ -95,7 +124,7 @@ class ProdDesc extends Component {
                     </Select>
                     <Buttons>
                         <button className="save">Save Changes</button>
-                        <button className="cancel">Cancel</button>
+                        <button className="cancel" onClick={this.handleClick}>Cancel</button>
                     </Buttons>
                 </Form>
             );

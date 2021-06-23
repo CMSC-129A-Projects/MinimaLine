@@ -95,6 +95,12 @@ class EditMenu extends Component {
                 current_prod: index,
                 isProdClicked: true
             })
+        if(index==="close"){
+            this.setState({
+                current_prod: null,
+                isProdClicked: false
+            })
+        }
     }
     toggleDeleteProd(id){
         this.setState({
@@ -170,6 +176,7 @@ class EditMenu extends Component {
     deleteProd(){
         Axios.delete(`https://minimaline-server.herokuapp.com/delete-product/${this.state.delete_this}`,{headers: Auth.header()}).then((response) => {
             this.toggleDeleteProd()
+            this.showCategs(this.state.current_categ)
         })
     }
     handleClick(id){
@@ -272,7 +279,7 @@ class EditMenu extends Component {
                         </ArrowWrapper>
                     </Arrow>
                     <Nav>
-                        <Categ mode={"edit"} categs={this.state.all_categs} curr={this.state.current_categ} onClick={this.handleClick}/>
+                        <Categ mode={"edit"} categs={this.state.all_categs} curr={this.state.current_categ} onClick={this.handleClick} toggle={this.changeColor}/>
                         <AddCategButton size="50px" onClick={this.toggleAddCateg}/>
                         {!this.state.all_categs.length ? 
                             <Instruction>
@@ -314,7 +321,7 @@ class EditMenu extends Component {
                                                         </div>
                                                     )
                                                 })}
-                                        {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts}/> : null }
+                                        {this.state.isProdClicked ? <ProdDesc {...this.state.prods[this.state.current_prod]} mode={"edit"} test={this.showProducts} toggle={this.changeColor}/> : null }
                                         {/* <AddButton size="100px" onClick={this.toggleAddProd}/> */}
                                     </section>
                             </ProdGrid>
