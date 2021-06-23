@@ -23,7 +23,7 @@ class ProdDesc extends Component {
           [e.target.name]: e.target.value
         })
     }
-    edit = e => {
+    editProd = e => {
         e.preventDefault();
         const id = this.props["id"]
         const data = {
@@ -53,7 +53,7 @@ class ProdDesc extends Component {
     render() { 
         if (this.props.mode==="edit") {
             return (
-                <Form onSubmit={this.edit}>
+                <Form onSubmit={this.editProd}>
                     <img src={this.props["photo"]}/>
                     <Upload
                         type="file"
