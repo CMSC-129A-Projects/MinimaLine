@@ -428,6 +428,7 @@ const ProdGrid = styled.div`
         background: #F9C91E;
         border-radius: 1rem;
         padding: 1rem 2rem;
+        word-wrap: break-word;
         /* transition: all 0.2s ease-in; */
 
         &:hover {
@@ -452,6 +453,7 @@ const ProdGrid = styled.div`
         background: #fff;
         border-radius: 1rem;
         padding: 1rem 2rem;
+        word-wrap: break-word;
         /* transition: all 0.2s ease-in; */
 
         &:hover {

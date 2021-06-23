@@ -43,7 +43,8 @@ class ProdModal extends Component {
             <ModalContainer>
                 <ProductModal isOpen={true} style={modalStyle}>
                     <div className="left">
-                        <h1>{this.props["product"]}</h1>
+                        <div className="name-container">
+                            <h1>{this.props["product"]}</h1>
                         <h2>{this.props["price"]}</h2>
                         <div className="counter">
                             {this.state.count>0 ?
@@ -57,6 +58,7 @@ class ProdModal extends Component {
                             <button className="add-order" onClick={this.addOrder}>Add Order</button>
                             : null}
                             <button className="cancel" onClick={this.props.show}>Cancel</button>
+                        </div>
                         </div>
                     </div>
                     <img src={this.props["photo"]}/>
@@ -86,21 +88,34 @@ const ProductModal = styled(Modal)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  .name-container{
+    width: 260px;
+    position: absolute;
+    margin-left: -300px;
+    outline: none;
+    margin-top: -50px;
+  }
  
   img{
-    height: 400px;
-    width: 400px;
+    position: fixed;
+    height: 310px;
+    width: 310px;
+    margin-left: 170px;
   }
   
   .left{
 
     h1{
+        word-wrap: break-word;
         margin-top: -100px;
-        font-size: 4rem;
+        font-size: 200%;
+        margin-left: 45px;
     }
 
     h2{
-        margin-top: -35px;
+        margin-left: 45px;
+        margin-top: -15px;
         margin-bottom: 80px;
         color: #617d98;
         font-size: 2rem;

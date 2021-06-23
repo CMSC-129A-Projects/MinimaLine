@@ -123,9 +123,9 @@ const Container = styled.div`
         display: flex;
         flex-direction: row;
         /* margin-top: -30px; */
-        margin-top: -5vh;
+        margin-top: -4vh;
         /* margin-left: 200px; */
-        margin-left: 15vh;
+        margin-left: 13vh;
         p{
             /* margin-right: 10px; */
             margin-right: 1vh;
