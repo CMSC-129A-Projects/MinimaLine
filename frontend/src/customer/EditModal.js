@@ -50,6 +50,7 @@ class ProdModal extends Component {
             <ModalContainer>
                 <ProductModal isOpen={true} style={modalStyle}>
                     <div className="left">
+                        <div className="name-container">
                         <h1>{this.props.product["product"]["product"]}</h1>
                         <h2>{this.props.product["product"]["price"]}</h2>
                         <div className="counter">
@@ -64,6 +65,7 @@ class ProdModal extends Component {
                             <button className="add-order" onClick={this.editOrder}>Save Changes</button>
                             : <button className="add-order" onClick={this.deleteOrder}>Delete Order</button>}
                             <button className="cancel" onClick={this.props.show}>Cancel</button>
+                        </div>
                         </div>
                     </div>
                     <img src={this.props.product["product"]["photo"]}/>
@@ -82,10 +84,10 @@ const ProductModal = styled(Modal)`
   background-color: white;
   box-shadow: 3px 6px 5px 3px #d6d6d6;
   border-radius: 15px;
-  height: 600px;
-  width: 800px;
-  margin-top: -300px;
-  margin-left: -400px;
+  height: 500px;
+  width: 700px;
+  margin-top: -250px;
+  margin-left: -350px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -94,20 +96,33 @@ const ProductModal = styled(Modal)`
   align-items: center;
   justify-content: center;
  
+  .name-container{
+    width: 260px;
+    position: absolute;
+    margin-left: -320px;
+    outline: none;
+    margin-top: -80px;
+  }
+ 
   img{
-    height: 400px;
-    width: 400px;
+    position: fixed;
+    height: 310px;
+    width: 310px;
+    margin-left: 130px;
   }
   
   .left{
 
     h1{
+        word-wrap: break-word;
         margin-top: -100px;
-        font-size: 4rem;
+        font-size: 200%;
+        margin-left: 45px;
     }
 
     h2{
-        margin-top: -35px;
+        margin-left: 45px;
+        margin-top: -15px;
         margin-bottom: 80px;
         color: #617d98;
         font-size: 2rem;

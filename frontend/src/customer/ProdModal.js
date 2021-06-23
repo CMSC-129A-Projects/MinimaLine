@@ -77,10 +77,10 @@ const ProductModal = styled(Modal)`
   background-color: white;
   box-shadow: 3px 6px 5px 3px #d6d6d6;
   border-radius: 15px;
-  height: 600px;
-  width: 800px;
-  margin-top: -300px;
-  margin-left: -400px;
+  height: 500px;
+  width: 700px;
+  margin-top: -250px;
+  margin-left: -350px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -92,16 +92,16 @@ const ProductModal = styled(Modal)`
   .name-container{
     width: 260px;
     position: absolute;
-    margin-left: -300px;
+    margin-left: -320px;
     outline: none;
-    margin-top: -50px;
+    margin-top: -80px;
   }
  
   img{
     position: fixed;
     height: 310px;
     width: 310px;
-    margin-left: 170px;
+    margin-left: 130px;
   }
   
   .left{
